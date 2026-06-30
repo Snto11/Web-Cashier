@@ -172,7 +172,7 @@
                             <div class="input-group">
                                 <input type="text" id="namaBarang" class="form-control" placeholder="Contoh: Kopi Susu"
                                     list="listBarang" oninput="autoFillHarga()" required>
-                                <button class="btn btn-outline-secondary text-danger" type="button" onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; hargaAsli = 0; hitungKalkulatorSeketika(); document.getElementById('namaBarang').focus();" title="Kosongkan Semua Inputan">❌</button>
+                                <button class="btn btn-outline-secondary text-danger" type="button" onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); document.getElementById('namaBarang').focus();" title="Kosongkan Semua Inputan">❌</button>
                             </div>
                             <datalist id="listBarang"></datalist>
                         </div>
@@ -187,7 +187,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Jumlah Pembelian</label>
+                            <label class="form-label fw-semibold">Jumlah Pembelian <span id="infoStokTersedia" class="text-muted small fw-normal"></span></label>
                             <input type="number" id="jumlahPembelian" class="form-control" placeholder="0" min="1" required>
                         </div>
 
@@ -392,8 +392,46 @@
         });
 
         inputJumlah.addEventListener('input', function () {
+            const namaInput = document.getElementById('namaBarang').value;
+            const jumlahInput = Number(inputJumlah.value) || 0;
+            const master = getMasterProduk();
+
+            if (master.hasOwnProperty(namaInput)) {
+                let totalDipesan = jumlahInput;
+                antreanKeranjangSeketika.forEach(item => {
+                    if (item.namaBarang === namaInput) {
+                        totalDipesan += item.jumlahPembelian;
+                    }
+                });
+
+                const btnSimpan = document.getElementById('btnSimpan');
+                if (totalDipesan > master[namaInput].stok) {
+                    btnSimpan.disabled = true;
+                    btnSimpan.innerText = "⚠️ Barang Tidak Cukup";
+                    btnSimpan.className = "btn btn-danger btn-lg w-100 fw-bold shadow-sm";
+                } else {
+                    normalisaiTombolSimpan();
+                }
+            }
             hitungKalkulatorSeketika();
         });
+
+        function normalisaiTombolSimpan() {
+            const btnSimpan = document.getElementById('btnSimpan');
+            const idData = document.getElementById('rowId').value;
+            
+            if (idData !== "") {
+                btnSimpan.innerText = "💾 Simpan Perubahan";
+                btnSimpan.className = "btn btn-warning btn-lg w-100 fw-bold shadow-sm";
+            } else if (antreanKeranjangSeketika.length > 0) {
+                btnSimpan.innerText = "➕ Tambah Barang Lagi";
+                btnSimpan.className = "btn btn-outline-primary btn-lg w-100 fw-bold shadow-sm";
+            } else {
+                btnSimpan.innerText = "🚀 Tambah Barang ke Antrean";
+                btnSimpan.className = "btn btn-primary btn-lg w-100 fw-bold shadow-sm";
+            }
+            btnSimpan.disabled = false;
+        }
 
         inputUangDiterimaTampilan.addEventListener('input', function (e) {
             let nilaiBersih = e.target.value.replace(/\D/g, "");
@@ -587,6 +625,8 @@
         document.getElementById('formPenjualan').addEventListener('submit', function (e) {
             e.preventDefault();
             const idData = document.getElementById('rowId').value;
+            const namaInput = document.getElementById('namaBarang').value;
+            const jumlahInput = Number(inputJumlah.value);
 
             if (idData !== "") {
                 const jenisBayarEdit = document.getElementById('jenisPembayaran').value;
@@ -598,9 +638,9 @@
 
                 let dataPenjualan = JSON.parse(localStorage.getItem('data_kasir_lokal')) || [];
                 dataPenjualan[idData] = {
-                    namaBarang: document.getElementById('namaBarang').value,
+                    namaBarang: namaInput,
                     hargaBarang: hargaAsli,
-                    jumlahPembelian: Number(inputJumlah.value),
+                    jumlahPembelian: jumlahInput,
                     jenisPembayaran: jenisBayarEdit
                 };
                 localStorage.setItem('data_kasir_lokal', JSON.stringify(dataPenjualan));
@@ -619,9 +659,9 @@
             }
 
             const itemAntrean = {
-                namaBarang: document.getElementById('namaBarang').value,
+                namaBarang: namaInput,
                 hargaBarang: hargaAsli,
-                jumlahPembelian: Number(inputJumlah.value)
+                jumlahPembelian: jumlahInput
             };
 
             antreanKeranjangSeketika.push(itemAntrean);
@@ -637,13 +677,15 @@
             inputHargaTampilan.value = "";
             inputHargaTampilan.readOnly = false;
             inputJumlah.value = "";
+            inputJumlah.type = "number";
+            inputJumlah.disabled = false;
+            inputJumlah.placeholder = "0";
+            document.getElementById('infoStokTersedia').innerText = "";
             hargaAsli = 0;
 
             perbaruiTampilanRincian();
             hitungKalkulatorSeketika();
-
-            document.getElementById('btnSimpan').innerText = "➕ Tambah Barang Lagi";
-            document.getElementById('btnSimpan').className = "btn btn-outline-primary btn-lg w-100 fw-bold shadow-sm";
+            normalisaiTombolSimpan();
 
             aturTampilanInputPembayaran();
         });
@@ -667,13 +709,19 @@
             }
 
             let dataPenjualanUtama = JSON.parse(localStorage.getItem('data_kasir_lokal')) || [];
+            let master = getMasterProduk();
 
             let totalBelanja = 0;
             antreanKeranjangSeketika.forEach(item => {
                 totalBelanja += (item.hargaBarang * item.jumlahPembelian);
             });
 
+            // Lakukan pemotongan stok pada master produk harian
             antreanKeranjangSeketika.forEach(item => {
+                if (master.hasOwnProperty(item.namaBarang)) {
+                    master[item.namaBarang].stok = Math.max(0, master[item.namaBarang].stok - item.jumlahPembelian);
+                }
+
                 const totalItemIni = item.hargaBarang * item.jumlahPembelian;
                 let nominalCashPencatatan = 0;
                 let nominalTfPencatatan = 0;
@@ -706,11 +754,13 @@
                 });
             });
 
+            // Simpan perubahan sisa stok harian ke LocalStorage
+            localStorage.setItem('master_produk_toko', JSON.stringify(master));
             localStorage.setItem('data_kasir_lokal', JSON.stringify(dataPenjualanUtama));
 
             Swal.fire({
                 title: "Transaksi Sukses! 🎉",
-                text: "Semua data penjualan berhasil disimpan ke dalam sistem harian.",
+                text: "Semua data penjualan berhasil disimpan & stok otomatis berkurang.",
                 icon: "success",
                 timer: 2000,
                 showConfirmButton: false,
@@ -729,8 +779,7 @@
 
             document.getElementById('formTitle').innerText = "✏️ Edit Penjualan";
             document.getElementById('formTitle').className = "text-center mb-4 fw-bold text-warning";
-            document.getElementById('btnSimpan').innerText = "💾 Simpan Perubahan";
-            document.getElementById('btnSimpan').className = "btn btn-warning btn-lg w-100 fw-bold shadow-sm";
+            
             document.getElementById('btnBatal').classList.remove('d-none');
             document.getElementById('btnSelesaiMulti').classList.add('d-none');
             document.getElementById('infoMultiBarang').classList.add('d-none');
@@ -744,13 +793,36 @@
             if (daftarProduk.hasOwnProperty(nama)) {
                 document.getElementById('namaBarang').readOnly = true;
                 inputHargaTampilan.readOnly = true;
+                document.getElementById('infoStokTersedia').innerText = `(Tersedia: ${daftarProduk[nama].stok} Pcs)`;
+
+                // Gabungan Logika Kritis: Jika stok 0 pcs saat masuk mode edit riwayat
+                if (daftarProduk[nama].stok <= 0) {
+                    inputJumlah.type = "text"; 
+                    inputJumlah.value = "";
+                    inputJumlah.placeholder = "Stok habis, update stok terlebih dahulu";
+                    inputJumlah.disabled = true;
+
+                    const btnSimpan = document.getElementById('btnSimpan');
+                    btnSimpan.disabled = true;
+                    btnSimpan.innerText = "⚠️ Barang Tidak Cukup";
+                    btnSimpan.className = "btn btn-danger btn-lg w-100 fw-bold shadow-sm";
+                } else {
+                    inputJumlah.type = "number";
+                    inputJumlah.disabled = false;
+                    inputJumlah.placeholder = "0";
+                    inputJumlah.value = jumlah;
+                    normalisaiTombolSimpan();
+                }
             } else {
                 document.getElementById('namaBarang').readOnly = false;
                 inputHargaTampilan.readOnly = false;
+                document.getElementById('infoStokTersedia').innerText = "";
+                inputJumlah.type = "number";
+                inputJumlah.disabled = false;
+                inputJumlah.placeholder = "0";
+                inputJumlah.value = jumlah;
+                normalisaiTombolSimpan();
             }
-            
-            inputJumlah.value = jumlah;
-            document.getElementById('jenisPembayaran').value = pembayaran;
 
             perbaruiTampilanRincian();
             aturTampilanInputPembayaran();
@@ -838,12 +910,8 @@
             document.getElementById('rowId').value = "";
             document.getElementById('formTitle').innerText = "🛒 Input Penjualan";
             document.getElementById('formTitle').className = "text-center mb-4 fw-bold text-primary";
-            document.getElementById('btnSimpan').innerText = "🚀 Simpan Penjualan";
-            document.getElementById('btnSimpan').className = "btn btn-primary btn-lg w-100 fw-bold shadow-sm";
-            document.getElementById('btnSelesaiMulti').classList.add('d-none');
-            document.getElementById('infoMultiBarang').classList.add('d-none');
-            document.getElementById('labelSubtotal').innerText = "Subtotal (Harga × Jumlah):";
             document.getElementById('btnBatal').classList.add('d-none');
+            document.getElementById('infoStokTersedia').innerText = "";
 
             hargaAsli = 0; uangDiterimaAsli = 0; antreanKeranjangSeketika = [];
             perbaruiTampilanRincian();
@@ -856,7 +924,12 @@
 
             document.getElementById('namaBarang').readOnly = false;
             inputHargaTampilan.readOnly = false;
+            
+            inputJumlah.type = "number";
+            inputJumlah.disabled = false;
+            inputJumlah.placeholder = "0";
 
+            normalisaiTombolSimpan();
             aturTampilanInputPembayaran();
             buatRekomendasiBarang();
         }
@@ -914,11 +987,22 @@
             let master = JSON.parse(localStorage.getItem('master_produk_toko'));
             if (!master) {
                 master = {
-                    "Matcha Bubuk B": 16000,
-                    "Taro Bubuk A": 20000,
-                    "Kopi Susu": 45000
+                    "Matcha Bubuk B": { harga: 16000, stok: 50 },
+                    "Taro Bubuk A": { harga: 20000, stok: 50 },
+                    "Kopi Susu": { harga: 45000, stok: 30 }
                 };
                 localStorage.setItem('master_produk_toko', JSON.stringify(master));
+            } else {
+                let perbaikanDibutuhkan = false;
+                for (let nama in master) {
+                    if (typeof master[nama] === "number") {
+                        master[nama] = { harga: master[nama], stok: 0 };
+                        perbaikanDibutuhkan = true;
+                    }
+                }
+                if (perbaikanDibutuhkan) {
+                    localStorage.setItem('master_produk_toko', JSON.stringify(master));
+                }
             }
             return master;
         }
@@ -936,7 +1020,6 @@
             }
         }
 
-        // REVISI FITUR: Tambah logika penguncian kolom Nama Barang saat auto-fill terdeteksi
         function autoFillHarga() {
             const inputNama = document.getElementById('namaBarang');
             const namaInputVal = inputNama.value;
@@ -944,11 +1027,30 @@
             const daftarProduk = getMasterProduk();
             
             if (daftarProduk.hasOwnProperty(namaInputVal)) {
-                let harga = daftarProduk[namaInputVal];
-                hargaAsli = harga;
-                inputHarga.value = formatRupiah(harga);
+                let dataBarang = daftarProduk[namaInputVal];
+                hargaAsli = dataBarang.harga;
+                inputHarga.value = formatRupiah(dataBarang.harga);
                 
-                // MENGUNCI KEDUA INPUTAN SEKALIGUS
+                document.getElementById('infoStokTersedia').innerText = `(Tersedia: ${dataBarang.stok} Pcs)`;
+                
+                // Modifikasi Logika Utama: Penguncian input & tombol jika stok 0 pcs harian nyata
+                if (dataBarang.stok <= 0) {
+                    inputJumlah.type = "text"; 
+                    inputJumlah.value = "";
+                    inputJumlah.placeholder = "Stok habis, update stok terlebih dahulu";
+                    inputJumlah.disabled = true;
+
+                    const btnSimpan = document.getElementById('btnSimpan');
+                    btnSimpan.disabled = true;
+                    btnSimpan.innerText = "⚠️ Barang Tidak Cukup";
+                    btnSimpan.className = "btn btn-danger btn-lg w-100 fw-bold shadow-sm";
+                } else {
+                    inputJumlah.type = "number";
+                    inputJumlah.disabled = false;
+                    inputJumlah.placeholder = "0";
+                    normalisaiTombolSimpan();
+                }
+                
                 inputNama.readOnly = true; 
                 inputHarga.readOnly = true; 
                 
@@ -956,6 +1058,11 @@
             } else {
                 inputNama.readOnly = false;
                 inputHarga.readOnly = false;
+                inputJumlah.type = "number";
+                inputJumlah.disabled = false;
+                inputJumlah.placeholder = "0";
+                document.getElementById('infoStokTersedia').innerText = "";
+                normalisaiTombolSimpan();
             }
         }
 
@@ -967,9 +1074,10 @@
                 barisTabel += `
                     <tr class="produk-row" data-nama="${nama.toLowerCase()}">
                         <td class="text-start fw-bold small nama-produk-kolom">${nama}</td>
-                        <td class="text-end small">Rp ${formatRupiah(daftarProduk[nama])}</td>
+                        <td class="text-end small">Rp ${formatRupiah(daftarProduk[nama].harga)}</td>
+                        <td class="text-center small fw-semibold text-primary">${daftarProduk[nama].stok} pcs</td>
                         <td>
-                            <button class="btn btn-warning btn-sm p-1 py-0 shadow-sm me-1" title="Edit Produk" onclick="isiFormMasterProduk('${nama}', ${daftarProduk[nama]})">✏️</button>
+                            <button class="btn btn-warning btn-sm p-1 py-0 shadow-sm me-1" title="Edit Produk" onclick="isiFormMasterProduk('${nama}', ${daftarProduk[nama].harga}, ${daftarProduk[nama].stok})">✏️</button>
                             <button class="btn btn-danger btn-sm p-1 py-0 shadow-sm" title="Hapus Produk" onclick="hapusMasterProduk('${nama}')">🗑️</button>
                         </td>
                     </tr>
@@ -984,7 +1092,12 @@
                             <label class="fw-bold text-secondary mb-1" id="swalLabelInput">➕ Tambah / Update Produk:</label>
                             <input type="text" id="swalNamaBarang" class="form-control form-control-sm mb-2" placeholder="Nama Barang (Misal: Es Kulkul)">
                             <input type="text" id="swalHargaBarangTampilan" inputmode="numeric" class="form-control form-control-sm mb-2" placeholder="Harga Satuan (Misal: 5.000)">
-                            <button class="btn btn-primary btn-sm w-100 fw-bold" id="swalBtnSimpan" onclick="simpanMasterProduk()">💾 Simpan ke Sistem</button>
+                            <input type="number" id="swalStokBarang" class="form-control form-control-sm mb-2" placeholder="Jumlah Sisa Stok Awal (Misal: 100)" min="0">
+                            
+                            <!-- Wadah Tombol Aksi Dinamis Bertombol Batal -->
+                            <div id="swalWadahTombol">
+                                <button class="btn btn-primary btn-sm w-100 fw-bold" id="swalBtnSimpan" onclick="simpanMasterProduk()">💾 Simpan ke Sistem</button>
+                            </div>
                         </div>
 
                         <div class="mb-2">
@@ -997,11 +1110,12 @@
                                     <tr>
                                         <th>Nama Barang</th>
                                         <th>Harga</th>
+                                        <th>Stok</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${barisTabel || '<tr><td colspan="3" class="text-muted py-2">Belum ada daftar produk terdaftar.</td></tr>'}
+                                    ${barisTabel || '<tr><td colspan="4" class="text-muted py-2">Belum ada daftar produk terdaftar.</td></tr>'}
                                 </tbody>
                             </table>
                         </div>
@@ -1040,28 +1154,54 @@
             });
         }
 
-        window.isiFormMasterProduk = function(nama, harga) {
+        // Variabel penampung untuk mendeteksi nama produk lama
+        let namaProdukLamaYangSedangDiedit = "";
+
+        window.isiFormMasterProduk = function(nama, harga, stok) {
             const inputNama = document.getElementById('swalNamaBarang');
             const inputHargaTampilan = document.getElementById('swalHargaBarangTampilan');
+            const inputStok = document.getElementById('swalStokBarang');
             const labelInput = document.getElementById('swalLabelInput');
-            const btnSimpan = document.getElementById('swalBtnSimpan');
+            const wadahTombol = document.getElementById('swalWadahTombol');
 
-            if (inputNama && inputHargaTampilan) {
+            if (inputNama && inputHargaTampilan && inputStok && wadahTombol) {
                 inputNama.value = nama;
                 inputHargaTampilan.value = formatRupiah(harga);
+                inputStok.value = stok;
+                
+                // Menyimpan nama lama sebelum diubah
+                namaProdukLamaYangSedangDiedit = nama;
                 
                 labelInput.innerText = "✏️ Edit Produk Terpilih:";
-                btnSimpan.innerText = "💾 Perbarui Data Produk";
-                btnSimpan.className = "btn btn-warning btn-sm w-100 fw-bold shadow-sm";
+                
+                // Menyusun layout tombol sejajar (Grid 2 kolom) saat tombol Edit diklik
+                wadahTombol.innerHTML = `
+                    <div class="row g-2">
+                        <div class="col-8">
+                            <button class="btn btn-warning btn-sm w-100 fw-bold shadow-sm" id="swalBtnSimpan" onclick="simpanMasterProduk()">💾 Perbarui Data Produk</button>
+                        </div>
+                        <div class="col-4">
+                            <button class="btn btn-secondary btn-sm w-100 fw-bold shadow-sm" onclick="batalEditMasterProduk()">❌ Batal</button>
+                        </div>
+                    </div>
+                `;
                 
                 inputHargaTampilan.focus();
             }
+        };
+
+        // Fungsi penanganan tombol aksi pembatalan edit produk master
+        window.batalEditMasterProduk = function() {
+            namaProdukLamaYangSedangDiedit = "";
+            bukaManajemenHarga(); // Refresh modal kembali ke mode Tambah normal
         };
 
         window.simpanMasterProduk = function() {
             const nama = document.getElementById('swalNamaBarang').value.trim();
             const hargaTeks = document.getElementById('swalHargaBarangTampilan').value;
             const harga = Number(hargaTeks.replace(/\D/g, "")) || 0;
+            const stoktTeks = document.getElementById('swalStokBarang').value;
+            const stok = Number(stoktTeks) >= 0 ? Number(stoktTeks) : 0;
 
             if (!nama || harga <= 0) {
                 Swal.showValidationMessage("Nama harus diisi dan harga harus lebih dari 0!");
@@ -1069,8 +1209,17 @@
             }
 
             let master = getMasterProduk();
-            master[nama] = harga;
+            
+            // Perbaikan Logika: Jika nama produk diedit dan diubah namanya, hapus key lama
+            if (namaProdukLamaYangSedangDiedit !== "" && namaProdukLamaYangSedangDiedit !== nama) {
+                delete master[namaProdukLamaYangSedangDiedit];
+            }
+            
+            master[nama] = { harga: harga, stok: stok };
             localStorage.setItem('master_produk_toko', JSON.stringify(master));
+            
+            // Reset status edit
+            namaProdukLamaYangSedangDiedit = "";
             
             buatRekomendasiBarang();
             bukaManajemenHarga();
