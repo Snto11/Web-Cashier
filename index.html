@@ -1092,13 +1092,17 @@
             for (let nama in daftarProduk) {
                 barisTabel += `
                     <tr class="produk-row" data-nama="${nama.toLowerCase()}">
-                        <td class="text-muted fw-semibold small">${nomorUrutMaster++}</td>
+                        <!-- REVISI LEBAR: Menambahkan style white-space nowrap agar angka tidak patah baris -->
+                        <td class="text-muted fw-semibold small" style="white-space: nowrap;">${nomorUrutMaster++}</td>
                         <td class="text-start fw-bold small nama-produk-kolom">${nama}</td>
                         <td class="text-end small">Rp ${formatRupiah(daftarProduk[nama].harga)}</td>
                         <td class="text-center small fw-semibold text-primary">${daftarProduk[nama].stok} pcs</td>
+                        <!-- REVISI TOMBOL AKSI: Menggunakan flex layout agar tombol edit dan hapus tetap kokoh bersebelahan di HP -->
                         <td>
-                            <button class="btn btn-warning btn-sm p-1 py-0 shadow-sm me-1" title="Edit Produk" onclick="isiFormMasterProduk('${nama}', ${daftarProduk[nama].harga}, ${daftarProduk[nama].stok})">✏️</button>
-                            <button class="btn btn-danger btn-sm p-1 py-0 shadow-sm" title="Hapus Produk" onclick="hapusMasterProduk('${nama}')">🗑️</button>
+                            <div class="d-flex flex-row justify-content-center align-items-center">
+                                <button class="btn btn-warning btn-sm p-1 py-0 shadow-sm me-1" title="Edit Produk" onclick="isiFormMasterProduk('${nama}', ${daftarProduk[nama].harga}, ${daftarProduk[nama].stok})">✏️</button>
+                                <button class="btn btn-danger btn-sm p-1 py-0 shadow-sm" title="Hapus Produk" onclick="hapusMasterProduk('${nama}')">🗑️</button>
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -1134,11 +1138,13 @@
                             <table class="table table-sm table-hover align-middle border-0 text-center m-0" id="swalTabelMaster">
                                 <thead class="table-secondary small sticky-top" style="top: 0; z-index: 2;">
                                     <tr>
-                                        <th style="width: 8%;">No</th>
+                                        <!-- REVISI LEBAR KOLOM NO: menggunakan min-width dan white-space agar tulisan No tidak bertumpuk di HP -->
+                                        <th style="min-width: 45px; white-space: nowrap;">No</th>
                                         <th>Nama Barang</th>
                                         <th>Harga</th>
                                         <th>Stok</th>
-                                        <th>Aksi</th>
+                                        <!-- REVISI KOLOM AKSI: Menambahkan style white-space nowrap agar kolom tidak memaksa tombol patah baris -->
+                                        <th style="white-space: nowrap;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
