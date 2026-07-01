@@ -381,7 +381,7 @@
             if (angka < 0) {
                 return "-" + Math.abs(angka).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             }
-            return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return Math.round(angka).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
 
         inputHargaTampilan.addEventListener('input', function (e) {
@@ -1069,10 +1069,12 @@
         function bukaManajemenHarga() {
             const daftarProduk = getMasterProduk();
             let barisTabel = '';
+            let nomorUrutMaster = 1; // Counter untuk penomoran kolom No
             
             for (let nama in daftarProduk) {
                 barisTabel += `
                     <tr class="produk-row" data-nama="${nama.toLowerCase()}">
+                        <td class="text-muted fw-semibold small">${nomorUrutMaster++}</td>
                         <td class="text-start fw-bold small nama-produk-kolom">${nama}</td>
                         <td class="text-end small">Rp ${formatRupiah(daftarProduk[nama].harga)}</td>
                         <td class="text-center small fw-semibold text-primary">${daftarProduk[nama].stok} pcs</td>
@@ -1091,7 +1093,13 @@
                         <div class="card p-2 bg-light border text-start mb-3" style="font-size:0.85rem;">
                             <label class="fw-bold text-secondary mb-1" id="swalLabelInput">➕ Tambah / Update Produk:</label>
                             <input type="text" id="swalNamaBarang" class="form-control form-control-sm mb-2" placeholder="Nama Barang (Misal: Es Kulkul)">
-                            <input type="text" id="swalHargaBarangTampilan" inputmode="numeric" class="form-control form-control-sm mb-2" placeholder="Harga Satuan (Misal: 5.000)">
+                            
+                            <!-- Penambahan input-group bertuliskan Rp pada inputan Harga Satuan -->
+                            <div class="input-group input-group-sm mb-2">
+                                <span class="input-group-text">Rp</span>
+                                <input type="text" id="swalHargaBarangTampilan" inputmode="numeric" class="form-control" placeholder="Harga Satuan (Misal: 5.000)">
+                            </div>
+                            
                             <input type="number" id="swalStokBarang" class="form-control form-control-sm mb-2" placeholder="Jumlah Sisa Stok Awal (Misal: 100)" min="0">
                             
                             <!-- Wadah Tombol Aksi Dinamis Bertombol Batal -->
@@ -1108,6 +1116,7 @@
                             <table class="table table-sm table-hover align-middle border text-center m-0" id="swalTabelMaster">
                                 <thead class="table-secondary small sticky-top" style="top: 0; z-index: 2;">
                                     <tr>
+                                        <th style="width: 8%;">No</th>
                                         <th>Nama Barang</th>
                                         <th>Harga</th>
                                         <th>Stok</th>
@@ -1115,7 +1124,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${barisTabel || '<tr><td colspan="4" class="text-muted py-2">Belum ada daftar produk terdaftar.</td></tr>'}
+                                    ${barisTabel || '<tr><td colspan="5" class="text-muted py-2">Belum ada daftar produk terdaftar.</td></tr>'}
                                 </tbody>
                             </table>
                         </div>
