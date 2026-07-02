@@ -188,7 +188,7 @@
                             <div class="input-group">
                                 <input type="text" id="namaBarang" class="form-control" placeholder="Contoh: Kopi Susu"
                                     list="listBarang" oninput="autoFillHarga()" required>
-                                <button class="btn btn-outline-secondary text-danger" type="button" onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); document.getElementById('namaBarang').focus();" title="Kosongkan Semua Inputan">❌</button>
+                                <button class="btn btn-outline-secondary text-danger" type="button" onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); document.getElementById('namaBarang').focus();" title="Kosongkan Semua Inputan">🗑️</button>
                             </div>
                             <datalist id="listBarang"></datalist>
                         </div>
@@ -324,7 +324,7 @@
                             <div class="input-group">
                                 <span class="input-group-text bg-warning text-dark">Rp</span>
                                 <input type="text" id="uangFisikTampilan" inputmode="numeric" class="form-control form-control-lg border-warning" placeholder="Masukkan uang di laci...">
-                                <button class="btn btn-outline-warning text-danger fw-bold" type="button" onclick="document.getElementById('uangFisikTampilan').value = ''; uangFisikAsli = 0; hitungSelisihLaci();" title="Kosongkan Uang Fisik">❌</button>
+                                <button class="btn btn-outline-warning text-danger fw-bold" type="button" onclick="document.getElementById('uangFisikTampilan').value = ''; uangFisikAsli = 0; hitungSelisihLaci();" title="Kosongkan Uang Fisik">🗑️</button>
                             </div>
                         </div>
                         <div class="col-12 col-sm-6 text-sm-start">
@@ -359,7 +359,7 @@
                                     <th>Jumlah</th>
                                     <th>Pembayaran</th>
                                     <th>Total</th>
-                                    <th class="text-center text-center-aksi">Aksi</th>
+                                    <th class="text-center text-center-aksi" style="white-space: nowrap;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="tabelBody">
@@ -378,7 +378,7 @@
         <div class="row mt-5">
             <div class="col-12">
                 <div class="footer-copyright">
-                    <p class="text-update-info">Terakhir Diperbarui: 1 Juli 2026</p>
+                    <p class="text-update-info">Terakhir Diperbarui: 2 Juli 2026</p>
                     <p class="m-0">© 2026 Web Cashier. All Rights Reserved.</p>
                 </div>
             </div>
@@ -598,6 +598,7 @@
                 if (tampilMetode === "Cash") tampilMetode = "💵 Cash";
                 else if (tampilMetode === "TF") tampilMetode = "📱 TF";
 
+                /* REVISI AKSI TABEL UTAMA: Menggunakan layout d-flex flex-row agar tombol Edit dan Hapus tetap bersebelahan di HP */
                 tbody.innerHTML += `
                 <tr>
                     <td class="text-muted fw-semibold">${nomorUrut++}</td>
@@ -607,8 +608,10 @@
                     <td class="fw-semibold">${tampilMetode}</td>
                     <td class="text-success fw-bold">Rp ${formatRupiah(totalHargaItem)}</td>
                     <td class="text-center btn-aksi-tabel">
-                        <button class="btn btn-warning btn-sm me-1 rounded shadow-sm" title="Edit Data" onclick="siapEdit(${index}, '${item.namaBarang}', ${item.hargaBarang}, ${item.jumlahPembelian}, '${item.jenisPembayaran}')">✏️</button>
-                        <button class="btn btn-danger btn-sm rounded shadow-sm" title="Hapus Data" onclick="hapusDataLokal(${index})">🗑️</button>
+                        <div class="d-flex flex-row justify-content-center align-items-center">
+                            <button class="btn btn-warning btn-sm me-1 rounded shadow-sm" title="Edit Data" onclick="siapEdit(${index}, '${item.namaBarang}', ${item.hargaBarang}, ${item.jumlahPembelian}, '${item.jenisPembayaran}')">✏️</button>
+                            <button class="btn btn-danger btn-sm rounded shadow-sm" title="Hapus Data" onclick="hapusDataLokal(${index})">🗑️</button>
+                        </div>
                     </td>
                 </tr>
             `;
