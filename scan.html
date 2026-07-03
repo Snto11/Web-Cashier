@@ -8,6 +8,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -60,6 +64,25 @@
 </head>
 <body>
 
+    <script src="firebase-config.js"></script>
+
+    <script>
+        let currentUser = null;
+        let masterProdukLokal = {};
+
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            } else {
+                currentUser = user;
+                // Ambil data untuk validasi real-time apakah barcode sudah ada atau belum
+                database.ref(`kasir_users/${user.uid}/master_produk`).on('value', (snapshot) => {
+                    masterProdukLokal = snapshot.val() || {};
+                });
+            }
+        });
+    </script>
+
     <div class="container-scanner">
         <div class="text-center">
             <h1>📷 Pemindai Barcode Produk</h1>
@@ -73,13 +96,13 @@
                 <label class="form-label small fw-semibold mb-1">Kode Barcode Terpindai</label>
                 <div class="input-group input-group-sm">
                     <input type="text" id="scanBarcodeBarang" class="form-control fw-mono bg-white text-primary fw-bold" placeholder="Menunggu hasil scan kamera..." readonly>
-                    <button class="btn btn-outline-secondary text-danger" type="button" onclick="document.getElementById('scanBarcodeBarang').value = '';" title="Kosongkan Barcode">🗑️</button>
+                    <button class="btn btn-outline-secondary text-danger" type="button" onclick="resetFormScanner()" title="Kosongkan Barcode">🗑️</button>
                 </div>
             </div>
 
             <div class="row g-2">
                 <div class="col-8">
-                    <button class="btn btn-primary btn-sm w-100 fw-bold shadow-sm" onclick="kirimBarcodeKeMaster()">💾 Simpan</button>
+                    <button id="btnSimpanBarcode" class="btn btn-primary btn-sm w-100 fw-bold shadow-sm" onclick="kirimBarcodeKeMaster()">💾 Simpan</button>
                 </div>
                 <div class="col-4">
                     <a href="index.html" class="btn btn-secondary btn-sm w-100 fw-bold shadow-sm">🔙 Batal</a>
@@ -91,7 +114,29 @@
     <script>
         function onScanSuccess(decodedText, decodedResult) {
             document.getElementById('scanBarcodeBarang').value = decodedText;
-            Swal.fire({ title: "Terbaca! 🎉", text: `Kode: ${decodedText}`, icon: "success", timer: 1000, showConfirmButton: false, customClass: { popup: 'rounded-4' } });
+            
+            // Ambil element tombol simpan
+            const btnSimpan = document.getElementById('btnSimpanBarcode');
+            let sudahAda = false;
+
+            // Logika validasi: Cek apakah barcode ini sudah dipakai oleh barang lain di firebase
+            for (let nama in masterProdukLokal) {
+                if (masterProdukLokal[nama].barcode && masterProdukLokal[nama].barcode === decodedText) {
+                    sudahAda = true;
+                    break;
+                }
+            }
+
+            // REVISI FITUR: JIKA SUDAH ADA, UBAH TOMBOL MENJADI MERAH DAN TEKS "SUDAH ADA"
+            if (sudahAda) {
+                btnSimpan.className = "btn btn-danger btn-sm w-100 fw-bold shadow-sm";
+                btnSimpan.innerText = "🛑 Sudah Ada";
+                Swal.fire({ title: "Sudah Terdaftar! ⚠️", text: `Barcode ${decodedText} sudah ada di data produk harian.`, icon: "info", customClass: { popup: 'rounded-4' } });
+            } else {
+                btnSimpan.className = "btn btn-primary btn-sm w-100 fw-bold shadow-sm";
+                btnSimpan.innerText = "💾 Simpan";
+                Swal.fire({ title: "Terbaca! 🎉", text: `Kode: ${decodedText}`, icon: "success", timer: 1000, showConfirmButton: false, customClass: { popup: 'rounded-4' } });
+            }
         }
 
         function onScanFailure(error) {}
@@ -107,6 +152,14 @@
             false
         );
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+
+        function resetFormScanner() {
+            document.getElementById('scanBarcodeBarang').value = '';
+            // Kembalikan tombol ke kondisi biru semula saat dikosongkan
+            const btnSimpan = document.getElementById('btnSimpanBarcode');
+            btnSimpan.className = "btn btn-primary btn-sm w-100 fw-bold shadow-sm";
+            btnSimpan.innerText = "💾 Simpan";
+        }
 
         // FUNGSI OPER DATA LANGSUNG KE HALAMAN UTAMA KASIR
         function kirimBarcodeKeMaster() {
