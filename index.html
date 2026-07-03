@@ -20,6 +20,155 @@
         .status-badge { font-size: 0.9rem; font-weight: bold; padding: 5px 10px; border-radius: 20px; }
         .footer-copyright { text-align: center; color: #6c757d; font-size: 0.85rem; font-weight: 500; }
         /* Style lainnya tetap sama untuk menjaga konsistensi tampilan */
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-group-text {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+
+        .card-summary {
+            border-left: 5px solid;
+        }
+
+        .status-badge {
+            font-size: 0.9rem;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        .bg-kalkulator {
+            background-color: #f1f3f5;
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 5px solid #6c757d;
+        }
+
+        /* CSS baris rincian belanja kolom sejajar lurus */
+        .rincian-item {
+            font-size: 0.8rem;
+            border-bottom: 1px dashed #ced4da;
+            padding: 6px 0;
+            color: #495057;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .col-nama {
+            width: 35%;
+            word-break: break-word;
+            padding-right: 5px;
+        }
+
+        .col-harga {
+            width: 25%;
+            text-align: left;
+        }
+
+        .col-qty {
+            width: 15%;
+            text-align: center;
+        }
+
+        .col-total {
+            width: 25%;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        /* Footer Copyright Style */
+        .footer-copyright {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Style Teks Informasi Update Halaman */
+        .text-update-info {
+            font-size: 0.8rem;
+            color: #adb5bd;
+            margin-bottom: 2px;
+        }
+
+        /* ==========================================================================
+           REVISI FITUR: STYLE KHUSUS INPUTAN SAAT TERKUNCI (READ-ONLY)
+           ========================================================================== */
+        #namaBarang:read-only,
+        #hargaTampilan:read-only {
+            background-color: #e9ecef !important; /* Warna abu-abu penanda terkunci */
+            color: #6c757d; /* Warna teks agak redup */
+            cursor: not-allowed; /* Mengubah kursor mouse menjadi tanda blokir */
+            border-color: #dee2e6;
+        }
+
+        /* ==========================================================================
+           DESAIN KHUSUS SAAT DI-DOWNLOAD KE PDF (HANYA DATA UTAMA & OMSET)
+           ========================================================================== */
+        @media print {
+
+            .col-lg-4,
+            #formPenjualan,
+            #formTitle,
+            .mb-select-bayar,
+            .btn-block-privasi,
+            .footer-copyright {
+                display: none !important;
+            }
+
+            .border-warning,
+            #uangFisikTampilan,
+            #statusLaciBadge,
+            #textSelisih {
+                display: none !important;
+            }
+
+            .btn-pdf,
+            .btn-outline-danger,
+            .btn-aksi-tabel,
+            .text-center-aksi {
+                display: none !important;
+            }
+
+            .col-lg-8 {
+                width: 100% !important;
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+            }
+
+            body {
+                background-color: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #dee2e6 !important;
+                background-color: #ffffff !important;
+                margin-bottom: 20px !important;
+            }
+
+            .print-header {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 25px;
+            }
+        }
+
+        .print-header {
+            display: none;
+        }
     </style>
 </head>
 
@@ -57,45 +206,230 @@
         </div>
 
         <!-- Konten Kasir (Form, Tabel, Omset) -->
+        <div class="container-fluid py-5 px-4">
+
+        <div class="print-header">
+            <h2 class="fw-bold m-0 text-uppercase">Laporan Data Penjualan Toko</h2>
+            <p class="text-muted mt-1 mb-2" id="printTanggal"></p>
+            <hr style="border: 1px solid #222; opacity: 1; margin: 10px 0;">
+        </div>
+
         <div class="row g-4">
+
             <div class="col-12 col-lg-4">
-                <div class="card p-4">
-                    <h3 id="formTitle" class="m-0 fw-bold text-primary mb-4">🛒 Input Penjualan</h3>
+                <div class="card p-4 sticky-top" style="top: 20px;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 id="formTitle" class="m-0 fw-bold text-primary" style="font-size: 1.5rem;">🛒 Input
+                            Penjualan</h3>
+                        <button type="button" class="btn btn-outline-secondary btn-sm fw-bold shadow-sm"
+                            onclick="bukaManajemenHarga()">⚙️ Atur Produk</button>
+                    </div>
+
                     <form id="formPenjualan">
-                        <!-- Input Nama Barang, Harga, Jumlah tetap sama -->
+                        <input type="hidden" id="rowId" value="">
+
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Nama Barang</label>
-                            <input type="text" id="namaBarang" class="form-control" oninput="autoFillHarga()" required>
+                            <label class="form-label fw-semibold">Nama Barang / Scan Barcode</label>
+                            <div class="input-group">
+                                <input type="text" id="namaBarang" class="form-control" placeholder="Ketik nama atau ketik/scan nomor barcode..."
+                                    list="listBarang" oninput="autoFillHarga()" required>
+                                <button class="btn btn-outline-secondary text-danger" type="button" onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); document.getElementById('namaBarang').focus();" title="Kosongkan Semua Inputan">🗑️</button>
+                            </div>
                             <datalist id="listBarang"></datalist>
                         </div>
+
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Harga Barang</label>
-                            <input type="text" id="hargaTampilan" class="form-control" required>
+                            <div class="input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="text" id="hargaTampilan" inputmode="numeric" class="form-control"
+                                    placeholder="0" required>
+                            </div>
                         </div>
+
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Jumlah</label>
-                            <input type="number" id="jumlahPembelian" class="form-control" required>
+                            <label class="form-label fw-semibold">Jumlah Pembelian <span id="infoStokTersedia" class="text-muted small fw-normal"></span></label>
+                            <input type="number" id="jumlahPembelian" class="form-control" placeholder="0" min="1" required>
                         </div>
-                        <button type="submit" id="btnSimpan" class="btn btn-primary btn-lg w-100 fw-bold">🚀 Tambah</button>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3 px-1">
+                            <span class="small fw-bold text-secondary" id="labelSubtotal">Subtotal (Barang Ini):</span>
+                            <span class="fw-bold text-dark fs-5" id="textSubtotalSeketika">Rp 0</span>
+                        </div>
+
+                        <div class="mb-4">
+                            <button type="submit" id="btnSimpan"
+                                class="btn btn-primary btn-lg w-100 fw-bold shadow-sm">🚀 Tambah Barang ke
+                                Antrean</button>
+                            <button type="button" id="btnBatal" class="btn btn-secondary w-100 fw-bold mt-2 d-none"
+                                onclick="resetForm()">❌ Batal Edit</button>
+                        </div>
+
+                        <div class="bg-kalkulator mb-4">
+                            <div id="boxRincianMulti"
+                                class="d-none mb-3 pt-2 border-top border-secondary border-opacity-25">
+                                <span class="small fw-bold text-primary d-block mb-2">📋 Rincian Belanjaan:</span>
+
+                                <div class="d-flex text-muted fw-bold pb-1 mb-1 border-bottom"
+                                    style="font-size: 0.75rem;">
+                                    <span style="width: 35%;">Nama</span>
+                                    <span style="width: 25%;">Harga</span>
+                                    <span style="width: 15%; text-align: center;">Qty</span>
+                                    <span style="width: 25%; text-align: right;">Total</span>
+                                </div>
+
+                                <div id="daftarRincianItem" style="max-height: 140px; overflow-y: auto;">
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-3 text-primary d-none"
+                                id="infoMultiBarang">
+                                <span class="small fw-bold">Total Gabungan (0 Barang):</span>
+                                <span class="fw-bold" id="textTotalGabungan">Rp 0</span>
+                            </div>
+
+                            <div class="mb-3" id="boxJenisPembayaran">
+                                <label class="form-label small fw-bold text-secondary">Jenis Pembayaran (Final):</label>
+                                <select id="jenisPembayaran" class="form-select form-select-sm"
+                                    onchange="aturTampilanInputPembayaran()">
+                                    <option value="">-- Pilih Pembayaran --</option>
+                                    <option value="Cash">💵 Cash</option>
+                                    <option value="TF">📱 TF (Transfer)</option>
+                                </select>
+                            </div>
+
+                            <div id="areaInputCash">
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold text-secondary">Uang Diterima dari
+                                        Pembeli:</label>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-secondary text-white">Rp</span>
+                                        <input type="text" id="uangDiterimaTampilan" inputmode="numeric"
+                                            class="form-control" placeholder="0">
+                                    </div>
+                                </div>
+
+                                <div class="form-check mb-2 d-none" id="boxSplitPembayaran">
+                                    <input class="form-check-input" type="checkbox" id="checkSplitTF"
+                                        onchange="hitungKalkulatorSeketika()">
+                                    <label class="form-check-label small fw-semibold text-primary" for="checkSplitTF">
+                                        📱 Sisa Pembayaran Menggunakan TF
+                                    </label>
+                                </div>
+
+                                <div
+                                    class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25 mb-2">
+                                    <span class="small fw-bold text-secondary">Uang Kembalian:</span>
+                                    <span class="fs-5 fw-bold text-danger" id="textKembalianSeketika">Rp 0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" id="btnSelesaiMulti"
+                            class="btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2 d-none"
+                            onclick="selesaikanTransactionsGabungan()">🛒 Selesaikan Transaksi (Simpan Semua)</button>
                     </form>
                 </div>
             </div>
 
             <div class="col-12 col-lg-8">
-                <!-- Area Omset & Riwayat tetap sama -->
+
+                <div class="mb-3 btn-block-privasi">
+                    <button class="btn btn-outline-secondary w-100 fw-bold shadow-sm py-2" type="button" id="btnToggleOmset" onclick="togglePrivasiOmset()">
+                        👁️ Sembunyikan Semua Nominal Omset Toko
+                    </button>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-sm-4">
+                        <div class="card card-summary p-3 bg-white border-success h-100">
+                            <small class="text-success fw-bold text-uppercase">💰 Omset Sistem (CASH)</small>
+                            <h4 class="text-dark fw-bold m-0 mt-1" id="totalCashToko">Rp 0</h4>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="card card-summary p-3 bg-white border-info h-100">
+                            <small class="text-info fw-bold text-uppercase">📱 Omset Sistem (TF)</small>
+                            <h4 class="text-dark fw-bold m-0 mt-1" id="totalTfToko">Rp 0</h4>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="card card-summary p-3 bg-white border-primary h-100">
+                            <small class="text-primary fw-bold text-uppercase">📊 Total Semua Omset</small>
+                            <h4 class="text-dark fw-bold m-0 mt-1" id="totalSemuaToko">Rp 0</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-4 mb-4 border-start border-warning border-5">
+                    <h5 class="fw-bold text-warning mb-3">🔍 Validasi & Cek Uang Fisik Laci (Cash)</h5>
+                    <div class="row align-items-center g-3">
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label small fw-bold text-secondary">Masukkan Total Uang Cash Nyata di Laci:</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning text-dark">Rp</span>
+                                <input type="text" id="uangFisikTampilan" inputmode="numeric" class="form-control form-control-lg border-warning" placeholder="Masukkan uang di laci...">
+                                <button class="btn btn-outline-warning text-danger fw-bold" type="button" onclick="document.getElementById('uangFisikTampilan').value = ''; uangFisikAsli = 0; hitungSelisihLaci();" title="Kosongkan Uang Fisik">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 text-sm-start">
+                            <div class="p-2 rounded bg-light border">
+                                <div class="small fw-semibold text-muted">Selisih / Status Laci:</div>
+                                <div class="d-flex align-items-center mt-1">
+                                    <span id="statusLaciBadge" class="status-badge bg-secondary text-white me-2">Belum Diinput</span>
+                                    <h4 class="m-0 fw-bold text-dark" id="textSelisih">Rp 0</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card p-4">
-                    <h3 class="fw-bold text-secondary mb-4">📊 Riwayat Penjualan</h3>
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                        <h3 class="fw-bold text-secondary m-0">📊 Riwayat Penjualan</h3>
+                        <div class="d-flex gap-2 align-items-center">
+                            <button class="btn btn-danger btn-pdf fw-bold shadow-sm" onclick="downloadPDFDataOnly()">📄
+                                Download PDF Data</button>
+                            <button class="btn btn-outline-danger btn-sm" onclick="bersihkanSemuaData()" title="Hapus Data">🗑️</button>
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead class="table-dark">
-                                <tr><th>No.</th><th>Barang</th><th>Total</th><th>Aksi</th></tr>
+                                <tr>
+                                    <th style="width: 5%;">No.</th>
+                                    <th>Nama Barang</th>
+                                    <th>Harga</th>
+                                    <th>Jumlah</th>
+                                    <th>Pembayaran</th>
+                                    <th>Total</th>
+                                    <th class="text-center text-center-aksi" style="white-space: nowrap;">Aksi</th>
+                                </tr>
                             </thead>
-                            <tbody id="tabelBody"></tbody>
+                            <tbody id="tabelBody">
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">Belum ada data penjualan.</td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
+
+            </div>
+
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="footer-copyright">
+                    <p class="text-update-info">Terakhir Diperbarui: 3 Juli 2026</p>
+                    <p class="m-0">© 2026 Web Cashier. All Rights Reserved.</p>
+                </div>
             </div>
         </div>
+
+    </div>
     </div>
 
     <script>
