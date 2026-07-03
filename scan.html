@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner QR & Barcode Modern</title>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #1e3a8a;
+        }
+        p.subtitle {
+            color: #6b7280;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        #reader {
+            width: 100%;
+            border: 2px dashed #cbd5e1 !important;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fafafa;
+        }
+        /* Mengubah styling tombol bawaan library agar lebih modern */
+        #reader button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: background 0.2s;
+        }
+        #reader button:hover {
+            background-color: #1d4ed8;
+        }
+        #reader select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            margin: 10px 0;
+            font-size: 14px;
+            background-color: white;
+        }
+        .result-container {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+            word-break: break-all;
+            display: none;
+        }
+        .result-title {
+            font-weight: bold;
+            color: #0f172a;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .result-text {
+            font-size: 15px;
+            color: #334155;
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+        }
+        .btn-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>QR & Barcode Scanner</h1>
+        <p class="subtitle">Izinkan akses kamera untuk mulai memindai secara real-time</p>
+        
+        <div id="reader"></div>
+
+        <div id="result-container" class="result-container">
+            <div class="result-title">
+                <span>✅ Hasil Pemindaian:</span>
+            </div>
+            <div id="result-text" class="result-text">Mencari data...</div>
+            <div id="action-space"></div>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi yang berjalan ketika QR/Barcode berhasil di-scan
+        function onScanSuccess(decodedText, decodedResult) {
+            const resultContainer = document.getElementById('result-container');
+            const resultText = document.getElementById('result-text');
+            const actionSpace = document.getElementById('action-space');
+            
+            // Tampilkan container hasil dan teksnya
+            resultContainer.style.display = 'block';
+            resultText.innerText = decodedText;
+            
+            // Fitur Tambahan: Jika hasilnya berupa URL/Link, buatkan tombol klik otomatis
+            if (decodedText.startsWith('http://') || decodedText.startsWith('https://')) {
+                actionSpace.innerHTML = `<a href="${decodedText}" target="_blank" class="btn-link">Buka Tautan Di Tab Baru &rarr;</a>`;
+            } else {
+                actionSpace.innerHTML = ''; // Kosongkan jika teks biasa
+            }
+        }
+
+        // Fungsi yang berjalan jika gagal mendeteksi kode (diabaikan agar tidak memenuhi console)
+        function onScanFailure(error) {
+            // Scanner akan otomatis mencoba mendeteksi ulang setiap beberapa milidetik
+        }
+
+        // Inisialisasi Html5QrcodeScanner
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", 
+            { 
+                fps: 10,                            // Kecepatan scan (frame per second)
+                qrbox: { width: 250, height: 250 }, // Ukuran kotak penargetan di tengah kamera
+                rememberLastUsedCamera: true,       // Mengingat kamera pilihan user sebelumnya
+                supportedScanTypes: [
+                    Html5QrcodeScanType.SCAN_TYPE_CAMERA, // Opsi 1: Pakai Kamera langsung
+                    Html5QrcodeScanType.SCAN_TYPE_FILE   // Opsi 2: Upload file foto QR
+                ]
+            },
+            /* verbose= */ false
+        );
+
+        // Menjalankan scanner ke elemen dengan id="reader"
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    </script>
+</body>
+</html>
