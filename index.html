@@ -628,7 +628,7 @@
 
             document.getElementById('namaBarang').value = ""; document.getElementById('namaBarang').readOnly = false;
             inputHargaTampilan.value = ""; inputHargaTampilan.readOnly = false;
-            inputJumlah.value = ""; inputJumlah.placeholder = "0";
+            inputFormat = "0"; inputJumlah.value = ""; inputJumlah.placeholder = "0";
             document.getElementById('infoStokTersedia').innerText = ""; hargaAsli = 0;
 
             perbaruiTampilanRincian(); hitungKalkulatorSeketika(); normalisaiTombolSimpan(); aturTampilanInputPembayaran();
@@ -752,6 +752,7 @@
             window.print();
         }
 
+        /* REVISI FITUR: TOMBOL SELESAIKAN TRANSAKSI SECARA TOTAL DISITUSI DISPLAY NONE JIKA ANTREAN BELANJAAN KOSONG */
         function aturTampilanInputPembayaran() {
             const jenisBayar = document.getElementById('jenisPembayaran').value;
             const areaInputCash = document.getElementById('areaInputCash');
@@ -759,13 +760,26 @@
             const boxJenisPembayaran = document.getElementById('boxJenisPembayaran');
 
             boxJenisPembayaran.style.display = antreanKeranjangSeketika.length === 0 ? 'none' : 'block';
+            
             if (antreanKeranjangSeketika.length === 0) {
-                areaInputCash.style.display = 'none'; btnSelesai.disabled = true; return;
+                areaInputCash.style.display = 'none'; 
+                btnSelesai.style.setProperty('display', 'none', 'important'); // Sembunyikan total tombol jika rincian belanjaan kosong
+                btnSelesai.disabled = true; 
+                return;
             }
+            
             areaInputCash.style.display = jenisBayar === "Cash" ? 'block' : 'none';
-            if (jenisBayar === "Cash") hitungKalkulatorSeketika();
-            else if (jenisBayar === "TF") { btnSelesai.disabled = false; btnSelesai.className = "btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2"; }
-            else { btnSelesai.disabled = true; btnSelesai.className = "btn btn-secondary btn-lg w-100 fw-bold shadow-sm mt-2 opacity-50"; }
+            if (jenisBayar === "Cash") {
+                hitungKalkulatorSeketika();
+            } else if (jenisBayar === "TF") { 
+                btnSelesai.disabled = false; 
+                btnSelesai.className = "btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2"; 
+                btnSelesai.style.setProperty('display', 'block', 'important'); // Munculkan kembali tombol
+            } else { 
+                btnSelesai.disabled = true; 
+                btnSelesai.className = "btn btn-secondary btn-lg w-100 fw-bold shadow-sm mt-2 opacity-50"; 
+                btnSelesai.style.setProperty('display', 'block', 'important'); // Tampilkan berstatus disabled jika jenis pembayaran belum dipilih
+            }
         }
 
         function buatRekomendasiBarang() {
@@ -862,7 +876,7 @@
         };
 
         window.hapusMasterProduk = function (namaKey) {
-            Swal.fire({ title: "Hapus Produk?", text: `Hapus "${namaKey}" dari Cloud?`, icon: "warning", showCancelButton: true, confirmButtonColor: "#d33", confirmButtonText: "Ya, Hapus!", cancelButtonText: "Batal", customClass: { popup: 'rounded-4' } }).then((result) => {
+            Swal.fire({ title: "Hapus?", text: `Hapus "${namaKey}" dari Cloud?`, icon: "warning", showCancelButton: true, confirmButtonColor: "#d33", confirmButtonText: "Ya, Hapus!", cancelButtonText: "Batal", customClass: { popup: 'rounded-4' } }).then((result) => {
                 if (result.isConfirmed) {
                     delete masterProdukLokal[namaKey];
                     simpanMasterKeFirebase(masterProdukLokal);
