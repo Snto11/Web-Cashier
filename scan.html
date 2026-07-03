@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner QR & Barcode Modern</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
+        }
+        .container-scanner {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        h1 {
+            font-size: 22px;
+            margin-bottom: 5px;
+            color: #1e3a8a;
+            font-weight: bold;
+        }
+        p.subtitle {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        #reader {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            border: none !important;
+            background: #fafafa;
+        }
+        #reader__dashboard_section_csr button {
+            background-color: #1e3a8a !important;
+            color: white !important;
+            border-radius: 6px !important;
+            padding: 6px 12px !important;
+            border: none !important;
+            font-size: 14px !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-scanner">
+        <div class="text-center">
+            <h1>📷 Pemindai Barcode Produk</h1>
+            <p class="subtitle">Arahkan kamera ke barcode untuk mendapatkan nomor kode barang</p>
+        </div>
+
+        <div id="reader" class="mb-4"></div>
+
+        <div class="card p-3 bg-light border text-start shadow-sm" style="font-size: 0.9rem;">
+            <div class="mb-3">
+                <label class="form-label small fw-semibold mb-1">Kode Barcode Terpindai</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" id="scanBarcodeBarang" class="form-control fw-mono bg-white text-primary fw-bold" placeholder="Menunggu hasil scan kamera..." readonly>
+                    <button class="btn btn-outline-secondary text-danger" type="button" onclick="document.getElementById('scanBarcodeBarang').value = '';" title="Kosongkan Barcode">🗑️</button>
+                </div>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-8">
+                    <button class="btn btn-primary btn-sm w-100 fw-bold shadow-sm" onclick="kirimBarcodeKeMaster()">💾 Simpan</button>
+                </div>
+                <div class="col-4">
+                    <a href="index.html" class="btn btn-secondary btn-sm w-100 fw-bold shadow-sm">🔙 Batal</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            document.getElementById('scanBarcodeBarang').value = decodedText;
+            Swal.fire({ title: "Terbaca! 🎉", text: `Kode: ${decodedText}`, icon: "success", timer: 1000, showConfirmButton: false, customClass: { popup: 'rounded-4' } });
+        }
+
+        function onScanFailure(error) {}
+
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", 
+            { 
+                fps: 10, 
+                qrbox: { width: 250, height: 120 },
+                rememberLastUsedCamera: true,
+                supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+            },
+            false
+        );
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+
+        // FUNGSI OPER DATA LANGSUNG KE HALAMAN UTAMA KASIR
+        function kirimBarcodeKeMaster() {
+            const barcode = document.getElementById('scanBarcodeBarang').value.trim();
+            if (!barcode) {
+                Swal.fire({ title: "Scan Belum Ada", text: "Silakan lakukan pemindaian barcode produk terlebih dahulu!", icon: "warning", customClass: { popup: 'rounded-4' } });
+                return;
+            }
+            // Teruskan kode ke index.html dengan parameter khusus
+            window.location.href = `index.html?scan_barcode=${encodeURIComponent(barcode)}`;
+        }
+    </script>
+</body>
+</html>
