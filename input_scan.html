@@ -3,8 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scanner QR & Barcode Modern</title>
+    <title>Input Scan - Web Cashier</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -19,152 +26,141 @@
             align-items: center;
             color: #333;
         }
-        .container {
-            max-width: 600px;
+        .container-scanner {
+            max-width: 500px;
             width: 100%;
             background: white;
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            text-align: center;
         }
         h1 {
-            font-size: 24px;
+            font-size: 22px;
             margin-bottom: 5px;
             color: #1e3a8a;
+            font-weight: bold;
         }
         p.subtitle {
             color: #6b7280;
-            margin-bottom: 25px;
             font-size: 14px;
+            margin-bottom: 20px;
         }
         #reader {
             width: 100%;
-            border: 2px dashed #cbd5e1 !important;
             border-radius: 8px;
             overflow: hidden;
+            border: none !important;
             background: #fafafa;
         }
-        /* Mengubah styling tombol bawaan library agar lebih modern */
-        #reader button {
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            margin: 10px 5px;
-            transition: background 0.2s;
-        }
-        #reader button:hover {
-            background-color: #1d4ed8;
-        }
-        #reader select {
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid #cbd5e1;
-            margin: 10px 0;
-            font-size: 14px;
-            background-color: white;
-        }
-        .result-container {
-            margin-top: 25px;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            text-align: left;
-            word-break: break-all;
-            display: none;
-        }
-        .result-title {
-            font-weight: bold;
-            color: #0f172a;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .result-text {
-            font-size: 15px;
-            color: #334155;
-            background: #ffffff;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #cbd5e1;
-        }
-        .btn-link {
-            display: inline-block;
-            margin-top: 10px;
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .btn-link:hover {
-            text-decoration: underline;
+        #reader__dashboard_section_csr button {
+            background-color: #1e3a8a !important;
+            color: white !important;
+            border-radius: 6px !important;
+            padding: 6px 12px !important;
+            border: none !important;
+            font-size: 14px !important;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>QR & Barcode Scanner</h1>
-        <p class="subtitle">Izinkan akses kamera untuk mulai memindai secara real-time</p>
-        
-        <div id="reader"></div>
+    <script src="firebase-config.js"></script>
 
-        <div id="result-container" class="result-container">
-            <div class="result-title">
-                <span>✅ Hasil Pemindaian:</span>
+    <script>
+        let currentUser = null;
+        let masterProdukLokal = {};
+
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            } else {
+                currentUser = user;
+                database.ref(`kasir_users/${user.uid}/master_produk`).on('value', (snapshot) => {
+                    masterProdukLokal = snapshot.val() || {};
+                });
+            }
+        });
+    </script>
+
+    <div class="container-scanner">
+        <div class="text-center">
+            <h1>📷 Scan Barcode Belanjaan</h1>
+            <p class="subtitle">Arahkan kamera ke barcode barang untuk memproses penjualan</p>
+        </div>
+
+        <div id="reader" class="mb-4"></div>
+
+        <div class="card p-3 bg-light border text-start shadow-sm" style="font-size: 0.9rem;">
+            <label class="fw-bold text-secondary mb-2">📋 Informasi Hasil Scan:</label>
+            
+            <div class="mb-2">
+                <label class="form-label small fw-semibold mb-1">Kode Barcode</label>
+                <input type="text" id="resultBarcode" class="form-control form-control-sm fw-mono bg-white text-dark fw-bold" placeholder="Menunggu scan..." readonly>
             </div>
-            <div id="result-text" class="result-text">Mencari data...</div>
-            <div id="action-space"></div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold mb-1">Nama Barang Ditemukan</label>
+                <input type="text" id="resultNamaBarang" class="form-control form-control-sm bg-white fw-bold text-primary" placeholder="Produk tidak diketahui" readonly>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-8">
+                    <button id="btnLanjutkan" class="btn btn-success btn-sm w-100 fw-bold shadow-sm" onclick="lanjutKePenjualan()" disabled>🚀 Lanjutkan ke Penjualan</button>
+                </div>
+                <div class="col-4">
+                    <a href="index.html" class="btn btn-secondary btn-sm w-100 fw-bold shadow-sm">🔙 Batal</a>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Fungsi yang berjalan ketika QR/Barcode berhasil di-scan
         function onScanSuccess(decodedText, decodedResult) {
-            const resultContainer = document.getElementById('result-container');
-            const resultText = document.getElementById('result-text');
-            const actionSpace = document.getElementById('action-space');
-            
-            // Tampilkan container hasil dan teksnya
-            resultContainer.style.display = 'block';
-            resultText.innerText = decodedText;
-            
-            // Fitur Tambahan: Jika hasilnya berupa URL/Link, buatkan tombol klik otomatis
-            if (decodedText.startsWith('http://') || decodedText.startsWith('https://')) {
-                actionSpace.innerHTML = `<a href="${decodedText}" target="_blank" class="btn-link">Buka Tautan Di Tab Baru &rarr;</a>`;
+            document.getElementById('resultBarcode').value = decodedText;
+            let ditemukan = false;
+            let namaProdukTerpilih = "";
+
+            // Cari nama produk berdasarkan barcode di data master
+            for (let nama in masterProdukLokal) {
+                if (masterProdukLokal[nama].barcode && masterProdukLokal[nama].barcode === decodedText) {
+                    namaProdukTerpilih = nama;
+                    ditemukan = true;
+                    break;
+                }
+            }
+
+            if (ditemukan) {
+                document.getElementById('resultNamaBarang').value = namaProdukTerpilih;
+                document.getElementById('btnLanjutkan').disabled = false;
+                Swal.fire({ title: "Barang Ditemukan! 🎉", text: namaProdukTerpilih, icon: "success", timer: 1500, showConfirmButton: false, customClass: { popup: 'rounded-4' } });
             } else {
-                actionSpace.innerHTML = ''; // Kosongkan jika teks biasa
+                document.getElementById('resultNamaBarang').value = "Barcode Belum Terdaftar di Atur Produk!";
+                document.getElementById('btnLanjutkan').disabled = true;
+                Swal.fire({ title: "Tidak Dikenal ⚠️", text: "Kode barcode ini belum didaftarkan di sistem.", icon: "error", customClass: { popup: 'rounded-4' } });
             }
         }
 
-        // Fungsi yang berjalan jika gagal mendeteksi kode (diabaikan agar tidak memenuhi console)
-        function onScanFailure(error) {
-            // Scanner akan otomatis mencoba mendeteksi ulang setiap beberapa milidetik
-        }
+        function onScanFailure(error) {}
 
-        // Inisialisasi Html5QrcodeScanner
         let html5QrcodeScanner = new Html5QrcodeScanner(
             "reader", 
             { 
-                fps: 10,                            // Kecepatan scan (frame per second)
-                qrbox: { width: 250, height: 250 }, // Ukuran kotak penargetan di tengah kamera
-                rememberLastUsedCamera: true,       // Mengingat kamera pilihan user sebelumnya
-                supportedScanTypes: [
-                    Html5QrcodeScanType.SCAN_TYPE_CAMERA, // Opsi 1: Pakai Kamera langsung
-                    Html5QrcodeScanType.SCAN_TYPE_FILE   // Opsi 2: Upload file foto QR
-                ]
+                fps: 10, 
+                qrbox: { width: 250, height: 120 },
+                rememberLastUsedCamera: true,
+                supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
             },
-            /* verbose= */ false
+            false
         );
-
-        // Menjalankan scanner ke elemen dengan id="reader"
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+
+        // REVISI: FUNGSI UNTUK MENERUSKAN DATA KE INDEX.HTML MENGGUNAKAN PARAMETER URL
+        function lanjutKePenjualan() {
+            const barcode = document.getElementById('resultBarcode').value;
+            if (barcode) {
+                window.location.href = `index.html?barcode=${encodeURIComponent(barcode)}`;
+            }
+        }
     </script>
 </body>
 </html>
