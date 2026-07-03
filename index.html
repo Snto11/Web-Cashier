@@ -12,6 +12,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
     <style>
         body {
             background-color: #f8f9fa;
@@ -216,10 +218,13 @@
                             <label class="form-label fw-semibold">Nama Barang / Scan Barcode</label>
                             <div class="input-group">
                                 <input type="text" id="namaBarang" class="form-control" placeholder="Ketik nama atau ketik/scan nomor barcode..." list="listBarang" oninput="autoFillHarga()" required>
-                                <button class="btn btn-outline-secondary text-danger" type="button" onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); document.getElementById('namaBarang').focus();" title="Kosongkan Semua Inputan">🗑️</button>
+                                <button class="btn btn-primary fw-bold px-2" type="button" id="btnPicuScanUtama" onclick="toggleScannerUtamaKasir()" title="Scan Menggunakan Kamera">📷 Scan</button>
+                                <button class="btn btn-outline-secondary text-danger" type="button" onclick="resetInputSingleBarang()" title="Kosongkan Semua Inputan">🗑️</button>
                             </div>
                             <datalist id="listBarang"></datalist>
                         </div>
+
+                        <div id="wadahKameraScanUtama" class="mb-3 border rounded shadow-sm d-none" style="width: 100%; height: 200px; background: #000; overflow: hidden;"></div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Harga Barang</label>
@@ -398,6 +403,7 @@
     <script>
         let masterProdukLokal = {};
         let dataPenjualanLokal = [];
+        let html5QrCodeInstanceUtama = null; // Instance untuk scanner halaman kasir
 
         function hubungkanKeRealtimeDatabase() {
             const uid = currentUser.uid;
@@ -759,6 +765,23 @@
             hitungKalkulatorSeketika();
         }
 
+        function resetInputSingleBarang() {
+            document.getElementById('namaBarang').value = ''; 
+            document.getElementById('namaBarang').readOnly = false; 
+            document.getElementById('hargaTampilan').value = ''; 
+            document.getElementById('hargaTampilan').readOnly = false; 
+            document.getElementById('jumlahPembelian').value = ''; 
+            document.getElementById('jumlahPembelian').type = 'number'; 
+            document.getElementById('jumlahPembelian').disabled = false; 
+            document.getElementById('jumlahPembelian').placeholder = '0'; 
+            document.getElementById('infoStokTersedia').innerText = ''; 
+            hargaAsli = 0; 
+            hitungKalkulatorSeketika(); 
+            normalisaiTombolSimpan(); 
+            matikanScannerKameraUtama();
+            document.getElementById('namaBarang').focus();
+        }
+
         function resetForm() {
             document.getElementById('formPenjualan').reset(); document.getElementById('rowId').value = "";
             document.getElementById('formTitle').innerText = "🛒 Input Penjualan"; document.getElementById('formTitle').className = "text-center mb-4 fw-bold text-primary";
@@ -772,6 +795,7 @@
             inputUangDiterimaTampilan.readOnly = false;
             document.getElementById('infoMultiBarang').classList.add('d-none');
             
+            matikanScannerKameraUtama();
             normalisaiTombolSimpan(); aturTampilanInputPembayaran(); buatRekomendasiBarang();
         }
 
@@ -853,8 +877,56 @@
                     inputJumlah.type = "number"; inputJumlah.disabled = false; inputJumlah.placeholder = "0"; normalisaiTombolSimpan();
                 }
                 inputNama.readOnly = true; inputHarga.readOnly = true; hitungKalkulatorSeketika();
+                matikanScannerKameraUtama();
             } else if (namaInputVal === "") {
                 inputNama.readOnly = false; inputHarga.readOnly = false; inputJumlah.disabled = false; document.getElementById('infoStokTersedia').innerText = ""; normalisaiTombolSimpan();
+            }
+        }
+
+        /* REVISI FITUR: LOGIKA BARU SCANNER KAMERA DI HALAMAN KASIR UTAMA */
+        function toggleScannerUtamaKasir() {
+            const wadah = document.getElementById('wadahKameraScanUtama');
+            const btn = document.getElementById('btnPicuScanUtama');
+
+            if (html5QrCodeInstanceUtama && html5QrCodeInstanceUtama.isScanning) {
+                matikanScannerKameraUtama();
+                return;
+            }
+
+            wadah.classList.remove('d-none');
+            btn.innerText = "🛑 Stop";
+            btn.className = "btn btn-danger fw-bold px-2";
+
+            html5QrCodeInstanceUtama = new Html5Qrcode("wadahKameraScanUtama");
+            html5QrCodeInstanceUtama.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 250, height: 120 } },
+                (decodedText) => {
+                    document.getElementById('namaBarang').value = decodedText;
+                    matikanScannerKameraUtama();
+                    autoFillHarga(); // Picu auto-fill harga secara otomatis setelah barcode didapat
+                    Swal.fire({ title: "Terbaca! 🎉", text: `Kode: ${decodedText}`, icon: "success", timer: 1000, showConfirmButton: false });
+                },
+                (errorMessage) => {}
+            ).catch(err => {
+                alert("Gagal mengakses kamera: " + err);
+                matikanScannerKameraUtama();
+            });
+        }
+
+        function matikanScannerKameraUtama() {
+            const wadah = document.getElementById('wadahKameraScanUtama');
+            const btn = document.getElementById('btnPicuScanUtama');
+
+            if (html5QrCodeInstanceUtama) {
+                html5QrCodeInstanceUtama.stop().then(() => {
+                    html5QrCodeInstanceUtama.clear();
+                    wadah.classList.add('d-none');
+                    if (btn) {
+                        btn.innerText = "📷 Scan";
+                        btn.className = "btn btn-primary fw-bold px-2";
+                    }
+                }).catch(err => console.log("Gagal menghentikan scanner: ", err));
             }
         }
 
