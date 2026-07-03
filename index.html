@@ -161,7 +161,7 @@
 <body>
 
     <!-- ==========================================================================
-       HALAMAN LOGIN UTAMA (MUNCUL JIKA BELUM LOGIN AKUN GOOGLE)
+       HALAMAN LOGIN UTAMA (PERBAIKAN STYLE PADA TOMBOL GOOGLE)
        ========================================================================== */ -->
     <div id="loginContainer" class="container px-3">
         <div class="card p-5 text-center shadow">
@@ -169,10 +169,10 @@
             <p class="text-muted small mb-4">Silakan masuk menggunakan Akun Google Anda untuk mengamankan dan
                 mensinkronisasikan data kasir harian.</p>
             <button
-                class="btn btn-outline-danger btn-lg w-100 fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm"
+                class="btn btn-outline-danger btn-lg w-100 fw-bold d-flex align-items-center justify-content-center gap-3 shadow-sm py-2"
                 onclick="loginDenganGoogle()">
-                <img src="https://cdnjs.cloudflare.com/ajax/libs/gapi-signer/0.0.1/google.png" alt="Google Logo"
-                    style="width: 24px;">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G"
+                    style="width: 22px; height: 22px; flex-shrink: 0;">
                 Masuk dengan Google
             </button>
         </div>
@@ -460,7 +460,6 @@
                 document.getElementById('userEmail').innerText = user.email;
                 document.getElementById('userPhoto').src = user.photoURL || "https://via.placeholder.com/40";
 
-                // Mulai berlangganan data database secara real-time berdasarkan UID pengguna
                 hubungkanKeRealtimeDatabase();
             } else {
                 currentUser = null;
@@ -480,25 +479,21 @@
             auth.signOut();
         }
 
-        // Sinkronisasi data dinamis awan terpisah aman per UID akun Google
         function hubungkanKeRealtimeDatabase() {
             if (!currentUser) return;
             const uid = currentUser.uid;
 
-            // Dengarkan perubahan Master Produk
             database.ref(`kasir_users/${uid}/master_produk`).on('value', (snapshot) => {
                 masterProdukLokal = snapshot.val() || {};
                 buatRekomendasiBarang();
             });
 
-            // Dengarkan perubahan Riwayat Penjualan
             database.ref(`kasir_users/${uid}/riwayat_penjualan`).on('value', (snapshot) => {
                 dataPenjualanLokal = snapshot.val() || [];
                 muatDataLokal();
             });
         }
 
-        // Fungsi bantu untuk menulis data ke Firebase
         function simpanMasterKeFirebase(dataBaru) {
             if (currentUser) {
                 database.ref(`kasir_users/${currentUser.uid}/master_produk`).set(dataBaru);
@@ -661,8 +656,8 @@
                 tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">Belum ada data penjualan di perangkat ini.</td></tr>';
                 nilaiCashAsliSimpanan = 0; nilaiTfAsliSimpanan = 0;
                 perbaruiTampilanOmsetDOM(0, 0); omsetCashSistem = 0;
-                hitungSelisihLaci(); 
-                aturTampilanInputPembayaran(); // MEMASTIKAN PENGKONDISIAN AWAL HIDE/SHOW FORM KALKULATOR
+                hitungSelisihLaci();
+                aturTampilanInputPembayaran();
                 return;
             }
 
@@ -683,7 +678,7 @@
             nilaiTfAsliSimpanan = r_tf;
             perbaruiTampilanOmsetDOM(r_cash, r_tf);
             hitungSelisihLaci();
-            aturTampilanInputPembayaran(); // MEMASTIKAN PENGKONDISIAN AWAL HIDE/SHOW FORM KALKULATOR
+            aturTampilanInputPembayaran();
         }
 
         function perbaruiTampilanOmsetDOM(cash, tf) {
@@ -966,7 +961,7 @@
         };
 
         var hapusMasterProduk = function (namaKey) {
-            Swal.fire({ title: "Hapus Produk?", text: `Hapus "${namaKey}" dari Cloud?`, icon: "warning", showCancelButton: true }).then((result) => {
+            Swal.fire({ title: "Hapus?", text: `Hapus "${namaKey}" dari Cloud?`, icon: "warning", showCancelButton: true }).then((result) => {
                 if (result.isConfirmed) {
                     delete masterProdukLokal[namaKey];
                     simpanMasterKeFirebase(masterProdukLokal);
