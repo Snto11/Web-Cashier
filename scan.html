@@ -93,7 +93,7 @@
                 currentUser = user;
                 database.ref(`kasir_users/${user.uid}/master_produk`).on('value', (snapshot) => {
                     masterProdukLokal = snapshot.val() || {};
-                    muatTabelMasterLokal(); // Muat ulang isi tabel tiap ada perubahan di cloud
+                    muatTabelMasterLokal(); 
                 });
             }
         });
@@ -173,12 +173,9 @@
         </div>
     </div>
 
-    <script>
-        function formatRupiah(angka) {
-            if (!angka) return "";
-            return Math.round(angka).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        }
+    <script src="script.js"></script>
 
+    <script>
         document.getElementById('scanHargaBarangTampilan').addEventListener('input', function (e) {
             e.target.value = formatRupiah(e.target.value.replace(/\D/g, ""));
         });
@@ -208,7 +205,6 @@
         );
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 
-        // FUNGSI UNTUK MERENDER ISI TABEL MASTER
         function muatTabelMasterLokal() {
             const tbody = document.querySelector('#tabelMasterScan tbody');
             if (!tbody) return;
@@ -241,7 +237,6 @@
             }
         }
 
-        // FUNGSI UNTUK MEMBACA DATA JIKA TOMBOL EDIT DI TABEL DIKLIK
         window.isiFormMasterProduk = function (nama, harga, stok, barcode) {
             document.getElementById('scanNamaBarang').value = nama;
             document.getElementById('scanBarcodeBarang').value = barcode;
@@ -280,7 +275,6 @@
                 </div>`;
         };
 
-        // FUNGSI FILTER PENCARIAN DI TABEL
         function filterTabelMasterScan() {
             const kataKunci = document.getElementById('cariProdukScan').value.toLowerCase().trim();
             document.querySelectorAll('#tabelMasterScan tbody .produk-row-scan').forEach(row => {
@@ -292,7 +286,6 @@
             });
         }
 
-        // FUNGSI SIMPAN & UPDATE KE FIREBASE
         function simpanProdukDariScan() {
             const barcode = document.getElementById('scanBarcodeBarang').value.trim();
             const nama = document.getElementById('scanNamaBarang').value.trim();
@@ -304,7 +297,6 @@
                 return;
             }
 
-            // Jika sedang mode edit nama lama, dan namanya diganti, hapus nama yang lama agar tidak duplikat
             if (namaProdukLamaYangSedangDiedit !== "" && namaProdukLamaYangSedangDiedit !== nama) {
                 delete masterProdukLokal[namaProdukLamaYangSedangDiedit];
             }
@@ -323,7 +315,6 @@
             }
         }
 
-        // FUNGSI HAPUS PRODUK LANGSUNG DARI HALAMAN SCAN
         window.hapusMasterProduk = function (namaKey) {
             Swal.fire({
                 title: "Hapus?",
