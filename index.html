@@ -404,6 +404,16 @@
             database.ref(`kasir_users/${uid}/master_produk`).on('value', (snapshot) => {
                 masterProdukLokal = snapshot.val() || {};
                 buatRekomendasiBarang();
+                
+                // REVISI FITUR: SEKARANG YANG DITANGKAP ADALAH NAMA BARANG LANGSUNG DARI URL PARAMETER
+                const urlParams = new URLSearchParams(window.location.search);
+                const namaKirim = urlParams.get('nama');
+                if (namaKirim) {
+                    document.getElementById('namaBarang').value = namaKirim;
+                    autoFillHarga(); // Jalankan pengisian harga & stok otomatis
+                    // Bersihkan parameter di URL agar tidak ter-trigger ulang jika di-refresh
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
             });
             database.ref(`kasir_users/${uid}/riwayat_penjualan`).on('value', (snapshot) => {
                 dataPenjualanLokal = snapshot.val() || [];

@@ -95,19 +95,19 @@
             
             <div class="mb-2">
                 <label class="form-label small fw-semibold mb-1">Kode Barcode</label>
-                <input type="text" id="resultBarcode" class="form-control form-control-sm fw-mono bg-white text-dark fw-bold" placeholder="Menunggu scan..." readonly>
+                <input type="text" id="resultBarcode" class="form-control form-control-sm fw-mono bg-white text-dark" placeholder="Menunggu scan..." readonly>
             </div>
 
             <div class="mb-3">
                 <label class="form-label small fw-semibold mb-1">Nama Barang Ditemukan</label>
-                <input type="text" id="resultNamaBarang" class="form-control form-control-sm bg-white fw-bold text-primary" placeholder="Produk tidak diketahui" readonly>
+                <input type="text" id="resultNamaBarang" class="form-control form-control-sm bg-white fw-bold text-success" placeholder="Produk tidak diketahui" readonly>
             </div>
 
             <div class="row g-2">
-                <div class="col-8">
-                    <button id="btnLanjutkan" class="btn btn-success btn-sm w-100 fw-bold shadow-sm" onclick="lanjutKePenjualan()" disabled>🚀 Lanjutkan ke Penjualan</button>
+                <div class="col-12 mb-2">
+                    <button id="btnLanjutkan" class="btn btn-success btn-sm w-100 fw-bold shadow-sm py-2" onclick="lanjutKePenjualan()" disabled>🚀 Lanjutkan ke Penjualan</button>
                 </div>
-                <div class="col-4">
+                <div class="col-12">
                     <a href="index.html" class="btn btn-secondary btn-sm w-100 fw-bold shadow-sm">🔙 Batal</a>
                 </div>
             </div>
@@ -154,11 +154,11 @@
         );
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 
-        // REVISI: FUNGSI UNTUK MENERUSKAN DATA KE INDEX.HTML MENGGUNAKAN PARAMETER URL
+        // REVISI FITUR: SEKARANG YANG DIKIRIM KE URL ADALAH NAMA BARANGNYA LANGSUNG (MISAL: Matcha bubuk A)
         function lanjutKePenjualan() {
-            const barcode = document.getElementById('resultBarcode').value;
-            if (barcode) {
-                window.location.href = `index.html?barcode=${encodeURIComponent(barcode)}`;
+            const namaBarang = document.getElementById('resultNamaBarang').value;
+            if (namaBarang && namaBarang !== "Barcode Belum Terdaftar di Atur Produk!") {
+                window.location.href = `index.html?nama=${encodeURIComponent(namaBarang)}`;
             }
         }
     </script>
