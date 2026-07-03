@@ -95,7 +95,8 @@
 
         /* REVISI FITUR: STYLE KHUSUS INPUTAN SAAT TERKUNCI (READ-ONLY) */
         #namaBarang:read-only,
-        #hargaTampilan:read-only {
+        #hargaTampilan:read-only,
+        #uangDiterimaTampilan:read-only {
             background-color: #e9ecef !important;
             color: #6c757d;
             cursor: not-allowed;
@@ -267,6 +268,11 @@
                             </div>
 
                             <div id="areaInputCash" style="display: none;">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="checkUangPas" onchange="toggleUangPasHandler()">
+                                    <label class="form-check-label small fw-bold text-success" for="checkUangPas">💵 Uang Pas</label>
+                                </div>
+
                                 <div class="mb-2">
                                     <label class="form-label small fw-bold text-secondary">Uang Diterima dari Pembeli:</label>
                                     <div class="input-group input-group-sm">
@@ -628,7 +634,7 @@
 
             document.getElementById('namaBarang').value = ""; document.getElementById('namaBarang').readOnly = false;
             inputHargaTampilan.value = ""; inputHargaTampilan.readOnly = false;
-            inputFormat = "0"; inputJumlah.value = ""; inputJumlah.placeholder = "0";
+            inputJumlah.value = ""; inputJumlah.placeholder = "0";
             document.getElementById('infoStokTersedia').innerText = ""; hargaAsli = 0;
 
             perbaruiTampilanRincian(); hitungKalkulatorSeketika(); normalisaiTombolSimpan(); aturTampilanInputPembayaran();
@@ -734,7 +740,6 @@
             else { infoBadge.innerText = "⚠️ LEBIH"; infoBadge.className = "status-badge bg-warning text-dark me-2"; textSelisih.className = "m-0 fw-bold text-warning"; }
         }
 
-        /* REVISI FITUR: SEMBUNYIKAN SEPENUHNYA TEKS "TOTAL GABUNGAN" SAAT ANTRIAN KEMBALI KOSONG */
         function resetForm() {
             document.getElementById('formPenjualan').reset(); document.getElementById('rowId').value = "";
             document.getElementById('formTitle').innerText = "🛒 Input Penjualan"; document.getElementById('formTitle').className = "text-center mb-4 fw-bold text-primary";
@@ -745,7 +750,8 @@
             document.getElementById('namaBarang').readOnly = false; inputHargaTampilan.readOnly = false;
             inputJumlah.type = "number"; inputJumlah.disabled = false; inputJumlah.placeholder = "0";
             
-            document.getElementById('infoMultiBarang').classList.add('d-none'); // Menyembunyikan teks Total Gabungan
+            // REVISI FITUR: MEMASTIKAN KUNCI DAN STATUS READONLY INPUT RESET KEMBALI
+            inputUangDiterimaTampilan.readOnly = false;
             
             normalisaiTombolSimpan(); aturTampilanInputPembayaran(); buatRekomendasiBarang();
         }
@@ -754,6 +760,29 @@
             if (dataPenjualanLokal.length === 0) { alert("Tidak ada data transaksi."); return; }
             document.getElementById('printTanggal').innerText = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
             window.print();
+        }
+
+        /* REVISI FITUR: LOGIKA HANDLER KETIKA CHECKBOX UANG PAS DICENTANG ATAU DILEPAS */
+        function toggleUangPasHandler() {
+            const chkUangPas = document.getElementById('checkUangPas');
+            if (chkUangPas && chkUangPas.checked) {
+                // Cari total belanjaan saat ini
+                let totalSeluruhBelanja = 0;
+                antreanKeranjangSeketika.forEach(item => {
+                    totalSeluruhBelanja += (item.hargaBarang * item.jumlahPembelian);
+                });
+                
+                // Isi inputan otomatis dan beri format Rupiah
+                uangDiterimaAsli = totalSeluruhBelanja;
+                inputUangDiterimaTampilan.value = formatRupiah(totalSeluruhBelanja);
+                inputUangDiterimaTampilan.readOnly = true; // Kunci inputan agar tidak bisa diedit asal
+            } else {
+                // Kosongkan kembali jika centang dilepas
+                uangDiterimaAsli = 0;
+                inputUangDiterimaTampilan.value = "";
+                inputUangDiterimaTampilan.readOnly = false;
+            }
+            hitungKalkulatorSeketika();
         }
 
         function aturTampilanInputPembayaran() {
@@ -768,11 +797,18 @@
                 areaInputCash.style.display = 'none'; 
                 btnSelesai.style.setProperty('display', 'none', 'important');
                 btnSelesai.disabled = true; 
+                
+                document.getElementById('infoMultiBarang').classList.add('d-none');
                 return;
             }
             
             areaInputCash.style.display = jenisBayar === "Cash" ? 'block' : 'none';
             if (jenisBayar === "Cash") {
+                // REVISI FITUR: TIAP GANTI PEMBAYARAN KEMBALIKAN POSISI CHECKBOX KE FALSE SEBAGAI DEFAULT AMAN
+                const chkUangPas = document.getElementById('checkUangPas');
+                if(chkUangPas) chkUangPas.checked = false;
+                inputUangDiterimaTampilan.readOnly = false;
+
                 hitungKalkulatorSeketika();
             } else if (jenisBayar === "TF") { 
                 btnSelesai.disabled = false; 
