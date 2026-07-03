@@ -405,14 +405,30 @@
                 masterProdukLokal = snapshot.val() || {};
                 buatRekomendasiBarang();
                 
-                // REVISI FITUR: SEKARANG YANG DITANGKAP ADALAH NAMA BARANG LANGSUNG DARI URL PARAMETER
                 const urlParams = new URLSearchParams(window.location.search);
                 const namaKirim = urlParams.get('nama');
                 if (namaKirim) {
                     document.getElementById('namaBarang').value = namaKirim;
-                    autoFillHarga(); // Jalankan pengisian harga & stok otomatis
-                    // Bersihkan parameter di URL agar tidak ter-trigger ulang jika di-refresh
+                    autoFillHarga();
                     window.history.replaceState({}, document.title, window.location.pathname);
+                }
+
+                // REVISI FITUR: CEK APAKAH ADA KIRIMAN BARCODE BARU DARI SCAN.HTML UNTUK DIDAFTARKAN
+                const barcodeBaruDariScan = urlParams.get('scan_barcode');
+                if (barcodeBaruDariScan) {
+                    // Bersihkan parameter di URL agar tidak memicu ulang jika tidak sengaja direfresh
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    
+                    // Jalankan fungsi modal pendaftaran barang dan isi kode barcodenya secara otomatis
+                    bukaManajemenHarga();
+                    setTimeout(() => {
+                        const inputBarcodeModal = document.getElementById('swalBarcodeBarang');
+                        if (inputBarcodeModal) {
+                            inputBarcodeModal.value = barcodeBaruDariScan;
+                            // Fokuskan kursor langsung ke input nama barang agar kasir tinggal mengetik namanya
+                            document.getElementById('swalNamaBarang').focus();
+                        }
+                    }, 600);
                 }
             });
             database.ref(`kasir_users/${uid}/riwayat_penjualan`).on('value', (snapshot) => {
@@ -864,7 +880,7 @@
                 }
                 inputNama.readOnly = true; inputHarga.readOnly = true; hitungKalkulatorSeketika();
             } else if (namaInputVal === "") {
-                inputNama.readOnly = false; inputHarga.readOnly = false; inputJumlah.disabled = false; document.getElementById('infoStokTersedia').innerText = ""; normalisaiTombolSimpan();
+                inputNama.readOnly = false; inputHarga.readOnly = false; inputJumlah.disabled = false; document.getElementById('infoStokTersedia').innerText = ""; normalisaiTompanSimpan();
             }
         }
 

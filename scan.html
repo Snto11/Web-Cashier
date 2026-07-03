@@ -8,10 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
     <style>
         * {
             box-sizing: border-box;
@@ -64,29 +60,10 @@
 </head>
 <body>
 
-    <script src="firebase-config.js"></script>
-
-    <script>
-        let currentUser = null;
-        let masterProdukLokal = {};
-
-        auth.onAuthStateChanged((user) => {
-            if (!user) {
-                window.location.href = 'login.html';
-            } else {
-                currentUser = user;
-                // Ambil data master produk kasir dari cloud database harian
-                database.ref(`kasir_users/${user.uid}/master_produk`).on('value', (snapshot) => {
-                    masterProdukLokal = snapshot.val() || {};
-                });
-            }
-        });
-    </script>
-
     <div class="container-scanner">
         <div class="text-center">
             <h1>📷 Pemindai Barcode Produk</h1>
-            <p class="subtitle">Arahkan kamera ke barcode untuk mendaftarkan kode barang</p>
+            <p class="subtitle">Arahkan kamera ke barcode untuk mendapatkan nomor kode barang</p>
         </div>
 
         <div id="reader" class="mb-4"></div>
@@ -102,27 +79,23 @@
 
             <div class="row g-2">
                 <div class="col-8">
-                    <button class="btn btn-primary btn-sm w-100 fw-bold shadow-sm" onclick="simpanBarcodeSaja()">💾 Simpan</button>
+                    <button class="btn btn-primary btn-sm w-100 fw-bold shadow-sm" onclick="kirimBarcodeKeMaster()">💾 Simpan</button>
                 </div>
                 <div class="col-4">
-                    <a href="index.html" class="btn btn-secondary btn-sm w-100 fw-bold shadow-sm">🔙 Kembali</a>
+                    <a href="index.html" class="btn btn-secondary btn-sm w-100 fw-bold shadow-sm">🔙 Batal</a>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Handler Sukses Scan Barcode Kamera
         function onScanSuccess(decodedText, decodedResult) {
             document.getElementById('scanBarcodeBarang').value = decodedText;
             Swal.fire({ title: "Terbaca! 🎉", text: `Kode: ${decodedText}`, icon: "success", timer: 1000, showConfirmButton: false, customClass: { popup: 'rounded-4' } });
         }
 
-        function onScanFailure(error) {
-            // Pemindaian berlanjut mencari frame barcode secara real-time
-        }
+        function onScanFailure(error) {}
 
-        // Jalankan Inisialisasi Scanner HTML5-QRCode
         let html5QrcodeScanner = new Html5QrcodeScanner(
             "reader", 
             { 
@@ -135,56 +108,15 @@
         );
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 
-        // Fungsi Simpan Barcode Baru ke Cloud Firebase Realtime Database
-        function simpanBarcodeSaja() {
+        // FUNGSI OPER DATA LANGSUNG KE HALAMAN UTAMA KASIR
+        function kirimBarcodeKeMaster() {
             const barcode = document.getElementById('scanBarcodeBarang').value.trim();
-
             if (!barcode) {
                 Swal.fire({ title: "Scan Belum Ada", text: "Silakan lakukan pemindaian barcode produk terlebih dahulu!", icon: "warning", customClass: { popup: 'rounded-4' } });
                 return;
             }
-
-            let namaKey = `Produk ${barcode}`;
-            let hargaLama = 0;
-            let stokLama = 0;
-
-            // Cek apakah nomor barcode ini sebenarnya sudah terdaftar pada produk tertentu
-            for (let nama in masterProdukLokal) {
-                if (masterProdukLokal[nama].barcode && masterProdukLokal[nama].barcode === barcode) {
-                    namaKey = nama; // Tetap gunakan nama barang yang sudah ada
-                    hargaLama = masterProdukLokal[nama].harga || 0;
-                    stokLama = masterProdukLokal[nama].stok || 0;
-                    break;
-                }
-            }
-
-            // Daftarkan / update komponen barcode ke database master lokal
-            masterProdukLokal[namaKey] = { 
-                harga: hargaLama, 
-                stok: stokLama, 
-                barcode: barcode 
-            };
-
-            // Kirim pembaruan data langsung ke Cloud Firebase kasir user
-            if (currentUser) {
-                database.ref(`kasir_users/${currentUser.uid}/master_produk`).set(masterProdukLokal)
-                .then(() => {
-                    Swal.fire({
-                        title: "Berhasil Disimpan! 🎉",
-                        text: `Barcode [${barcode}] telah terhubung ke data produk sistem.`,
-                        icon: "success",
-                        timer: 2000,
-                        showConfirmButton: false,
-                        customClass: { popup: 'rounded-4' }
-                    }).then(() => {
-                        // Bersihkan inputan setelah sukses simpan agar siap scan barang baru
-                        document.getElementById('scanBarcodeBarang').value = "";
-                    });
-                })
-                .catch((error) => {
-                    Swal.fire({ title: "Gagal Menyimpan", text: error.message, icon: "error" });
-                });
-            }
+            // Teruskan kode ke index.html dengan parameter khusus
+            window.location.href = `index.html?scan_barcode=${encodeURIComponent(barcode)}`;
         }
     </script>
 </body>
