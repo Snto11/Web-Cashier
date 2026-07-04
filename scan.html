@@ -60,13 +60,12 @@
             border: none !important;
             font-size: 14px !important;
         }
-        /* Style Khusus Info Nama Produk Ditemukan */
-        .info-produk-ditemukan {
-            background-color: #e0f2fe;
+        /* Style input saat read-only nama barang ditemukan */
+        #resultNamaBarang:read-only {
+            background-color: #e0f2fe !important;
             color: #0369a1;
-            border: 1px solid #bae6fd;
-            border-radius: 6px;
-            font-weight: 600;
+            font-weight: bold;
+            border-color: #bae6fd;
         }
     </style>
 </head>
@@ -99,7 +98,7 @@
         <div id="reader" class="mb-4"></div>
 
         <div class="card p-3 bg-light border text-start shadow-sm" style="font-size: 0.9rem;">
-            <div class="mb-2">
+            <div class="mb-3">
                 <label class="form-label small fw-semibold mb-1">Kode Barcode Terpindai</label>
                 <div class="input-group input-group-sm">
                     <input type="text" id="scanBarcodeBarang" class="form-control fw-mono bg-white text-primary fw-bold" placeholder="Menunggu hasil scan kamera..." readonly>
@@ -107,8 +106,9 @@
                 </div>
             </div>
 
-            <div id="boxInfoProduk" class="p-2 mb-3 text-center small info-produk-ditemukan d-none">
-                Nama Barang: <span id="textNamaProdukDitemukan" class="fw-bold text-uppercase"></span>
+            <div class="mb-3 d-none" id="boxNamaBarang">
+                <label class="form-label small fw-semibold mb-1">Nama Barang</label>
+                <input type="text" id="resultNamaBarang" class="form-control form-control-sm text-uppercase" readonly>
             </div>
 
             <div class="row g-2">
@@ -127,40 +127,40 @@
             document.getElementById('scanBarcodeBarang').value = decodedText;
             
             const boxTombolSimpan = document.getElementById('boxTombolSimpan');
-            const boxInfoProduk = document.getElementById('boxInfoProduk');
-            const textNamaProdukDitemukan = document.getElementById('textNamaProdukDitemukan');
+            const boxNamaBarang = document.getElementById('boxNamaBarang');
+            const resultNamaBarang = document.getElementById('resultNamaBarang');
             
             let sudahAda = false;
             let namaProdukTerdaftar = "";
 
-            // Lakukan perulangan untuk mengecek apakah barcode sudah terdaftar di data master
+            // Cari nama produk berdasarkan kecocokan nomor barcode di Firebase
             for (let nama in masterProdukLokal) {
                 if (masterProdukLokal[nama].barcode && masterProdukLokal[nama].barcode === decodedText) {
                     sudahAda = true;
-                    namaProdukTerdaftar = nama; // Ambil nama barangnya
+                    namaProdukTerdaftar = nama;
                     break;
                 }
             }
 
             if (sudahAda) {
-                // Sembunyikan tombol simpan agar tidak terjadi duplikasi data
+                // Sembunyikan tombol simpan untuk mencegah duplikasi
                 boxTombolSimpan.classList.add('d-none');
                 
-                // Tampilkan info nama barang di bawah kotak barcode
-                textNamaProdukDitemukan.innerText = namaProdukTerdaftar;
-                boxInfoProduk.classList.remove('d-none');
+                // Isi dan tampilkan kolom Nama Barang
+                resultNamaBarang.value = namaProdukTerdaftar;
+                boxNamaBarang.classList.remove('d-none');
 
                 Swal.fire({ 
                     title: "Sudah Terdaftar! ⚠️", 
-                    text: `Barcode terdeteksi sebagai "${namaProdukTerdaftar}". Tombol simpan disembunyikan.`, 
+                    text: `Barcode terdaftar sebagai "${namaProdukTerdaftar}".`, 
                     icon: "info", 
                     customClass: { popup: 'rounded-4' } 
                 });
             } else {
-                // Jika barcode baru, tampilkan tombol simpan dan sembunyikan kotak info nama barang
+                // Jika barcode baru, tampilkan tombol simpan dan sembunyikan kolom nama barang
                 boxTombolSimpan.classList.remove('d-none');
-                boxInfoProduk.classList.add('d-none');
-                textNamaProdukDitemukan.innerText = "";
+                boxNamaBarang.classList.add('d-none');
+                resultNamaBarang.value = "";
 
                 Swal.fire({ title: "Terbaca! 🎉", text: `Kode: ${decodedText}`, icon: "success", timer: 1000, showConfirmButton: false, customClass: { popup: 'rounded-4' } });
             }
@@ -183,8 +183,8 @@
         function resetFormScanner() {
             document.getElementById('scanBarcodeBarang').value = '';
             document.getElementById('boxTombolSimpan').classList.remove('d-none');
-            document.getElementById('boxInfoProduk').classList.add('d-none');
-            document.getElementById('textNamaProdukDitemukan').innerText = "";
+            document.getElementById('boxNamaBarang').classList.add('d-none');
+            document.getElementById('resultNamaBarang').value = "";
         }
 
         function kirimBarcodeKeMaster() {
