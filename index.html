@@ -399,6 +399,17 @@
         let masterProdukLokal = {};
         let dataPenjualanLokal = [];
 
+        // REVISI FITUR: MEMULIHKAN DATA KERANJANG SEMENTARA JIKA PERNAH TERSIMPAN DI SESSION STORAGE
+        let antreanKeranjangSeketika = [];
+        try {
+            const cadanganKeranjang = sessionStorage.getItem('cadangan_keranjang_kasir');
+            if (cadanganKeranjang) {
+                antreanKeranjangSeketika = JSON.parse(cadanganKeranjang);
+            }
+        } catch (e) {
+            antreanKeranjangSeketika = [];
+        }
+
         function hubungkanKeRealtimeDatabase() {
             const uid = currentUser.uid;
             database.ref(`kasir_users/${uid}/master_produk`).on('value', (snapshot) => {
@@ -413,7 +424,6 @@
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
 
-                // REVISI FITUR: OPTIMALISASI MODAL INSTAN TANPA KEDIPAN LATAR BELAKANG
                 const barcodeBaruDariScan = urlParams.get('scan_barcode');
                 const aksiKirim = urlParams.get('aksi');
 
@@ -426,10 +436,21 @@
                             inputBarcodeModal.value = barcodeBaruDariScan;
                             document.getElementById('swalNamaBarang').focus();
                         }
-                    }, 50); // Mempercepat waktu pemicu pengisian
+                    }, 50);
                 } else if (aksiKirim === 'buka_master') {
                     window.history.replaceState({}, document.title, window.location.pathname);
-                    bukaManajemenHarga(); // Langsung eksekusi buka modal tanpa tunggu rendering lama
+                    bukaManajemenHarga();
+                }
+
+                // REVISI FITUR: JIKA ADA DATA CADANGAN KERANJANG, PICU PENAMPILANNYA SEJAK AWAL DATABASE TERKONEKSI
+                if (antreanKeranjangSeketika.length > 0) {
+                    document.getElementById('infoMultiBarang').classList.remove('d-none');
+                    document.getElementById('labelSubtotal').innerText = "Subtotal (Barang Terakhir):";
+                    document.getElementById('infoMultiBarang').querySelector('span:first-child').innerText = `Total Gabungan (${antreanKeranjangSeketika.length} Barang):`;
+                    perbaruiTampilanRincian();
+                    hitungKalkulatorSeketika();
+                    normalisaiTombolSimpan();
+                    aturTampilanInputPembayaran();
                 }
             });
             database.ref(`kasir_users/${uid}/riwayat_penjualan`).on('value', (snapshot) => {
@@ -454,7 +475,6 @@
         let omsetCashSistem = 0;
         let uangFisikAsli = 0;
         let uangDiterimaAsli = 0;
-        let antreanKeranjangSeketika = [];
         let isOmsetTersembunyi = false;
         let nilaiCashAsliSimpanan = 0;
         let nilaiTfAsliSimpanan = 0;
@@ -653,6 +673,10 @@
             }
 
             antreanKeranjangSeketika.push({ namaBarang: namaInput, hargaBarang: hargaAsli, jumlahPembelian: jumlahInput });
+            
+            // REVISI FITUR: SIMPAN KONDISI KERANJANG TERBARU KE SESSION STORAGE
+            sessionStorage.setItem('cadangan_keranjang_kasir', JSON.stringify(antreanKeranjangSeketika));
+
             document.getElementById('infoMultiBarang').classList.remove('d-none');
             document.getElementById('btnSelesaiMulti').classList.remove('d-none');
             document.getElementById('labelSubtotal').innerText = "Subtotal (Barang Terakhir):";
@@ -704,11 +728,17 @@
             simpanMasterKeFirebase(masterProdukLokal);
             simpanRiwayatKeFirebase(dataPenjualanLokal);
             Swal.fire({ title: "Transaksi Sukses! 🎉", text: "Data disinkronkan ke Cloud Firebase.", icon: "success", timer: 2000, showConfirmButton: false });
-            antreanKeranjangSeketika = []; resetForm();
+            
+            // REVISI FITUR: BERSIHKAN CADANGAN KARENA TRANSAKSI SUDAH SELESAI
+            antreanKeranjangSeketika = []; 
+            sessionStorage.removeItem('cadangan_keranjang_kasir');
+            resetForm();
         }
 
         function siapEdit(index, nama, price, jumlah, pembayaran) {
             antreanKeranjangSeketika = [];
+            sessionStorage.removeItem('cadangan_keranjang_kasir'); // Reset cadangan sementara saat mode edit baris riwayat
+            
             document.getElementById('formTitle').innerText = "✏️ Edit Penjualan";
             document.getElementById('formTitle').className = "text-center mb-4 fw-bold text-warning";
             document.getElementById('btnBatal').classList.remove('d-none');
@@ -790,6 +820,10 @@
             document.getElementById('formTitle').innerText = "🛒 Input Penjualan"; document.getElementById('formTitle').className = "text-center mb-4 fw-bold text-primary";
             document.getElementById('btnBatal').classList.add('d-none'); document.getElementById('infoStokTersedia').innerText = "";
             hargaAsli = 0; uangDiterimaAsli = 0; antreanKeranjangSeketika = [];
+            
+            // REVISI FITUR: HAPUS CADANGAN DI SESSION STORAGE SAAT FORM DIRESET TOTAL
+            sessionStorage.removeItem('cadangan_keranjang_kasir');
+
             perbaruiTampilanRincian(); document.getElementById('textSubtotalSeketika').innerText = "Rp 0"; document.getElementById('textKembalianSeketika').innerText = "Rp 0"; document.getElementById('textKembalianSeketika').className = "fs-5 fw-bold text-danger";
             document.getElementById('boxSplitPembayaran').classList.add('d-none'); checkSplitTF.checked = false;
             document.getElementById('namaBarang').readOnly = false; inputHargaTampilan.readOnly = false;
