@@ -60,6 +60,14 @@
             border: none !important;
             font-size: 14px !important;
         }
+        /* Style Khusus Info Nama Produk Ditemukan */
+        .info-produk-ditemukan {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+            border-radius: 6px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -91,12 +99,16 @@
         <div id="reader" class="mb-4"></div>
 
         <div class="card p-3 bg-light border text-start shadow-sm" style="font-size: 0.9rem;">
-            <div class="mb-3">
+            <div class="mb-2">
                 <label class="form-label small fw-semibold mb-1">Kode Barcode Terpindai</label>
                 <div class="input-group input-group-sm">
                     <input type="text" id="scanBarcodeBarang" class="form-control fw-mono bg-white text-primary fw-bold" placeholder="Menunggu hasil scan kamera..." readonly>
                     <button class="btn btn-outline-secondary text-danger" type="button" onclick="resetFormScanner()" title="Kosongkan Barcode">🗑️</button>
                 </div>
+            </div>
+
+            <div id="boxInfoProduk" class="p-2 mb-3 text-center small info-produk-ditemukan d-none">
+                Nama Barang: <span id="textNamaProdukDitemukan" class="fw-bold text-uppercase"></span>
             </div>
 
             <div class="row g-2">
@@ -115,25 +127,41 @@
             document.getElementById('scanBarcodeBarang').value = decodedText;
             
             const boxTombolSimpan = document.getElementById('boxTombolSimpan');
+            const boxInfoProduk = document.getElementById('boxInfoProduk');
+            const textNamaProdukDitemukan = document.getElementById('textNamaProdukDitemukan');
+            
             let sudahAda = false;
+            let namaProdukTerdaftar = "";
 
+            // Lakukan perulangan untuk mengecek apakah barcode sudah terdaftar di data master
             for (let nama in masterProdukLokal) {
                 if (masterProdukLokal[nama].barcode && masterProdukLokal[nama].barcode === decodedText) {
                     sudahAda = true;
+                    namaProdukTerdaftar = nama; // Ambil nama barangnya
                     break;
                 }
             }
 
             if (sudahAda) {
+                // Sembunyikan tombol simpan agar tidak terjadi duplikasi data
                 boxTombolSimpan.classList.add('d-none');
+                
+                // Tampilkan info nama barang di bawah kotak barcode
+                textNamaProdukDitemukan.innerText = namaProdukTerdaftar;
+                boxInfoProduk.classList.remove('d-none');
+
                 Swal.fire({ 
                     title: "Sudah Terdaftar! ⚠️", 
-                    text: `Barcode ${decodedText} sudah terdaftar di sistem, tombol simpan disembunyikan.`, 
+                    text: `Barcode terdeteksi sebagai "${namaProdukTerdaftar}". Tombol simpan disembunyikan.`, 
                     icon: "info", 
                     customClass: { popup: 'rounded-4' } 
                 });
             } else {
+                // Jika barcode baru, tampilkan tombol simpan dan sembunyikan kotak info nama barang
                 boxTombolSimpan.classList.remove('d-none');
+                boxInfoProduk.classList.add('d-none');
+                textNamaProdukDitemukan.innerText = "";
+
                 Swal.fire({ title: "Terbaca! 🎉", text: `Kode: ${decodedText}`, icon: "success", timer: 1000, showConfirmButton: false, customClass: { popup: 'rounded-4' } });
             }
         }
@@ -155,6 +183,8 @@
         function resetFormScanner() {
             document.getElementById('scanBarcodeBarang').value = '';
             document.getElementById('boxTombolSimpan').classList.remove('d-none');
+            document.getElementById('boxInfoProduk').classList.add('d-none');
+            document.getElementById('textNamaProdukDitemukan').innerText = "";
         }
 
         function kirimBarcodeKeMaster() {
@@ -163,7 +193,6 @@
                 Swal.fire({ title: "Scan Belum Ada", text: "Silakan lakukan pemindaian barcode produk terlebih dahulu!", icon: "warning", customClass: { popup: 'rounded-4' } });
                 return;
             }
-            // REVISI: PENGIRIMAN DATA BARCODE LANGSUNG DIOPER KEMBALI KE DB_PRODUK.HTML
             window.location.href = `db_produk.html?scan_barcode=${encodeURIComponent(barcode)}`;
         }
     </script>
