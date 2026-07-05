@@ -222,10 +222,14 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Nama Barang / Scan Barcode</label>
-                            <div class="input-group">
+                            <div class="input-group mb-1">
                                 <input type="text" id="namaBarang" class="form-control" placeholder="Ketik nama atau ketik/scan nomor barcode..." list="listBarang" oninput="autoFillHarga()" required>
                                 <a href="input_scan.html" class="btn btn-primary fw-bold d-flex align-items-center justify-content-center" title="Buka Kamera Scan Barang" style="width: 45px;"><span class="material-symbols-outlined">barcode_reader</span></a>
-                                <button class="btn btn-outline-secondary text-danger" type="button" onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); document.getElementById('namaBarang').focus();" title="Kosongkan Semua Inputan">🗑️</button>
+                                <button class="btn btn-outline-secondary text-danger" type="button" id="btnHapusInput" onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); document.getElementById('namaBarang').focus();" title="Kosongkan Semua Inputan">🗑️</button>
+                            </div>
+                            <div class="form-check mt-1">
+                                <input class="form-check-input" type="checkbox" id="checkTanpaNama" onchange="toggleTanpaNamaBarang()">
+                                <label class="form-check-label small fw-bold text-secondary" for="checkTanpaNama">⬜ Tanpa Nama Barang</label>
                             </div>
                             <datalist id="listBarang"></datalist>
                         </div>
@@ -398,7 +402,7 @@
         <div class="row mt-5">
             <div class="col-12">
                 <div class="footer-copyright">
-                    <p class="text-update-info">Terakhir Diperbarui: 4 Juli 2026</p>
+                    <p class="text-update-info">Terakhir Diperbarui: 5 Juli 2026</p>
                     <p class="m-0">© 2026 Web Cashier. All Rights Reserved.</p>
                 </div>
             </div>
@@ -434,6 +438,16 @@
                     autoFillHarga();
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
+
+                if (antreanKeranjangSeketika.length > 0) {
+                    document.getElementById('infoMultiBarang').classList.remove('d-none');
+                    document.getElementById('labelSubtotal').innerText = "Subtotal (Barang Terakhir):";
+                    document.getElementById('infoMultiBarang').querySelector('span:first-child').innerText = `Total Gabungan (${antreanKeranjangSeketika.length} Barang):`;
+                    perbaruiTampilanRincian();
+                    hitungKalkulatorSeketika();
+                    normalisaiTombolSimpan();
+                    aturTampilanInputPembayaran();
+                }
             });
             database.ref(`kasir_users/${uid}/riwayat_penjualan`).on('value', (snapshot) => {
                 dataPenjualanLokal = snapshot.val() || [];
@@ -461,6 +475,28 @@
         let nilaiCashAsliSimpanan = 0;
         let nilaiTfAsliSimpanan = 0;
 
+        // REVISI FITUR: HANDLER UNTUK MENGUNCI/MEMBUKA INPUTAN BARANG BERDASARKAN CHECKBOX
+        window.toggleTanpaNamaBarang = function() {
+            const checkTanpaNama = document.getElementById('checkTanpaNama');
+            const inputNama = document.getElementById('namaBarang');
+            
+            if (checkTanpaNama.checked) {
+                inputNama.value = ""; 
+                inputNama.disabled = true;
+                inputNama.required = false; 
+                inputNama.readOnly = false;
+                document.getElementById('infoStokTersedia').innerText = "";
+                document.getElementById('jumlahPembelian').disabled = false;
+                document.getElementById('jumlahPembelian').type = "number";
+                normalisaiTombolSimpan();
+                document.getElementById('hargaTampilan').focus();
+            } else {
+                inputNama.disabled = false;
+                inputNama.required = true;
+                normalisaiTombolSimpan();
+            }
+        }
+
         inputHargaTampilan.addEventListener('input', function (e) {
             let nilaiBersih = e.target.value.replace(/\D/g, "");
             hargaAsli = Number(nilaiBersih) || 0;
@@ -472,7 +508,7 @@
             const namaInput = document.getElementById('namaBarang').value;
             const jumlahInput = Number(document.getElementById('jumlahPembelian').value) || 0;
 
-            if (masterProdukLokal.hasOwnProperty(namaInput)) {
+            if (masterProdukLokal.hasOwnProperty(namaInput) && !document.getElementById('checkTanpaNama').checked) {
                 let totalDipesan = jumlahInput;
                 antreanKeranjangSeketika.forEach(item => {
                     if (item.namaBarang === namaInput) totalDipesan += item.jumlahPembelian;
@@ -659,8 +695,14 @@
         document.getElementById('formPenjualan').addEventListener('submit', function (e) {
             e.preventDefault();
             const idData = document.getElementById('rowId').value;
-            const namaInput = document.getElementById('namaBarang').value;
+            let namaInput = document.getElementById('namaBarang').value;
             const jumlahInput = Number(document.getElementById('jumlahPembelian').value);
+            const checkTanpaNama = document.getElementById('checkTanpaNama');
+
+            // REVISI FITUR: JIKA CHECKBOX AKTIF, BERIKAN NAMA DEFAULT BARANG MANUAL
+            if (checkTanpaNama.checked) {
+                namaInput = "Barang Manual";
+            }
 
             if (idData !== "") {
                 const jenisBayarEdit = document.getElementById('jenisPembayaran').value;
@@ -683,10 +725,20 @@
             document.getElementById('labelSubtotal').innerText = "Subtotal (Barang Terakhir):";
             document.getElementById('infoMultiBarang').querySelector('span:first-child').innerText = `Total Gabungan (${antreanKeranjangSeketika.length} Barang):`;
 
-            document.getElementById('namaBarang').value = ""; document.getElementById('namaBarang').readOnly = false;
-            inputHargaTampilan.value = ""; inputHargaTampilan.readOnly = false;
-            document.getElementById('jumlahPembelian').value = ""; document.getElementById('jumlahPembelian').placeholder = "0";
-            document.getElementById('infoStokTersedia').innerText = ""; hargaAsli = 0;
+            // SELESAI ADD, RESET INPUT FORM KEMBALI
+            document.getElementById('namaBarang').value = ""; 
+            document.getElementById('namaBarang').readOnly = false;
+            inputHargaTampilan.value = ""; 
+            inputHargaTampilan.readOnly = false;
+            document.getElementById('jumlahPembelian').value = ""; 
+            document.getElementById('jumlahPembelian').placeholder = "0";
+            document.getElementById('infoStokTersedia').innerText = ""; 
+            hargaAsli = 0;
+
+            // RESET STATE CHECKBOX KEMBALI NORMAL
+            checkTanpaNama.checked = false;
+            document.getElementById('namaBarang').disabled = false;
+            document.getElementById('namaBarang').required = true;
 
             perbaruiTampilanRincian(); hitungKalkulatorSeketika(); normalisaiTombolSimpan(); aturTampilanInputPembayaran();
         });
@@ -723,7 +775,7 @@
                     teksMetodeKolom = jenisBayar;
                 }
 
-                dataPenjualanLokal.push({ namaBarang: item.namaBarang, hargaBarang: item.hargaBarang, jumlahPembelian: item.jumlahPembelian, dibayarCash: nominalCashPencatatan, dibayarTF: nominalTfPencatatan, jenisPembayaran: teksMetodeKolom });
+                dataPenjualanLokal.push({ namaBarang: item.namaBarang, hargaBarang: item.hargaBarang, Platform: "Web", jumlahPembelian: item.jumlahPembelian, dibayarCash: nominalCashPencatatan, dibayarTF: nominalTfPencatatan, jenisPembayaran: teksMetodeKolom });
             });
 
             simpanMasterKeFirebase(masterProdukLokal);
@@ -748,6 +800,10 @@
             document.getElementById('rowId').value = index;
             document.getElementById('namaBarang').value = nama;
             inputHargaTampilan.value = formatRupiah(price); hargaAsli = price;
+
+            // Nonaktifkan checkbox jika sedang mengedit data lama
+            document.getElementById('checkTanpaNama').checked = false;
+            document.getElementById('namaBarang').disabled = false;
 
             if (masterProdukLokal.hasOwnProperty(nama)) {
                 document.getElementById('namaBarang').readOnly = true;
@@ -823,13 +879,21 @@
             
             sessionStorage.removeItem('cadangan_keranjang_kasir');
 
-            perbaruiTampilanRincian(); document.getElementById('textSubtotalSeketika').innerText = "Rp 0"; document.getElementById('textKembalianSeketika').innerText = "Rp 0"; document.getElementById('textKembalianSeketika').className = "fs-5 fw-bold text-danger";
-            document.getElementById('boxSplitPembayaran').classList.add('d-none'); checkSplitTF.checked = false;
-            document.getElementById('namaBarang').readOnly = false; inputHargaTampilan.readOnly = false;
-            document.getElementById('jumlahPembelian').type = "number"; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = "0";
+            // KEMBALIKAN KOLOM INPUT KODE BARANG KE DEFAUTNYA
+            document.getElementById('checkTanpaNama').checked = false;
+            document.getElementById('namaBarang').disabled = false;
+            document.getElementById('namaBarang').required = true;
+            document.getElementById('namaBarang').readOnly = false; 
+            inputHargaTampilan.readOnly = false;
+            document.getElementById('jumlahPembelian').type = "number"; 
+            document.getElementById('jumlahPembelian').disabled = false; 
+            document.getElementById('jumlahPembelian').placeholder = "0";
             
             inputUangDiterimaTampilan.readOnly = false;
             document.getElementById('infoMultiBarang').classList.add('d-none');
+            
+            perbaruiTampilanRincian(); document.getElementById('textSubtotalSeketika').innerText = "Rp 0"; document.getElementById('textKembalianSeketika').innerText = "Rp 0"; document.getElementById('textKembalianSeketika').className = "fs-5 fw-bold text-danger";
+            document.getElementById('boxSplitPembayaran').classList.add('d-none'); checkSplitTF.checked = false;
             
             normalisaiTombolSimpan(); aturTampilanInputPembayaran(); buatRekomendasiBarang();
         }
@@ -887,6 +951,8 @@
         }
 
         function autoFillHarga() {
+            if(document.getElementById('checkTanpaNama').checked) return;
+
             const inputNama = document.getElementById('namaBarang');
             let namaInputVal = inputNama.value.trim();
             const inputHarga = document.getElementById('hargaTampilan');
@@ -918,4 +984,5 @@
         }
     </script>
 </body>
+
 </html>
