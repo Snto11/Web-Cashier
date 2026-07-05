@@ -8,10 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- LIBRARY GOOGLE MATERIAL ICONS (BARCODE READER) -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=barcode_reader" />
 
-    <!-- LIBRARY FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -114,6 +112,66 @@
             line-height: 1;
         }
 
+        /* REVISI CSS: STRUKTUR RESPONSIVE PADA MOBILE TANPA SCROLL KIRI KANAN */
+        @media (max-width: 575.98px) {
+            .mobile-tabel-responsive table, 
+            .mobile-tabel-responsive thead, 
+            .mobile-tabel-responsive tbody, 
+            .mobile-tabel-responsive th, 
+            .mobile-tabel-responsive td, 
+            .mobile-tabel-responsive tr { 
+                display: block !important; 
+            }
+            
+            .mobile-tabel-responsive thead tr { 
+                position: absolute !important;
+                top: -9999px !important;
+                left: -9999px !important;
+            }
+            
+            .mobile-tabel-responsive tr { 
+                border: 1px solid #dee2e6 !important; 
+                margin-bottom: 15px !important;
+                border-radius: 10px !important;
+                padding: 10px !important;
+                background-color: #ffffff !important;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.02) !important;
+            }
+            
+            .mobile-tabel-responsive td { 
+                border: none !important;
+                border-bottom: 1px dashed #eee !important; 
+                position: relative !important;
+                padding-left: 45% !important; 
+                text-align: right !important;
+                font-size: 0.85rem !important;
+                padding-top: 8px !important;
+                padding-bottom: 8px !important;
+            }
+            
+            .mobile-tabel-responsive td:last-child {
+                border-bottom: none !important;
+            }
+            
+            /* Terapkan Label Judul Kolom secara Virtual dari Atribut data-label */
+            .mobile-tabel-responsive td:before { 
+                position: absolute !important;
+                top: 8px !important;
+                left: 10px !important;
+                width: 40% !important; 
+                padding-right: 10px !important; 
+                white-space: nowrap !important;
+                text-align: left !important;
+                font-weight: bold !important;
+                color: #6c757d !important;
+                content: attr(data-label) !important;
+            }
+
+            .mobile-tabel-responsive td div.d-flex {
+                justify-content: flex-end !important;
+            }
+        }
+
         /* DESAIN KHUSUS SAAT DI-DOWNLOAD KE PDF */
         @media print {
             #navUserArea,
@@ -174,10 +232,8 @@
 
 <body>
 
-    <!-- PANGGIL KONFIGURASI -->
     <script src="firebase-config.js"></script>
 
-    <!-- PROTEKSI LOGIN -->
     <script>
         auth.onAuthStateChanged((user) => {
             if (!user) {
@@ -194,7 +250,6 @@
     </script>
 
     <div id="appContainer" class="container-fluid py-5 px-4 d-none">
-        <!-- Area Informasi Akun Pengguna & Tombol Keluar -->
         <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm border" id="navUserArea">
             <div class="d-flex align-items-center gap-2">
                 <img id="userPhoto" src="" alt="User" class="rounded-circle border border-primary border-2" style="width: 40px; height: 40px;">
@@ -213,7 +268,6 @@
         </div>
 
         <div class="row g-4">
-            <!-- SISI KIRI: INPUT FORM -->
             <div class="col-12 col-lg-4">
                 <div class="card p-4 sticky-top" style="top: 20px;">
                     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -235,7 +289,6 @@
                             </div>
                             <div class="form-check mt-1">
                                 <input class="form-check-input" type="checkbox" id="checkTanpaNama" onchange="toggleTanpaNamaBarang()">
-                                <!-- REVISI: EMOHI KOTAK PUTIH TELAH DIHAPUS MURNI TEKS SAJA -->
                                 <label class="form-check-label small fw-bold text-secondary" for="checkTanpaNama">Tanpa Nama Barang</label>
                             </div>
                             <datalist id="listBarang"></datalist>
@@ -324,7 +377,6 @@
                 </div>
             </div>
 
-            <!-- SISI KANAN: MONITOR OMSET & RIWAYAT -->
             <div class="col-12 col-lg-8">
                 <div class="mb-3 btn-block-privasi">
                     <button class="btn btn-outline-secondary w-100 fw-bold shadow-sm py-2" type="button" id="btnToggleOmset" onclick="togglePrivasiOmset()">👁️ Sembunyikan Semua Nominal Omset Toko</button>
@@ -383,7 +435,7 @@
                         </div>
                     </div>
 
-                    <div class="table-responsive">
+                    <div class="mobile-tabel-responsive">
                         <table class="table table-hover align-middle">
                             <thead class="table-dark">
                                 <tr>
@@ -417,10 +469,8 @@
         </div>
     </div>
 
-    <!-- PANGGIL SCRIPT UTILITAS GLOBAL BERSAMA -->
     <script src="script.js"></script>
 
-    <!-- LOGIKA JAVASCRIPT UTAMA KASIR -->
     <script>
         let masterProdukLokal = {};
         let dataPenjualanLokal = [];
@@ -641,7 +691,6 @@
                 if (result.isConfirmed) {
                     antreanKeranjangSeketika = [];
                     sessionStorage.removeItem('cadangan_keranjang_kasir');
-                    // Paksa hilangkan centang total karena kasir membatalkan antrean
                     resetForm(true);
                     Swal.fire({ title: "Dikosongkan!", text: "Rincian belanjaan berhasil dibersihkan.", icon: "success", timer: 1500, showConfirmButton: false, customClass: { popup: 'rounded-4' } });
                 }
@@ -671,7 +720,21 @@
                 let totalHargaItem = item.hargaBarang * item.jumlahPembelian;
                 let tampilMetode = item.jenisPembayaran === "Cash" ? "💵 Cash" : (item.jenisPembayaran === "TF" ? "📱 TF" : item.jenisPembayaran);
 
-                tbody.innerHTML += `<tr><td class="text-muted fw-semibold">${nomorUrut++}</td><td class="fw-bold">${item.namaBarang}</td><td>Rp ${formatRupiah(item.hargaBarang)}</td><td>${item.jumlahPembelian} Pcs</td><td class="fw-semibold">${tampilMetode}</td><td class="text-success fw-bold">Rp ${formatRupiah(totalHargaItem)}</td><td class="text-center btn-aksi-tabel"><div class="d-flex flex-row justify-content-center align-items-center"><button class="btn btn-warning btn-sm me-1 rounded shadow-sm" onclick="siapEdit(${index}, '${item.namaBarang}', ${item.hargaBarang}, ${item.jumlahPembelian}, '${item.jenisPembayaran}')">✏️</button><button class="btn btn-danger btn-sm rounded shadow-sm" onclick="hapusDataLokal(${index})">🗑️</button></div></td></tr>`;
+                // REVISI FITUR: PENAMBAHAN ATRIBUT DATA-LABEL UNTUK INTEGRASI STRUKTUR VERTIKAL MOBILE
+                tbody.innerHTML += `<tr>
+                    <td data-label="No." class="text-muted fw-semibold">${nomorUrut++}</td>
+                    <td data-label="Nama Barang" class="fw-bold">${item.namaBarang}</td>
+                    <td data-label="Harga">Rp ${formatRupiah(item.hargaBarang)}</td>
+                    <td data-label="Jumlah">${item.jumlahPembelian} Pcs</td>
+                    <td data-label="Pembayaran" class="fw-semibold">${tampilMetode}</td>
+                    <td data-label="Total" class="text-success fw-bold">Rp ${formatRupiah(totalHargaItem)}</td>
+                    <td data-label="Aksi" class="text-center btn-aksi-tabel">
+                        <div class="d-flex flex-row justify-content-center align-items-center">
+                            <button class="btn btn-warning btn-sm me-1 rounded shadow-sm" onclick="siapEdit(${index}, '${item.namaBarang}', ${item.hargaBarang}, ${item.jumlahPembelian}, '${item.jenisPembayaran}')">✏️</button>
+                            <button class="btn btn-danger btn-sm rounded shadow-sm" onclick="hapusDataLokal(${index})">🗑️</button>
+                        </div>
+                    </td>
+                </tr>`;
             });
 
             omsetCashSistem = r_cash;
@@ -734,7 +797,6 @@
             document.getElementById('labelSubtotal').innerText = "Subtotal (Barang Terakhir):";
             document.getElementById('infoMultiBarang').querySelector('span:first-child').innerText = `Total Gabungan (${antreanKeranjangSeketika.length} Barang):`;
 
-            // REVISI LOGIKA: AMANKAN CENTANG SEBELUM METODE RESET() BERJALAN
             const statusCentangSaatIni = checkTanpaNama.checked;
 
             document.getElementById('namaBarang').value = ""; 
@@ -744,7 +806,6 @@
             document.getElementById('infoStokTersedia').innerText = ""; 
             hargaAsli = 0;
 
-            // Kembalikan paksa status centang setelah pembersihan form
             checkTanpaNama.checked = statusCentangSaatIni;
 
             if (checkTanpaNama.checked) {
@@ -797,7 +858,7 @@
             
             antreanKeranjangSeketika = []; 
             sessionStorage.removeItem('cadangan_keranjang_kasir');
-            resetForm(true); // Dilepas total centangnya saat semua transaksi final berhasil disimpan
+            resetForm(true);
         }
 
         function siapEdit(index, nama, price, jumlah, pembayaran) {
@@ -884,7 +945,6 @@
         }
 
         function resetForm(forceUncheckMaster = false) {
-            // REVISI LOGIKA: AMANKAN STATUS CENTANG SEBELUM FORM RESET BAWAAN BERJALAN
             const checkTanpaNama = document.getElementById('checkTanpaNama');
             const statusCentangSaatIni = checkTanpaNama.checked;
 
@@ -895,15 +955,12 @@
             
             sessionStorage.removeItem('cadangan_keranjang_kasir');
 
-            // Jika dipaksa batal total / selesai transaksi, hilangkan centang
             if (forceUncheckMaster) {
                 checkTanpaNama.checked = false;
             } else {
-                // Pertahankan status centang asli jika hanya dipicu penambahan barang biasa
                 checkTanpaNama.checked = statusCentangSaatIni;
             }
 
-            // Atur kesesuaian inputan berdasarkan kondisi akhir checkbox
             if (checkTanpaNama.checked) {
                 document.getElementById('namaBarang').disabled = true;
                 document.getElementById('namaBarang').required = false;
