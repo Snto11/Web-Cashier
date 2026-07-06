@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Web-Cashier</title>
+    <title>Web-Cashier - Kasir</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -29,17 +29,6 @@
             font-weight: bold;
         }
 
-        .card-summary {
-            border-left: 5px solid;
-        }
-
-        .status-badge {
-            font-size: 0.9rem;
-            font-weight: bold;
-            padding: 5px 10px;
-            border-radius: 20px;
-        }
-
         .bg-kalkulator {
             background-color: #f1f3f5;
             border-radius: 10px;
@@ -47,7 +36,6 @@
             border-left: 5px solid #6c757d;
         }
 
-        /* CSS baris rincian belanja kolom sejajar lurus */
         .rincian-item {
             font-size: 0.8rem;
             border-bottom: 1px dashed #ced4da;
@@ -80,7 +68,6 @@
             font-weight: bold;
         }
 
-        /* Footer Copyright Style */
         .footer-copyright {
             text-align: center;
             color: #6c757d;
@@ -88,14 +75,12 @@
             font-weight: 500;
         }
 
-        /* Style Teks Informasi Update Halaman */
         .text-update-info {
             font-size: 0.8rem;
             color: #adb5bd;
             margin-bottom: 2px;
         }
 
-        /* STYLE KHUSUS INPUTAN SAAT TERKUNCI (READ-ONLY) */
         #namaBarang:read-only,
         #hargaTampilan:read-only,
         #uangDiterimaTampilan:read-only {
@@ -110,122 +95,6 @@
             vertical-align: middle;
             display: inline-block;
             line-height: 1;
-        }
-
-        /* STRUKTUR RESPONSIVE PADA MOBILE TANPA SCROLL KIRI KANAN */
-        @media (max-width: 575.98px) {
-            .mobile-tabel-responsive table, 
-            .mobile-tabel-responsive thead, 
-            .mobile-tabel-responsive tbody, 
-            .mobile-tabel-responsive th, 
-            .mobile-tabel-responsive td, 
-            .mobile-tabel-responsive tr { 
-                display: block !important; 
-            }
-            
-            .mobile-tabel-responsive thead tr { 
-                position: absolute !important;
-                top: -9999px !important;
-                left: -9999px !important;
-            }
-            
-            .mobile-tabel-responsive tr { 
-                border: 1px solid #dee2e6 !important; 
-                margin-bottom: 15px !important;
-                border-radius: 10px !important;
-                padding: 10px !important;
-                background-color: #ffffff !important;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.02) !important;
-            }
-            
-            .mobile-tabel-responsive td { 
-                border: none !important;
-                border-bottom: 1px dashed #eee !important; 
-                position: relative !important;
-                padding-left: 45% !important; 
-                text-align: right !important;
-                font-size: 0.85rem !important;
-                padding-top: 8px !important;
-                padding-bottom: 8px !important;
-            }
-            
-            .mobile-tabel-responsive td:last-child {
-                border-bottom: none !important;
-            }
-            
-            /* Terapkan Label Judul Kolom secara Virtual dari Atribut data-label */
-            .mobile-tabel-responsive td:before { 
-                position: absolute !important;
-                top: 8px !important;
-                left: 10px !important;
-                width: 40% !important; 
-                padding-right: 10px !important; 
-                white-space: nowrap !important;
-                text-align: left !important;
-                font-weight: bold !important;
-                color: #6c757d !important;
-                content: attr(data-label) !important;
-            }
-
-            .mobile-tabel-responsive td div.d-flex {
-                justify-content: flex-end !important;
-            }
-        }
-
-        /* DESAIN KHUSUS SAAT DI-DOWNLOAD KE PDF */
-        @media print {
-            #navUserArea,
-            .col-lg-4,
-            #formPenjualan,
-            #formTitle,
-            .mb-select-bayar,
-            .btn-block-privasi,
-            .footer-copyright {
-                display: none !important;
-            }
-
-            .border-warning,
-            #uangFisikTampilan,
-            #statusLaciBadge,
-            #textSelisih {
-                display: none !important;
-            }
-
-            .btn-pdf,
-            .btn-outline-danger,
-            .btn-aksi-tabel,
-            .text-center-aksi {
-                display: none !important;
-            }
-
-            .col-lg-8 {
-                width: 100% !important;
-                flex: 0 0 100% !important;
-                max-width: 100% !important;
-            }
-
-            body {
-                background-color: #ffffff !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-
-            .card {
-                box-shadow: none !important;
-                border: 1px solid #dee2e6 !important;
-                background-color: #ffffff !important;
-                margin-bottom: 20px !important;
-            }
-
-            .print-header {
-                display: block !important;
-                text-align: center;
-                margin-bottom: 25px;
-            }
-        }
-
-        .print-header {
-            display: none;
         }
     </style>
 </head>
@@ -261,18 +130,12 @@
             <button class="btn btn-sm btn-danger fw-bold shadow-sm" onclick="auth.signOut()">👋 Logout</button>
         </div>
 
-        <div class="print-header">
-            <h2 class="fw-bold m-0 text-uppercase">Laporan Data Penjualan Toko</h2>
-            <p class="text-muted mt-1 mb-2" id="printTanggal"></p>
-            <hr style="border: 1px solid #222; opacity: 1; margin: 10px 0;">
-        </div>
-
         <div class="row g-4">
-            <div class="col-12 col-lg-4">
-                <div class="card p-4 sticky-top" style="top: 20px;">
+            <div class="col-12 col-md-6 col-lg-5 mx-auto">
+                <div class="card p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h3 id="formTitle" class="m-0 fw-bold text-primary" style="font-size: 1.5rem;">🛒 Input Penjualan</h3>
-                        <div class="d-flex flex-column align-items-end">
+                        <div class="d-flex flex-column align-items-end gap-1">
                             <a href="db_produk.html" class="btn btn-outline-secondary btn-sm fw-bold shadow-sm">⚙️ Atur Produk</a>
                         </div>
                     </div>
@@ -374,88 +237,9 @@
 
                         <button type="button" id="btnSelesaiMulti" class="btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2 d-none" onclick="selesaikanTransactionsGabungan()">🛒 Selesaikan Transaksi (Simpan Semua)</button>
                     </form>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-8">
-                <div class="mb-3 btn-block-privasi">
-                    <button class="btn btn-outline-secondary w-100 fw-bold shadow-sm py-2" type="button" id="btnToggleOmset" onclick="togglePrivasiOmset()">👁️ Sembunyikan Semua Nominal Omset Toko</button>
-                </div>
-
-                <div class="row g-3 mb-4">
-                    <div class="col-12 col-sm-4">
-                        <div class="card card-summary p-3 bg-white border-success h-100">
-                            <small class="text-success fw-bold text-uppercase">💰 Omset Sistem (CASH)</small>
-                            <h4 class="text-dark fw-bold m-0 mt-1" id="totalCashToko">Rp 0</h4>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-4">
-                        <div class="card card-summary p-3 bg-white border-info h-100">
-                            <small class="text-info fw-bold text-uppercase">📱 Omset Sistem (TF)</small>
-                            <h4 class="text-dark fw-bold m-0 mt-1" id="totalTfToko">Rp 0</h4>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-4">
-                        <div class="card card-summary p-3 bg-white border-primary h-100">
-                            <small class="text-primary fw-bold text-uppercase">📊 Total Semua Omset</small>
-                            <h4 class="text-dark fw-bold m-0 mt-1" id="totalSemuaToko">Rp 0</h4>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card p-4 mb-4 border-start border-warning border-5">
-                    <h5 class="fw-bold text-warning mb-3">🔍 Validasi & Cek Uang Fisik Laci (Cash)</h5>
-                    <div class="row align-items-center g-3">
-                        <div class="col-12 col-sm-6">
-                            <label class="form-label small fw-bold text-secondary">Masukkan Total Uang Cash Nyata di Laci:</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-warning text-dark">Rp</span>
-                                <input type="text" id="uangFisikTampilan" inputmode="numeric" class="form-control form-control-lg border-warning" placeholder="Masukkan uang di laci...">
-                                <button class="btn btn-outline-warning text-danger fw-bold" type="button" onclick="document.getElementById('uangFisikTampilan').value = ''; uangFisikAsli = 0; hitungSelisihLaci();" title="Kosongkan Uang Fisik">🗑️</button>
-                            </div>
-                        </div>
-                        <div class="col-12 col-sm-6 text-sm-start">
-                            <div class="p-2 rounded bg-light border">
-                                <div class="small fw-semibold text-muted">Selisih / Status Laci:</div>
-                                <div class="d-flex align-items-center mt-1">
-                                    <span id="statusLaciBadge" class="status-badge bg-secondary text-white me-2">Belum Diinput</span>
-                                    <h4 class="m-0 fw-bold text-dark" id="textSelisih">Rp 0</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card p-4">
-                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
-                        <h3 class="fw-bold text-secondary m-0">📊 Riwayat Penjualan</h3>
-                        <div class="d-flex gap-2 align-items-center">
-                            <button class="btn btn-danger btn-pdf fw-bold shadow-sm" onclick="downloadPDFDataOnly()">📄 Download PDF Data</button>
-                            <button class="btn btn-outline-danger btn-sm" onclick="bersihkanSemuaData()" title="Hapus Data">🗑️</button>
-                        </div>
-                    </div>
-
-                    <div class="mobile-tabel-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th style="width: 5%;">No.</th>
-                                    <th>Tanggal</th>
-                                    <th>Nama Barang</th>
-                                    <th>Harga</th>
-                                    <th>Jumlah</th>
-                                    <th>Pembayaran</th>
-                                    <th>Total</th>
-                                    <th class="text-center text-center-aksi" style="white-space: nowrap;">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelBody">
-                                <tr>
-                                    <td colspan="8" class="text-center text-muted py-4">Belum ada data penjualan.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    
+                    <hr class="my-3">
+                    <a href="penjualan.html" class="btn btn-secondary w-100 fw-bold shadow-sm py-2">📊 Buka Data & Omset Penjualan</a>
                 </div>
             </div>
         </div>
@@ -475,13 +259,11 @@
     <script>
         let masterProdukLokal = {};
         let dataPenjualanLokal = [];
-
         let antreanKeranjangSeketika = [];
+        
         try {
             const cadanganKeranjang = sessionStorage.getItem('cadangan_keranjang_kasir');
-            if (cadanganKeranjang) {
-                antreanKeranjangSeketika = JSON.parse(cadanganKeranjang);
-            }
+            if (cadanganKeranjang) antreanKeranjangSeketika = JSON.parse(cadanganKeranjang);
         } catch (e) {
             antreanKeranjangSeketika = [];
         }
@@ -512,7 +294,6 @@
             });
             database.ref(`kasir_users/${uid}/riwayat_penjualan`).on('value', (snapshot) => {
                 dataPenjualanLokal = snapshot.val() || [];
-                muatDataLokal();
             });
         }
 
@@ -525,16 +306,10 @@
         }
 
         const inputHargaTampilan = document.getElementById('hargaTampilan');
-        const inputUangFisikTampilan = document.getElementById('uangFisikTampilan');
         const inputUangDiterimaTampilan = document.getElementById('uangDiterimaTampilan');
 
         let hargaAsli = 0;
-        let omsetCashSistem = 0;
-        let uangFisikAsli = 0;
         let uangDiterimaAsli = 0;
-        let isOmsetTersembunyi = false;
-        let nilaiCashAsliSimpanan = 0;
-        let nilaiTfAsliSimpanan = 0;
 
         window.toggleTanpaNamaBarang = function() {
             const checkTanpaNama = document.getElementById('checkTanpaNama');
@@ -610,13 +385,6 @@
             uangDiterimaAsli = Number(nilaiBersih) || 0;
             e.target.value = formatRupiah(nilaiBersih);
             hitungKalkulatorSeketika();
-        });
-
-        inputUangFisikTampilan.addEventListener('input', function (e) {
-            let nilaiBersih = e.target.value.replace(/\D/g, "");
-            uangFisikAsli = Number(nilaiBersih) || 0;
-            e.target.value = nilaiBersih === "" ? "" : formatRupiah(nilaiBersih);
-            hitungSelisihLaci();
         });
 
         function hitungKalkulatorSeketika() {
@@ -700,76 +468,6 @@
             });
         }
 
-        function muatDataLokal() {
-            const tbody = document.getElementById('tabelBody');
-            tbody.innerHTML = '';
-            let r_cash = 0; let r_tf = 0;
-
-            if (dataPenjualanLokal.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4">Belum ada data penjualan di perangkat ini.</td></tr>';
-                nilaiCashAsliSimpanan = 0; nilaiTfAsliSimpanan = 0;
-                perbaruiTampilanOmsetDOM(0, 0); omsetCashSistem = 0;
-                hitungSelisihLaci();
-                aturTampilanInputPembayaran();
-                return;
-            }
-
-            let nomorUrut = 1;
-            dataPenjualanLokal.forEach((item, index) => {
-                let cashRiil = item.hasOwnProperty('dibayarCash') ? item.dibayarCash : (item.jenisPembayaran === "Cash" ? item.hargaBarang * item.jumlahPembelian : 0);
-                let tfRiil = item.hasOwnProperty('dibayarTF') ? item.dibayarTF : (item.jenisPembayaran === "TF" ? item.hargaBarang * item.jumlahPembelian : 0);
-                r_cash += cashRiil; r_tf += tfRiil;
-
-                let totalHargaItem = item.hargaBarang * item.jumlahPembelian;
-                let tampilMetode = item.jenisPembayaran === "Cash" ? "💵 Cash" : (item.jenisPembayaran === "TF" ? "📱 TF" : item.jenisPembayaran);
-                
-                let tglTampil = item.waktuTransaksi ? item.waktuTransaksi : "-";
-
-                tbody.innerHTML += `<tr>
-                    <td data-label="No." class="text-muted fw-semibold">${nomorUrut++}</td>
-                    <td data-label="Tanggal" class="small text-secondary" style="font-size:0.8rem;">${tglTampil}</td>
-                    <td data-label="Nama Barang" class="fw-bold">${item.namaBarang}</td>
-                    <td data-label="Harga">Rp ${formatRupiah(item.hargaBarang)}</td>
-                    <td data-label="Jumlah">${item.jumlahPembelian} Pcs</td>
-                    <td data-label="Pembayaran" class="fw-semibold">${tampilMetode}</td>
-                    <td data-label="Total" class="text-success fw-bold">Rp ${formatRupiah(totalHargaItem)}</td>
-                    <td data-label="Aksi" class="text-center btn-aksi-tabel">
-                        <div class="d-flex flex-row justify-content-center align-items-center">
-                            <button class="btn btn-warning btn-sm me-1 rounded shadow-sm" onclick="siapEdit(${index}, '${item.namaBarang}', ${item.hargaBarang}, ${item.jumlahPembelian}, '${item.jenisPembayaran}', '${tglTampil}')">✏️</button>
-                            <button class="btn btn-danger btn-sm rounded shadow-sm" onclick="hapusDataLokal(${index})">🗑️</button>
-                        </div>
-                    </td>
-                </tr>`;
-            });
-
-            omsetCashSistem = r_cash;
-            nilaiCashAsliSimpanan = r_cash;
-            nilaiTfAsliSimpanan = r_tf;
-            perbaruiTampilanOmsetDOM(r_cash, r_tf);
-            hitungSelisihLaci();
-            aturTampilanInputPembayaran();
-        }
-
-        function perbaruiTampilanOmsetDOM(cash, tf) {
-            if (isOmsetTersembunyi) {
-                document.getElementById('totalCashToko').innerText = "******";
-                document.getElementById('totalTfToko').innerText = "******";
-                document.getElementById('totalSemuaToko').innerText = "******";
-            } else {
-                document.getElementById('totalCashToko').innerText = "Rp " + formatRupiah(cash);
-                document.getElementById('totalTfToko').innerText = "Rp " + formatRupiah(tf);
-                document.getElementById('totalSemuaToko').innerText = "Rp " + formatRupiah(cash + tf);
-            }
-        }
-
-        function togglePrivasiOmset() {
-            isOmsetTersembunyi = !isOmsetTersembunyi;
-            const btn = document.getElementById('btnToggleOmset');
-            btn.innerText = isOmsetTersembunyi ? "👁️ Tampilkan Semua Nominal Omset Toko" : "👁️ Sembunyikan Semua Nominal Omset Toko";
-            btn.className = isOmsetTersembunyi ? "btn btn-secondary w-100 fw-bold shadow-sm py-2" : "btn btn-outline-secondary w-100 fw-bold shadow-sm py-2";
-            perbaruiTampilanOmsetDOM(nilaiCashAsliSimpanan, nilaiTfAsliSimpanan);
-        }
-
         document.getElementById('formPenjualan').addEventListener('submit', function (e) {
             e.preventDefault();
             const idData = document.getElementById('rowId').value;
@@ -777,9 +475,7 @@
             const jumlahInput = Number(document.getElementById('jumlahPembelian').value);
             const checkTanpaNama = document.getElementById('checkTanpaNama');
 
-            if (checkTanpaNama.checked) {
-                namaInput = "Barang Manual";
-            }
+            if (checkTanpaNama.checked) namaInput = "Barang Manual";
 
             if (idData !== "") {
                 const jenisBayarEdit = document.getElementById('jenisPembayaran').value;
@@ -788,7 +484,6 @@
                     document.getElementById('jenisPembayaran').focus(); return;
                 }
                 let tglLama = dataPenjualanLokal[idData].waktuTransaksi || "-";
-                
                 dataPenjualanLokal[idData] = { namaBarang: namaInput, hargaBarang: hargaAsli, jumlahPembelian: jumlahInput, jenisPembayaran: jenisBayarEdit, waktuTransaksi: tglLama };
                 simpanRiwayatKeFirebase(dataPenjualanLokal);
                 Swal.fire({ title: "Diperbarui!", text: "Transaksi berhasil diubah.", icon: "success", timer: 1500, showConfirmButton: false });
@@ -796,7 +491,6 @@
             }
 
             antreanKeranjangSeketika.push({ namaBarang: namaInput, hargaBarang: hargaAsli, jumlahPembelian: jumlahInput });
-            
             sessionStorage.setItem('cadangan_keranjang_kasir', JSON.stringify(antreanKeranjangSeketika));
 
             document.getElementById('infoMultiBarang').classList.remove('d-none');
@@ -805,17 +499,10 @@
             document.getElementById('infoMultiBarang').querySelector('span:first-child').innerText = `Total Gabungan (${antreanKeranjangSeketika.length} Barang):`;
 
             const statusCentangSaatIni = checkTanpaNama.checked;
-
-            document.getElementById('namaBarang').value = ""; 
-            inputHargaTampilan.value = ""; 
-            document.getElementById('jumlahPembelian').value = ""; 
-            document.getElementById('jumlahPembelian').placeholder = "0";
-            document.getElementById('infoStokTersedia').innerText = ""; 
+            document.getElementById('formPenjualan').reset();
             hargaAsli = 0;
-
             document.getElementById('namaBarang').readOnly = false;
             inputHargaTampilan.readOnly = false;
-
             checkTanpaNama.checked = statusCentangSaatIni;
 
             if (checkTanpaNama.checked) {
@@ -827,7 +514,7 @@
             }
 
             perbaruiTampilanRincian(); hitungKalkulatorSeketika(); normalisaiTombolSimpan(); aturTampilanInputPembayaran();
-            buatRekomendasiBarang(); // Reset isi datalist penuh setelah disubmit
+            buatRekomendasiBarang();
         });
 
         function selesaikanTransactionsGabungan() {
@@ -879,90 +566,22 @@
 
             simpanMasterKeFirebase(masterProdukLokal);
             simpanRiwayatKeFirebase(dataPenjualanLokal);
-            Swal.fire({ title: "Transaksi Sukses! 🎉", text: "Data disinkronkan ke Cloud Firebase.", icon: "success", timer: 2000, showConfirmButton: false });
+            Swal.fire({ title: "Transaksi Sukses! 🎉", text: "Data disinkronkan ke Firebase.", icon: "success", timer: 2000, showConfirmButton: false });
             
             antreanKeranjangSeketika = []; 
             sessionStorage.removeItem('cadangan_keranjang_kasir');
             resetForm(true);
         }
 
-        function siapEdit(index, nama, price, jumlah, pembayaran, tanggalLama) {
-            antreanKeranjangSeketika = [];
-            sessionStorage.removeItem('cadangan_keranjang_kasir');
-            
-            document.getElementById('formTitle').innerText = "✏️ Edit Penjualan";
-            document.getElementById('formTitle').className = "text-center mb-4 fw-bold text-warning";
-            document.getElementById('btnBatal').classList.remove('d-none');
-            document.getElementById('btnSelesaiMulti').classList.add('d-none');
-            document.getElementById('infoMultiBarang').classList.add('d-none');
-
-            document.getElementById('rowId').value = index;
-            document.getElementById('namaBarang').value = nama;
-            inputHargaTampilan.value = formatRupiah(price); hargaAsli = price;
-
-            document.getElementById('checkTanpaNama').checked = false;
-            document.getElementById('namaBarang').disabled = false;
-
-            if (masterProdukLokal.hasOwnProperty(nama)) {
-                document.getElementById('namaBarang').readOnly = true;
-                inputHargaTampilan.readOnly = true;
-                document.getElementById('infoStokTersedia').innerText = `(Tersedia: ${masterProdukLokal[nama].stok} Pcs)`;
-
-                if (masterProdukLokal[nama].stok <= 0) {
-                    document.getElementById('jumlahPembelian').type = "text"; document.getElementById('jumlahPembelian').value = ""; document.getElementById('jumlahPembelian').placeholder = "Stok habis"; document.getElementById('jumlahPembelian').disabled = true;
-                    const btnSimpan = document.getElementById('btnSimpan'); btnSimpan.disabled = true; btnSimpan.innerText = "⚠️ Barang Tidak Cukup"; btnSimpan.className = "btn btn-danger btn-lg w-100 fw-bold shadow-sm";
-                } else {
-                    document.getElementById('jumlahPembelian').type = "number"; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = "0"; document.getElementById('jumlahPembelian').value = jumlah; normalisaiTombolSimpan();
-                }
-            } else {
-                document.getElementById('namaBarang').readOnly = false; inputHargaTampilan.readOnly = false; document.getElementById('infoStokTersedia').innerText = ""; document.getElementById('jumlahPembelian').type = "number"; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').value = jumlah; normalisaiTombolSimpan();
-            }
-            perbaruiTampilanRincian(); aturTampilanInputPembayaran();
-            document.getElementById('boxSplitPembayaran').classList.add('d-none'); checkSplitTF.checked = false;
-        }
-
-        function hapusDataLokal(index) {
-            Swal.fire({ title: "Hapus?", text: "Data dihapus dari Cloud!", icon: "warning", showCancelButton: true, confirmButtonColor: "#d33", confirmButtonText: "Ya, Hapus!" }).then((result) => {
-                if (result.isConfirmed) {
-                    dataPenjualanLokal.splice(index, 1);
-                    simpanRiwayatKeFirebase(dataPenjualanLokal);
-                }
-            });
-        }
-
-        function bersihkanSemuaData() {
-            Swal.fire({ title: "Kosongkan Semua?", text: "Tindakan ini menghapus seluruh riwayat di Firebase!", icon: "error", showCancelButton: true, confirmButtonColor: "#dc3545", confirmButtonText: "Ya, Kosongkan!" }).then((result) => {
-                if (result.isConfirmed) simpanRiwayatKeFirebase([]);
-            });
-        }
-
-        function hitungSelisihLaci() {
-            const infoBadge = document.getElementById('statusLaciBadge');
-            const textSelisih = document.getElementById('textSelisih');
-            if (inputUangFisikTampilan.value === "") {
-                infoBadge.innerText = "Belum Diinput"; infoBadge.className = "status-badge bg-secondary text-white me-2";
-                textSelisih.innerText = "Rp 0"; textSelisih.className = "m-0 fw-bold text-dark"; return;
-            }
-            const selisih = uangFisikAsli - omsetCashSistem;
-            textSelisih.innerText = "Rp " + formatRupiah(selisih);
-            if (selisih === 0) { infoBadge.innerText = "✅ PAS Sesuai"; infoBadge.className = "status-badge bg-success text-white me-2"; textSelisih.className = "m-0 fw-bold text-success"; }
-            else if (selisih < 0) { infoBadge.innerText = "❌ MINUS (Kurang)"; infoBadge.className = "status-badge bg-danger text-white me-2"; textSelisih.className = "m-0 fw-bold text-danger"; }
-            else { infoBadge.innerText = "⚠️ LEBIH"; infoBadge.className = "status-badge bg-warning text-dark me-2"; textSelisih.className = "m-0 fw-bold text-warning"; }
-        }
-
         function toggleUangPasHandler() {
             const chkUangPas = document.getElementById('checkUangPas');
             if (chkUangPas && chkUangPas.checked) {
                 let totalSeluruhBelanja = 0;
-                antreanKeranjangSeketika.forEach(item => {
-                    totalSeluruhBelanja += (item.hargaBarang * item.jumlahPembelian);
-                });
-                
+                antreanKeranjangSeketika.forEach(item => totalSeluruhBelanja += (item.hargaBarang * item.jumlahPembelian));
                 uangDiterimaAsli = totalSeluruhBelanja;
                 inputUangDiterimaTampilan.value = formatRupiah(totalSeluruhBelanja);
                 inputUangDiterimaTampilan.readOnly = true;
             } else {
-                fancyUangDiterimaAsli = 0;
                 inputUangDiterimaTampilan.value = "";
                 inputUangDiterimaTampilan.readOnly = false;
             }
@@ -973,18 +592,17 @@
             const checkTanpaNama = document.getElementById('checkTanpaNama');
             const statusCentangSaatIni = checkTanpaNama.checked;
 
-            document.getElementById('formPenjualan').reset(); document.getElementById('rowId').value = "";
-            document.getElementById('formTitle').innerText = "🛒 Input Penjualan"; document.getElementById('formTitle').className = "text-center mb-4 fw-bold text-primary";
-            document.getElementById('btnBatal').classList.add('d-none'); document.getElementById('infoStokTersedia').innerText = "";
+            document.getElementById('formPenjualan').reset(); 
+            document.getElementById('rowId').value = "";
+            document.getElementById('formTitle').innerText = "🛒 Input Penjualan"; 
+            document.getElementById('formTitle').className = "m-0 fw-bold text-primary";
+            document.getElementById('btnBatal').classList.add('d-none'); 
+            document.getElementById('infoStokTersedia').innerText = "";
             hargaAsli = 0; uangDiterimaAsli = 0; antreanKeranjangSeketika = [];
-            
             sessionStorage.removeItem('cadangan_keranjang_kasir');
 
-            if (forceUncheckMaster) {
-                checkTanpaNama.checked = false;
-            } else {
-                checkTanpaNama.checked = statusCentangSaatIni;
-            }
+            if (forceUncheckMaster) checkTanpaNama.checked = false;
+            else checkTanpaNama.checked = statusCentangSaatIni;
 
             if (checkTanpaNama.checked) {
                 document.getElementById('namaBarang').disabled = true;
@@ -996,24 +614,10 @@
             
             document.getElementById('namaBarang').readOnly = false; 
             inputHargaTampilan.readOnly = false;
-            
-            document.getElementById('jumlahPembelian').type = "number"; 
-            document.getElementById('jumlahPembelian').disabled = false; 
-            document.getElementById('jumlahPembelian').placeholder = "0";
-            
-            inputUangDiterimaTampilan.readOnly = false;
             document.getElementById('infoMultiBarang').classList.add('d-none');
             
-            perbaruiTampilanRincian(); document.getElementById('textSubtotalSeketika').innerText = "Rp 0"; document.getElementById('textKembalianSeketika').innerText = "Rp 0"; document.getElementById('textKembalianSeketika').className = "fs-5 fw-bold text-danger";
-            document.getElementById('boxSplitPembayaran').classList.add('d-none'); checkSplitTF.checked = false;
-            
+            perbaruiTampilanRincian(); document.getElementById('textSubtotalSeketika').innerText = "Rp 0"; document.getElementById('textKembalianSeketika').innerText = "Rp 0";
             normalisaiTombolSimpan(); aturTampilanInputPembayaran(); buatRekomendasiBarang();
-        }
-
-        function downloadPDFDataOnly() {
-            if (dataPenjualanLokal.length === 0) { alert("Tidak ada data transaksi."); return; }
-            document.getElementById('printTanggal').innerText = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
-            window.print();
         }
 
         function aturTampilanInputPembayaran() {
@@ -1026,28 +630,19 @@
             
             if (antreanKeranjangSeketika.length === 0) {
                 areaInputCash.style.display = 'none'; 
-                btnSelesai.style.setProperty('display', 'none', 'important');
-                btnSelesai.disabled = true; 
-                
-                document.getElementById('infoMultiBarang').classList.add('d-none');
+                btnSelesai.classList.add('d-none');
                 return;
             }
             
             areaInputCash.style.display = jenisBayar === "Cash" ? 'block' : 'none';
             if (jenisBayar === "Cash") {
-                const chkUangPas = document.getElementById('checkUangPas');
-                if(chkUangPas) chkUangPas.checked = false;
-                inputUangDiterimaTampilan.readOnly = false;
-
                 hitungKalkulatorSeketika();
             } else if (jenisBayar === "TF") { 
                 btnSelesai.disabled = false; 
-                btnSelesai.className = "btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2"; 
-                btnSelesai.style.setProperty('display', 'block', 'important');
+                btnSelesai.classList.remove('d-none');
             } else { 
                 btnSelesai.disabled = true; 
-                btnSelesai.className = "btn btn-secondary btn-lg w-100 fw-bold shadow-sm mt-2 opacity-50"; 
-                btnSelesai.style.setProperty('display', 'block', 'important');
+                btnSelesai.classList.remove('d-none');
             }
         }
 
@@ -1056,30 +651,19 @@
             if (!datalist) return; datalist.innerHTML = '';
             for (let nama in masterProdukLokal) {
                 let optionNama = document.createElement('option'); optionNama.value = nama; datalist.appendChild(optionNama);
-                if (masterProdukLokal[nama].barcode) {
-                    let optionBarcode = document.createElement('option'); optionBarcode.value = masterProdukLokal[nama].barcode; optionBarcode.label = `[Barcode] ${nama}`; datalist.appendChild(optionBarcode);
-                }
             }
         }
 
-        // REVISI FITUR BARU: PENYARINGAN REKOMENDASI PINTAR REAL-TIME BERDASARKAN HURUFA/ANGKA
         window.aturPenyaringanRekomendasiSeketika = function(kataKunci) {
             const datalist = document.getElementById('listBarang');
             if (!datalist) return;
-            
             const bersih = kataKunci.trim();
-            if (bersih === "") {
-                buatRekomendasiBarang();
-                return;
-            }
-
-            // Deteksi apakah kata kunci dominan berisi angka (indikasi input barcode)
+            if (bersih === "") { buatRekomendasiBarang(); return; }
             const apakahBarcode = /^\d+$/.test(bersih);
             datalist.innerHTML = '';
 
             for (let nama in masterProdukLokal) {
                 if (apakahBarcode) {
-                    // Jika mengetik nomor barcode, cukup tampilkan data barcode yang cocok
                     if (masterProdukLokal[nama].barcode) {
                         let optionBarcode = document.createElement('option');
                         optionBarcode.value = masterProdukLokal[nama].barcode;
@@ -1087,7 +671,6 @@
                         datalist.appendChild(optionBarcode);
                     }
                 } else {
-                    // Jika mengetik nama barang (huruf), cukup tampilkan nama barang saja
                     let optionNama = document.createElement('option');
                     optionNama.value = nama;
                     datalist.appendChild(optionNama);
@@ -1097,7 +680,6 @@
 
         function autoFillHarga() {
             if(document.getElementById('checkTanpaNama').checked) return;
-
             const inputNama = document.getElementById('namaBarang');
             let namaInputVal = inputNama.value.trim();
             const inputHarga = document.getElementById('hargaTampilan');
@@ -1116,15 +698,7 @@
             if (produkDitemukan) {
                 hargaAsli = produkDitemukan.harga; inputHarga.value = formatRupiah(produkDitemukan.harga);
                 document.getElementById('infoStokTersedia').innerText = `(Tersedia: ${produkDitemukan.stok} Pcs)`;
-                if (produkDitemukan.stok <= 0) {
-                    document.getElementById('jumlahPembelian').type = "text"; document.getElementById('jumlahPembelian').value = ""; document.getElementById('jumlahPembelian').placeholder = "Stok habis"; document.getElementById('jumlahPembelian').disabled = true;
-                    const btnSimpan = document.getElementById('btnSimpan'); btnSimpan.disabled = true; btnSimpan.innerText = "⚠️ Barang Tidak Cukup";
-                } else {
-                    document.getElementById('jumlahPembelian').type = "number"; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = "0"; normalisaiTombolSimpan();
-                }
                 inputNama.readOnly = true; inputHarga.readOnly = true; hitungKalkulatorSeketika();
-            } else if (namaInputVal === "") {
-                inputNama.readOnly = false; inputHarga.readOnly = false; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('infoStokTersedia').innerText = ""; normalisaiTombolSimpan();
             }
         }
     </script>
