@@ -519,7 +519,6 @@
 
         function selesaikanTransactionsGabungan() {
             if (antreanKeranjangSeketika.length === 0) return;
-            // PERBAIKAN BUG: VARIABEL DI BAWAH TELAH DIPERBAIKI DARI 'jenisায়aran' MENJADI 'jenisPembayaran'
             let jenisBayar = document.getElementById('jenisPembayaran').value;
             const checkSplitTF = document.getElementById('checkSplitTF');
 
@@ -621,6 +620,7 @@
             normalisaiTombolSimpan(); aturTampilanInputPembayaran(); buatRekomendasiBarang();
         }
 
+        /* REVISI FITUR UTAMA: TOMBOL MULTI KINI DISEMBUNYIKAN SECARA TOTAL KETIKA JENIS PEMBAYARAN BELUM DIPILIH */
         function aturTampilanInputPembayaran() {
             const jenisBayar = document.getElementById('jenisPembayaran').value;
             const areaInputCash = document.getElementById('areaInputCash');
@@ -629,19 +629,20 @@
 
             boxJenisPembayaran.style.display = antreanKeranjangSeketika.length === 0 ? 'none' : 'block';
             
-            if (antreanKeranjangSeketika.length === 0) {
+            if (antreanKeranjangSeketika.length === 0 || jenisBayar === "") {
                 areaInputCash.style.display = 'none'; 
-                btnSelesai.classList.add('d-none');
+                btnSelesai.classList.add('d-none'); // Sembunyikan tombol jika jenis pembayaran belum dipilih (atau keranjang kosong)
                 return;
             }
             
             areaInputCash.style.display = jenisBayar === "Cash" ? 'block' : 'none';
             if (jenisBayar === "Cash") {
+                btnSelesai.classList.remove('d-none'); // Munculkan tombol saat Cash dipilih
                 hitungKalkulatorSeketika();
             } else if (jenisBayar === "TF") { 
                 btnSelesai.disabled = false; 
                 btnSelesai.className = "btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2";
-                btnSelesai.classList.remove('d-none');
+                btnSelesai.classList.remove('d-none'); // Munculkan tombol saat TF dipilih
             } else { 
                 btnSelesai.disabled = true; 
                 btnSelesai.className = "btn btn-secondary btn-lg w-100 fw-bold shadow-sm mt-2 opacity-50";
