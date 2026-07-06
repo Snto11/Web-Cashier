@@ -104,7 +104,6 @@
             line-height: 1;
         }
 
-        /* Menghilangkan tanda panah bawaan dropdown bootstrap pada gambar profil */
         .dropdown-toggle::after {
             display: none !important;
         }
@@ -132,15 +131,21 @@
 
     <div id="appContainer" class="d-none">
         <nav class="navbar navbar-kasir py-3 px-4 mb-4">
-            <div class="container-fluid p-0 d-flex align-items-center position-relative justify-content-between">
-                <span class="navbar-brand fw-bold text-primary m-0 d-none d-sm-block" style="font-size: 1.25rem;">🏪 Web-Cashier</span>
-                <span class="navbar-brand fw-bold text-primary m-0 d-block d-sm-none" style="font-size: 1.25rem;">🏪</span>
-
-                <div class="position-absolute start-50 translate-middle-x">
-                    <a href="penjualan.html" class="btn btn-outline-secondary fw-bold shadow-sm px-3 text-nowrap">📊 Data & Omset Penjualan</a>
+            <div class="container-fluid p-0 d-flex align-items-center position-relative justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="navbar-brand fw-bold text-primary m-0 d-none d-sm-block" style="font-size: 1.25rem;">🏪 Web-Cashier</span>
+                    <span class="navbar-brand fw-bold text-primary m-0 d-block d-sm-none" style="font-size: 1.25rem;">🏪</span>
+                    <a href="db_produk.html" class="btn btn-sm btn-outline-primary fw-bold shadow-sm px-2 py-1">⚙️ Atur Produk</a>
                 </div>
 
-                <div class="dropdown">
+                <div class="position-absolute start-50 translate-middle-x d-none d-md-block">
+                    <a href="penjualan.html" class="btn btn-outline-secondary fw-bold shadow-sm px-3 text-nowrap">📊 Data & Omset Penjualan</a>
+                </div>
+                <div class="d-block d-md-none mx-auto order-3 w-100 text-center mt-1">
+                    <a href="penjualan.html" class="btn btn-sm btn-outline-secondary fw-bold shadow-sm px-3 w-100">📊 Data & Omset Penjualan</a>
+                </div>
+
+                <div class="dropdown order-2">
                     <a class="dropdown-toggle d-flex align-items-center" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                         <img id="userPhoto" src="" alt="User" class="rounded-circle border border-primary border-2" style="width: 40px; height: 40px; cursor: pointer;">
                     </a>
@@ -162,11 +167,8 @@
             <div class="row g-4">
                 <div class="col-12 col-md-6 col-lg-5 mx-auto">
                     <div class="card p-4">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="mb-4">
                             <h3 id="formTitle" class="m-0 fw-bold text-primary" style="font-size: 1.5rem;">🛒 Input Penjualan</h3>
-                            <div class="d-flex flex-column align-items-end gap-1">
-                                <a href="db_produk.html" class="btn btn-outline-secondary btn-sm fw-bold shadow-sm">⚙️ Atur Produk</a>
-                            </div>
                         </div>
 
                         <form id="formPenjualan">
@@ -510,7 +512,7 @@
                     alert("Saat mengedit, silakan tentukan Jenis Pembayaran!");
                     document.getElementById('jenisPembayaran').focus(); return;
                 }
-                let tglLama = dataPenjokalLokal[idData].waktuTransaksi || "-";
+                let tglLama = dataPenjualanLokal[idData].waktuTransaksi || "-";
                 dataPenjualanLokal[idData] = { namaBarang: namaInput, hargaBarang: hargaAsli, jumlahPembelian: jumlahInput, jenisPembayaran: jenisBayarEdit, waktuTransaksi: tglLama };
                 simpanRiwayatKeFirebase(dataPenjualanLokal);
                 Swal.fire({ title: "Diperbarui!", text: "Transaksi berhasil diubah.", icon: "success", timer: 1500, showConfirmButton: false });
