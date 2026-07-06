@@ -80,7 +80,6 @@
                 font-size: 0.85rem !important;
                 padding-top: 8px !important;
                 padding-bottom: 8px !important;
-                /* REVISI CSS: MEMAKSA TEKS TANGGAL/JAM YANG PANJANG TEKUK KE BAWAH SAAT DI HP */
                 white-space: normal !important;
                 word-break: break-word !important;
             }
@@ -298,10 +297,22 @@
                 let tampilMetode = item.jenisPembayaran === "Cash" ? "💵 Cash" : (item.jenisPembayaran === "TF" ? "📱 TF" : item.jenisPembayaran);
                 let tglTampil = item.waktuTransaksi ? item.waktuTransaksi : "-";
 
-                // PERBAIKAN: Aturan inline white-space: nowrap; dihapus agar flexibel ditekuk kebawah
+                // REVISI: Menyaring data teks tanggal agar string pukul dan jam kompak dipotong turun bersamaan ke baris bawah memakai <br>
+                let teksWaktuFinal = tglTampil;
+                if (tglTampil.includes(" pukul ")) {
+                    let partisi = tglTampil.split(" pukul ");
+                    teksWaktuFinal = `${partisi[0]}<br>pukul ${partisi[1]}`;
+                } else if (tglTampil.includes(" ")) {
+                    // Antisipasi jika format bawaan tidak menggunakan kata "pukul" melainkan langsung angka jam
+                    let posisiSpasiTerakhir = tglTampil.lastIndexOf(" ");
+                    let tanggalSaja = tglTampil.substring(0, posisiSpasiTerakhir);
+                    let jamSaja = tglTampil.substring(posisiSpasiTerakhir + 1);
+                    teksWaktuFinal = `${tanggalSaja}<br>pukul ${jamSaja}`;
+                }
+
                 tbody.innerHTML += `<tr>
                     <td data-label="No." class="text-muted fw-semibold">${nomorUrut++}</td>
-                    <td data-label="Tanggal" class="small text-secondary" style="font-size:0.8rem;">${tglTampil}</td>
+                    <td data-label="Tanggal" class="small text-secondary" style="font-size:0.8rem;">${teksWaktuFinal}</td>
                     <td data-label="Nama Barang" class="fw-bold">${item.namaBarang}</td>
                     <td data-label="Harga">Rp ${formatRupiah(item.hargaBarang)}</td>
                     <td data-label="Jumlah">${item.jumlahPembelian} Pcs</td>
