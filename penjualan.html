@@ -367,7 +367,6 @@
 
         function downloadPDFDataOnly() {
             if (dataPenjualanLokal.length === 0) { alert("Tidak ada data transaksi."); return; }
-            // REVISI METODE TANGGAL PDF: SEKARANG MENGGUNAKAN FORMAT JAM DAN MENIT SAJA (TANPA DETIK)
             const opsiFormat = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long', hour: '2-digit', minute: '2-digit' };
             document.getElementById('printTanggal').innerText = new Date().toLocaleDateString('id-ID', opsiFormat);
             window.print();

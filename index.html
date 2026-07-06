@@ -530,7 +530,8 @@
             let totalBelanja = 0;
             antreanKeranjangSeketika.forEach(item => totalBelanja += (item.hargaBarang * item.jumlahPembelian));
 
-            const opsiTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            // PERBAIKAN UTAMA: MENGGUNAKAN SELEKTOR WAKTU JAM DAN MENIT LOKAL UNTUK DISIMPAN KE DATA BASE
+            const opsiTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
             const stringWaktuSekarang = new Date().toLocaleDateString('id-ID', opsiTanggal);
 
             antreanKeranjangSeketika.forEach(item => {
