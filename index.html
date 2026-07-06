@@ -19,6 +19,12 @@
             background-color: #f8f9fa;
         }
 
+        .navbar-kasir {
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee2e6;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
         .card {
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -118,137 +124,143 @@
         });
     </script>
 
-    <div id="appContainer" class="container-fluid py-5 px-4 d-none">
-        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm border gap-3" id="navUserArea">
-            <div class="d-flex align-items-center gap-2">
-                <img id="userPhoto" src="" alt="User" class="rounded-circle border border-primary border-2" style="width: 40px; height: 40px;">
-                <div>
-                    <div class="fw-bold text-dark lh-sm" id="userName">Memuat Nama...</div>
-                    <small class="text-muted" id="userEmail">Memuat Email...</small>
-                </div>
+    <div id="appContainer" class="d-none">
+        <nav class="navbar navbar-kasir py-3 px-4 mb-4">
+            <div class="container-fluid p-0 d-flex justify-content-between align-items-center">
+                <span class="navbar-brand fw-bold text-primary m-0" style="font-size: 1.25rem;">🏪 Web-Cashier</span>
+                <a href="penjualan.html" class="btn btn-outline-secondary fw-bold shadow-sm px-3">📊 Data & Omset Penjualan</a>
             </div>
-            <div class="d-flex align-items-center gap-2 ms-auto ms-sm-0">
-                <a href="penjualan.html" class="btn btn-sm btn-outline-secondary fw-bold shadow-sm py-2 px-3">📊 Data & Omset Penjualan</a>
-                <button class="btn btn-sm btn-danger fw-bold shadow-sm py-2 px-3" onclick="auth.signOut()">👋 Logout</button>
-            </div>
-        </div>
+        </nav>
 
-        <div class="row g-4">
-            <div class="col-12 col-md-6 col-lg-5 mx-auto">
-                <div class="card p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h3 id="formTitle" class="m-0 fw-bold text-primary" style="font-size: 1.5rem;">🛒 Input Penjualan</h3>
-                        <div class="d-flex flex-column align-items-end gap-1">
-                            <a href="db_produk.html" class="btn btn-outline-secondary btn-sm fw-bold shadow-sm">⚙️ Atur Produk</a>
-                        </div>
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm border" id="navUserArea">
+                <div class="d-flex align-items-center gap-2">
+                    <img id="userPhoto" src="" alt="User" class="rounded-circle border border-primary border-2" style="width: 40px; height: 40px;">
+                    <div>
+                        <div class="fw-bold text-dark lh-sm" id="userName">Memuat Nama...</div>
+                        <small class="text-muted" id="userEmail">Memuat Email...</small>
                     </div>
+                </div>
+                <button class="btn btn-sm btn-danger fw-bold shadow-sm" onclick="auth.signOut()">👋 Logout</button>
+            </div>
 
-                    <form id="formPenjualan">
-                        <input type="hidden" id="rowId" value="">
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Nama Barang / Scan Barcode</label>
-                            <div class="input-group mb-1">
-                                <input type="text" id="namaBarang" class="form-control" placeholder="Ketik nama atau ketik/scan nomor barcode..." list="listBarang" oninput="autoFillHarga(); aturPenyaringanRekomendasiSeketika(this.value)" required>
-                                <a href="input_scan.html" class="btn btn-primary fw-bold d-flex align-items-center justify-content-center" title="Buka Kamera Scan Barang" style="width: 45px;"><span class="material-symbols-outlined">barcode_reader</span></a>
-                                <button class="btn btn-outline-secondary text-danger" type="button" id="btnHapusInput" onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); buatRekomendasiBarang(); document.getElementById('namaBarang').focus();" title="Kosongkan Semua Inputan">🗑️</button>
-                            </div>
-                            <div class="form-check mt-1">
-                                <input class="form-check-input" type="checkbox" id="checkTanpaNama" onchange="toggleTanpaNamaBarang()">
-                                <label class="form-check-label small fw-bold text-secondary" for="checkTanpaNama">Tanpa Nama Barang</label>
-                            </div>
-                            <datalist id="listBarang"></datalist>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Harga Barang</label>
-                            <div class="input-group">
-                                <span class="input-group-text">Rp</span>
-                                <input type="text" id="hargaTampilan" inputmode="numeric" class="form-control" placeholder="0" required>
+            <div class="row g-4">
+                <div class="col-12 col-md-6 col-lg-5 mx-auto">
+                    <div class="card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 id="formTitle" class="m-0 fw-bold text-primary" style="font-size: 1.5rem;">🛒 Input Penjualan</h3>
+                            <div class="d-flex flex-column align-items-end gap-1">
+                                <a href="db_produk.html" class="btn btn-outline-secondary btn-sm fw-bold shadow-sm">⚙️ Atur Produk</a>
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Jumlah Pembelian <span id="infoStokTersedia" class="text-muted small fw-normal"></span></label>
-                            <input type="number" id="jumlahPembelian" class="form-control" placeholder="0" min="1" required>
-                        </div>
+                        <form id="formPenjualan">
+                            <input type="hidden" id="rowId" value="">
 
-                        <div class="d-flex justify-content-between align-items-center mb-3 px-1">
-                            <span class="small fw-bold text-secondary" id="labelSubtotal">Subtotal (Barang Ini):</span>
-                            <span class="fw-bold text-dark fs-5" id="textSubtotalSeketika">Rp 0</span>
-                        </div>
-
-                        <div class="mb-4">
-                            <button type="submit" id="btnSimpan" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm">🚀 Tambah Barang ke Antrean</button>
-                            <button type="button" id="btnBatal" class="btn btn-secondary w-100 fw-bold mt-2 d-none" onclick="resetForm()">❌ Batal Edit</button>
-                        </div>
-
-                        <div class="bg-kalkulator mb-4">
-                            <div id="boxRincianMulti" class="d-none mb-3 pt-2 border-top border-secondary border-opacity-25">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="small fw-bold text-primary d-block">📋 Rincian Belanjaan:</span>
-                                    <button type="button" class="btn btn-danger btn-xs py-0 px-2 fw-bold text-uppercase" style="font-size: 0.7rem; border-radius: 4px;" onclick="batalSeluruhAntreanKeranjang()" title="Kosongkan Rincian Belanjaan">❌ Batal</button>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Nama Barang / Scan Barcode</label>
+                                <div class="input-group mb-1">
+                                    <input type="text" id="namaBarang" class="form-control" placeholder="Ketik nama atau ketik/scan nomor barcode..." list="listBarang" oninput="autoFillHarga(); aturPenyaringanRekomendasiSeketika(this.value)" required>
+                                    <a href="input_scan.html" class="btn btn-primary fw-bold d-flex align-items-center justify-content-center" title="Buka Kamera Scan Barang" style="width: 45px;"><span class="material-symbols-outlined">barcode_reader</span></a>
+                                    <button class="btn btn-outline-secondary text-danger" type="button" id="btnHapusInput" onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); buatRekomendasiBarang(); document.getElementById('namaBarang').focus();" title="Kosongkan Semua Inputan">🗑️</button>
                                 </div>
-                                <div class="d-flex text-muted fw-bold pb-1 mb-1 border-bottom" style="font-size: 0.75rem;">
-                                    <span style="width: 35%;">Nama</span>
-                                    <span style="width: 25%;">Harga</span>
-                                    <span style="width: 15%; text-align: center;">Qty</span>
-                                    <span style="width: 25%; text-align: right;">Total</span>
+                                <div class="form-check mt-1">
+                                    <input class="form-check-input" type="checkbox" id="checkTanpaNama" onchange="toggleTanpaNamaBarang()">
+                                    <label class="form-check-label small fw-bold text-secondary" for="checkTanpaNama">Tanpa Nama Barang</label>
                                 </div>
-                                <div id="daftarRincianItem" style="max-height: 140px; overflow-y: auto;"></div>
+                                <datalist id="listBarang"></datalist>
                             </div>
 
-                            <div class="d-flex justify-content-between align-items-center mb-3 text-primary d-none" id="infoMultiBarang">
-                                <span class="small fw-bold">Total Gabungan (0 Barang):</span>
-                                <span class="fw-bold" id="textTotalGabungan">Rp 0</span>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Harga Barang</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="text" id="hargaTampilan" inputmode="numeric" class="form-control" placeholder="0" required>
+                                </div>
                             </div>
 
-                            <div class="mb-3" id="boxJenisPembayaran" style="display: none;">
-                                <label class="form-label small fw-bold text-secondary">Jenis Pembayaran (Final):</label>
-                                <select id="jenisPembayaran" class="form-select form-select-sm" onchange="aturTampilanInputPembayaran()">
-                                    <option value="">-- Pilih Pembayaran --</option>
-                                    <option value="Cash">💵 Cash</option>
-                                    <option value="TF">📱 TF (Transfer)</option>
-                                </select>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Jumlah Pembelian <span id="infoStokTersedia" class="text-muted small fw-normal"></span></label>
+                                <input type="number" id="jumlahPembelian" class="form-control" placeholder="0" min="1" required>
                             </div>
 
-                            <div id="areaInputCash" style="display: none;">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="checkUangPas" onchange="toggleUangPasHandler()">
-                                    <label class="form-check-label small fw-bold text-success" for="checkUangPas">💵 Uang Pas</label>
+                            <div class="d-flex justify-content-between align-items-center mb-3 px-1">
+                                <span class="small fw-bold text-secondary" id="labelSubtotal">Subtotal (Barang Ini):</span>
+                                <span class="fw-bold text-dark fs-5" id="textSubtotalSeketika">Rp 0</span>
+                            </div>
+
+                            <div class="mb-4">
+                                <button type="submit" id="btnSimpan" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm">🚀 Tambah Barang ke Antrean</button>
+                                <button type="button" id="btnBatal" class="btn btn-secondary w-100 fw-bold mt-2 d-none" onclick="resetForm()">❌ Batal Edit</button>
+                            </div>
+
+                            <div class="bg-kalkulator mb-4">
+                                <div id="boxRincianMulti" class="d-none mb-3 pt-2 border-top border-secondary border-opacity-25">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="small fw-bold text-primary d-block">📋 Rincian Belanjaan:</span>
+                                        <button type="button" class="btn btn-danger btn-xs py-0 px-2 fw-bold text-uppercase" style="font-size: 0.7rem; border-radius: 4px;" onclick="batalSeluruhAntreanKeranjang()" title="Kosongkan Rincian Belanjaan">❌ Batal</button>
+                                    </div>
+                                    <div class="d-flex text-muted fw-bold pb-1 mb-1 border-bottom" style="font-size: 0.75rem;">
+                                        <span style="width: 35%;">Nama</span>
+                                        <span style="width: 25%;">Harga</span>
+                                        <span style="width: 15%; text-align: center;">Qty</span>
+                                        <span style="width: 25%; text-align: right;">Total</span>
+                                    </div>
+                                    <div id="daftarRincianItem" style="max-height: 140px; overflow-y: auto;"></div>
                                 </div>
 
-                                <div class="mb-2">
-                                    <label class="form-label small fw-bold text-secondary">Uang Diterima dari Pembeli:</label>
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-text bg-secondary text-white">Rp</span>
-                                        <input type="text" id="uangDiterimaTampilan" inputmode="numeric" class="form-control" placeholder="0">
+                                <div class="d-flex justify-content-between align-items-center mb-3 text-primary d-none" id="infoMultiBarang">
+                                    <span class="small fw-bold">Total Gabungan (0 Barang):</span>
+                                    <span class="fw-bold" id="textTotalGabungan">Rp 0</span>
+                                </div>
+
+                                <div class="mb-3" id="boxJenisPembayaran" style="display: none;">
+                                    <label class="form-label small fw-bold text-secondary">Jenis Pembayaran (Final):</label>
+                                    <select id="jenisPembayaran" class="form-select form-select-sm" onchange="aturTampilanInputPembayaran()">
+                                        <option value="">-- Pilih Pembayaran --</option>
+                                        <option value="Cash">💵 Cash</option>
+                                        <option value="TF">📱 TF (Transfer)</option>
+                                    </select>
+                                </div>
+
+                                <div id="areaInputCash" style="display: none;">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="checkUangPas" onchange="toggleUangPasHandler()">
+                                        <label class="form-check-label small fw-bold text-success" for="checkUangPas">💵 Uang Pas</label>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold text-secondary">Uang Diterima dari Pembeli:</label>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text bg-secondary text-white">Rp</span>
+                                            <input type="text" id="uangDiterimaTampilan" inputmode="numeric" class="form-control" placeholder="0">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-check mb-2 d-none" id="boxSplitPembayaran">
+                                        <input class="form-check-input" type="checkbox" id="checkSplitTF" onchange="hitungKalkulatorSeketika()">
+                                        <label class="form-check-label small fw-semibold text-primary" for="checkSplitTF">📱 Sisa Pembayaran Menggunakan TF</label>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25 mb-2">
+                                        <span class="small fw-bold text-secondary">Uang Kembalian:</span>
+                                        <span class="fs-5 fw-bold text-danger" id="textKembalianSeketika">Rp 0</span>
                                     </div>
                                 </div>
-
-                                <div class="form-check mb-2 d-none" id="boxSplitPembayaran">
-                                    <input class="form-check-input" type="checkbox" id="checkSplitTF" onchange="hitungKalkulatorSeketika()">
-                                    <label class="form-check-label small fw-semibold text-primary" for="checkSplitTF">📱 Sisa Pembayaran Menggunakan TF</label>
-                                </div>
-
-                                <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25 mb-2">
-                                    <span class="small fw-bold text-secondary">Uang Kembalian:</span>
-                                    <span class="fs-5 fw-bold text-danger" id="textKembalianSeketika">Rp 0</span>
-                                </div>
                             </div>
-                        </div>
 
-                        <button type="button" id="btnSelesaiMulti" class="btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2 d-none" onclick="selesaikanTransactionsGabungan()">🛒 Selesaikan Transaksi (Simpan Semua)</button>
-                    </form>
+                            <button type="button" id="btnSelesaiMulti" class="btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2 d-none" onclick="selesaikanTransactionsGabungan()">🛒 Selesaikan Transaksi (Simpan Semua)</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row mt-5">
-            <div class="col-12">
-                <div class="footer-copyright">
-                    <p class="text-update-info">Terakhir Diperbarui: 6 Juli 2026</p>
-                    <p class="m-0">© 2026 Web Cashier. All Rights Reserved.</p>
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="footer-copyright">
+                        <p class="text-update-info">Terakhir Diperbarui: 6 Juli 2026</p>
+                        <p class="m-0">© 2026 Web Cashier. All Rights Reserved.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -661,6 +673,7 @@
             const datalist = document.getElementById('listBarang');
             if (!datalist) return;
             const bersih = kataKunci.trim();
+            if (transparancy === "") { buatRekomendasiBarang(); return; }
             if (bersih === "") { buatRekomendasiBarang(); return; }
             const apakahBarcode = /^\d+$/.test(bersih);
             datalist.innerHTML = '';
