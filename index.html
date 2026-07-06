@@ -477,34 +477,38 @@
             const checkSplitTF = document.getElementById('checkSplitTF');
             const jenisBayar = document.getElementById('jenisPembayaran').value;
 
-            // Jika metode pembayaran bukan Cash (misal TF), tombol selesai langsung dikontrol di luar
             if (jenisBayar !== "Cash") return;
 
-            // REVISI LOGIKA UTAMA: JIKA METODE CASH, TOMBOL BARU MUNCUL KETIKA KOLOM UANG DITERIMA ADA ISINYA (TIDAK KOSONG)
-            if (inputUangFisikTampilanVal = inputUangDiterimaTampilan.value.trim() !== "") {
+            if (inputUangDiterimaTampilan.value.trim() !== "") {
                 const kembalian = uangDiterimaAsli - totalSeluruhBelanja;
                 document.getElementById('textKembalianSeketika').innerText = "Rp " + formatRupiah(kembalian);
 
                 if (kembalian >= 0) {
+                    // KONDISI A: UANG LEBIH BESAR ATAU PAS (Rp50.000 >= Rp24.000) -> TOMBOL LANGSUNG MUNCUL
                     document.getElementById('textKembalianSeketika').className = "fs-5 fw-bold text-success";
                     boxSplit.classList.add('d-none');
                     checkSplitTF.checked = false;
                     
-                    // Munculkan tombol selesai secara normal
                     btnSelesai.disabled = false;
                     btnSelesai.className = "btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2";
                     btnSelesai.classList.remove('d-none');
                 } else {
+                    // KONDISI B: UANG KURANG (Rp23.000 < Rp24.000) -> BADGE MINUS DAN KOTAK SPLIT PEMBAYARAN MUNCUL
                     document.getElementById('textKembalianSeketika').className = "fs-5 fw-bold text-danger";
                     boxSplit.classList.remove('d-none');
                     
-                    // Jika minus, tombol baru aktif kalau kotak split pembayaran dicentang
-                    btnSelesai.disabled = !checkSplitTF.checked;
-                    btnSelesai.className = checkSplitTF.checked ? "btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2" : "btn btn-secondary btn-lg w-100 fw-bold shadow-sm mt-2 opacity-50";
-                    btnSelesai.classList.remove('d-none');
+                    // REVISI ATURAN GERBANG LOGIKA: TOMBOL HANYA AKAN MUNCUL (REMOVE D-NONE) JIKA KOTAK SPLIT TF SUDAH DICENTANG
+                    if (checkSplitTF.checked) {
+                        btnSelesai.disabled = false;
+                        btnSelesai.className = "btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2";
+                        btnSelesai.classList.remove('d-none');
+                    } else {
+                        btnSelesai.disabled = true;
+                        btnSelesai.classList.add('d-none');
+                    }
                 }
             } else {
-                // JIKA INPUTAN UANG DITERIMA KOSONG, SEMBUNYIKAN TOMBOL SELESAIKAN TRANSAKSI
+                // JIKA KOLOM INPUTAN MASIH KOSONG, SEMBUNYIKAN TOTAL KEMBALIAN DAN TOMBOL TRANSAKSI
                 document.getElementById('textKembalianSeketika').innerText = "Rp 0";
                 document.getElementById('textKembalianSeketika').className = "fs-5 fw-bold text-danger";
                 boxSplit.classList.add('d-none');
@@ -717,7 +721,6 @@
             
             areaInputCash.style.display = jenisBayar === "Cash" ? 'block' : 'none';
             if (jenisBayar === "Cash") {
-                // Saat ganti metode ke Cash, jalankan hitung ulang biar tombol mematuhi isi teks uang diterima harian
                 hitungKalkulatorSeketika();
             } else if (jenisBayar === "TF") { 
                 btnSelesai.disabled = false; 
