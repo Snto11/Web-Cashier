@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" type="image/png" href="Logo Web Cashier.png" sizes="32x32">
     <link rel="shortcut icon" type="image/png" href="Logo Web Cashier.png">
     
     <title>Web-Cashier - Kasir</title>
@@ -398,6 +399,15 @@
             let nilaiBersih = e.target.value.replace(/\D/g, "");
             hargaAsli = Number(nilaiBersih) || 0;
             e.target.value = formatRupiah(nilaiBersih);
+            
+            // REVISI FITUR: JIKA HARGA DIINPUT MANUAL DAN ADA ANGKA (> 0), SET JUMLAH PEMBELIAN MENJADI 1
+            if (hargaAsli > 0) {
+                const inputQty = document.getElementById('jumlahPembelian');
+                if (!inputQty.value || inputQty.value === "0" || inputQty.value === "") {
+                    inputQty.value = "1";
+                }
+            }
+            
             hitungKalkulatorSeketika();
         });
 
@@ -761,7 +771,12 @@
             if (produkDitemukan) {
                 hargaAsli = produkDitemukan.harga; inputHarga.value = formatRupiah(produkDitemukan.harga);
                 document.getElementById('infoStokTersedia').innerText = `(Tersedia: ${produkDitemukan.stok} Pcs)`;
-                inputNama.readOnly = true; inputHarga.readOnly = true; hitungKalkulatorSeketika();
+                inputNama.readOnly = true; inputHarga.readOnly = true; 
+                
+                // REVISI FITUR: JIKA HARGA TERISI OTOMATIS LEWAT AUTO-FILL, SET JUMLAH PEMBELIAN MENJADI 1
+                document.getElementById('jumlahPembelian').value = "1";
+                
+                hitungKalkulatorSeketika();
             }
         }
     </script>
