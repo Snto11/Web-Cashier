@@ -114,7 +114,6 @@
                 white-space: nowrap !important;
             }
 
-            /* REVISI CSS KASIR MOBILE: MENGUNCI LAYOUT NAVBAR AGAR TETAP LURUS 1 BARIS */
             .navbar-kasir-container {
                 display: flex !important;
                 flex-direction: row !important;
@@ -204,7 +203,7 @@
                                 <div class="input-group mb-1">
                                     <input type="text" id="namaBarang" class="form-control" placeholder="Ketik nama atau ketik/scan nomor barcode..." list="listBarang" oninput="autoFillHarga(); aturPenyaringanRekomendasiSeketika(this.value)" required>
                                     <a href="input_scan.html" class="btn btn-primary fw-bold d-flex align-items-center justify-content-center" title="Buka Kamera Scan Barang" style="width: 45px;"><span class="material-symbols-outlined">barcode_reader</span></a>
-                                    <button class="btn btn-outline-secondary text-danger" type="button" id="btnHapusInput" onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); buatRekomendasiBarang(); document.getElementById('namaBarang').focus();" title="Kosongkan Semua Inputan">🗑️</button>
+                                    <button class="btn btn-outline-secondary text-danger" type="button" id="btnHapusInput" onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); buatRekomendasiBarang(); aturTampilanInputPembayaran(); document.getElementById('namaBarang').focus();" title="Kosongkan Semua Inputan">🗑️</button>
                                 </div>
                                 <div class="form-check mt-1">
                                     <input class="form-check-input" type="checkbox" id="checkTanpaNama" onchange="toggleTanpaNamaBarang()">
@@ -671,7 +670,7 @@
             document.getElementById('infoMultiBarang').classList.add('d-none');
             
             perbaruiTampilanRincian(); document.getElementById('textSubtotalSeketika').innerText = "Rp 0"; document.getElementById('textKembalianSeketika').innerText = "Rp 0";
-            normalisaiTombolSimpan(); aturTampilanInputPembayaran(); buatRekomendasiBarang();
+            normalisaiTompan(); aturTampilanInputPembayaran(); buatRekomendasiBarang();
         }
 
         function aturTampilanInputPembayaran() {
