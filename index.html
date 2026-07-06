@@ -307,7 +307,7 @@
             <div class="row mt-5">
                 <div class="col-12">
                     <div class="footer-copyright">
-                        <p class="text-update-info">Terakhir Diperbarui: 6 Juli 2026</p>
+                        <p class="text-update-info">Terakhir Diperbarui: 7 Juli 2026</p>
                         <p class="m-0">© 2026 Web Cashier. All Rights Reserved.</p>
                     </div>
                 </div>
@@ -400,12 +400,15 @@
             hargaAsli = Number(nilaiBersih) || 0;
             e.target.value = formatRupiah(nilaiBersih);
             
-            // REVISI FITUR: JIKA HARGA DIINPUT MANUAL DAN ADA ANGKA (> 0), SET JUMLAH PEMBELIAN MENJADI 1
+            const inputQty = document.getElementById('jumlahPembelian');
             if (hargaAsli > 0) {
-                const inputQty = document.getElementById('jumlahPembelian');
+                // Jika harga ada angkanya, otomatis set ke 1 jika sebelumnya kosong
                 if (!inputQty.value || inputQty.value === "0" || inputQty.value === "") {
                     inputQty.value = "1";
                 }
+            } else {
+                // REVISI FITUR: JIKA HARGA DIHAPUS / KOSONG, KEMBALIKAN JUMLAH PEMBELIAN MENJADI KOSONG (PLACEHOLDER 0)
+                inputQty.value = "";
             }
             
             hitungKalkulatorSeketika();
@@ -773,7 +776,6 @@
                 document.getElementById('infoStokTersedia').innerText = `(Tersedia: ${produkDitemukan.stok} Pcs)`;
                 inputNama.readOnly = true; inputHarga.readOnly = true; 
                 
-                // REVISI FITUR: JIKA HARGA TERISI OTOMATIS LEWAT AUTO-FILL, SET JUMLAH PEMBELIAN MENJADI 1
                 document.getElementById('jumlahPembelian').value = "1";
                 
                 hitungKalkulatorSeketika();
