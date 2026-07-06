@@ -519,7 +519,7 @@
 
         function selesaikanTransactionsGabungan() {
             if (antreanKeranjangSeketika.length === 0) return;
-            let jenisBayar = document.getElementById('jenisPembayaran').value;
+            let jenisBayar = document.getElementById('jenisায়aran').value;
             const checkSplitTF = document.getElementById('checkSplitTF');
 
             if (!jenisBayar && !checkSplitTF.checked) {
@@ -530,7 +530,6 @@
             let totalBelanja = 0;
             antreanKeranjangSeketika.forEach(item => totalBelanja += (item.hargaBarang * item.jumlahPembelian));
 
-            // PERBAIKAN UTAMA: MENGGUNAKAN SELEKTOR WAKTU JAM DAN MENIT LOKAL UNTUK DISIMPAN KE DATA BASE
             const opsiTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
             const stringWaktuSekarang = new Date().toLocaleDateString('id-ID', opsiTanggal);
 
@@ -621,6 +620,7 @@
             normalisaiTombolSimpan(); aturTampilanInputPembayaran(); buatRekomendasiBarang();
         }
 
+        /* REVISI FITUR: WARNA TOMBOL SELESAIKAN TRANSAKSI PADA PILIHAN TF DISAMAKAN DENGAN CASH */
         function aturTampilanInputPembayaran() {
             const jenisBayar = document.getElementById('jenisPembayaran').value;
             const areaInputCash = document.getElementById('areaInputCash');
@@ -639,10 +639,13 @@
             if (jenisBayar === "Cash") {
                 hitungKalkulatorSeketika();
             } else if (jenisBayar === "TF") { 
+                // Mengubah warna tombol menjadi hijau sukses aktif penuh saat TF dipilih
                 btnSelesai.disabled = false; 
+                btnSelesai.className = "btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2";
                 btnSelesai.classList.remove('d-none');
             } else { 
                 btnSelesai.disabled = true; 
+                btnSelesai.className = "btn btn-secondary btn-lg w-100 fw-bold shadow-sm mt-2 opacity-50";
                 btnSelesai.classList.remove('d-none');
             }
         }
