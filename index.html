@@ -737,6 +737,7 @@
             }
         }
 
+        // REVISI LOGIKA PENCARIAN SAMAR (FUZZY MATCH KARAKTER SUBSTRING): MEMBOLEHKAN PENCARIAN SINGKATAN HURUF ACAK DI DALAM KATA (Misal: "lpn" -> "abc kopi klepon")
         window.aturPenyaringanRekomendasiSeketika = function(kataKunci) {
             const datalist = document.getElementById('listBarang');
             if (!datalist) return;
@@ -758,14 +759,17 @@
                 return;
             }
 
-            // PENCARIAN TEKS BERDASARKAN POTONGAN KATA KUNCI (Fuzzy Match Spasi)
-            const potonganKataKunci = bersih.toLowerCase().split(/\s+/).filter(item => item !== "");
+            // PENCARIAN FUZZY MATCH SUBSTRING YANG LEBIH FLEKSIBEL (Misal: "lpn")
+            // Memecah setiap huruf ketikan menjadi pola pencarian fleksibel berurutan
+            const hurufKataKunci = bersih.toLowerCase().split("");
+            // Mengubah menjadi ekspresi reguler (RegEx), misal "lpn" menjadi /l.*p.*n/
+            const polaRegExFuzzy = new RegExp(hurufKataKunci.join(".*"));
 
             for (let nama in masterProdukLokal) {
                 const namaProdukLower = nama.toLowerCase();
-                const apakahCocokSemua = potonganKataKunci.every(potongan => namaProdukLower.includes(potongan));
                 
-                if (apakahCocokSemua) {
+                // Jika nama produk lolos pengujian pola huruf berurutan RegEx
+                if (polaRegExFuzzy.test(namaProdukLower)) {
                     let optionNama = document.createElement('option');
                     optionNama.value = nama;
                     datalist.appendChild(optionNama);
