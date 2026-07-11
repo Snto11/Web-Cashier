@@ -26,38 +26,96 @@
             border-left: 5px solid;
         }
 
-        .bg-omset-cash {
-            background-color: #d1e7dd;
-            border-color: #0f5132;
-            color: #0f5132;
-        }
-
-        .bg-omset-tf {
-            background-color: #cff4fc;
-            border-color: #055160;
-            color: #055160;
-        }
-
-        .bg-omset-total {
-            background-color: #e2e3e5;
-            border-color: #41464b;
-            color: #41464b;
-        }
-
-        .table-riwayat {
-            font-size: 0.85rem;
-        }
-
         .status-badge {
-            font-size: 0.75rem;
-            padding: 4px 8px;
-            border-radius: 5px;
+            font-size: 0.9rem;
             font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 20px;
         }
 
-        .input-group-text-kustom {
-            background-color: #e9ecef;
-            font-weight: bold;
+        .footer-copyright {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .text-update-info {
+            font-size: 0.8rem;
+            color: #adb5bd;
+            margin-bottom: 2px;
+        }
+
+        /* STRUKTUR RESPONSIVE PADA MOBILE TANPA SCROLL KIRI KANAN */
+        @media (max-width: 575.98px) {
+            .mobile-tabel-responsive table, 
+            .mobile-tabel-responsive thead, 
+            .mobile-tabel-responsive tbody, 
+            .mobile-tabel-responsive th, 
+            .mobile-tabel-responsive td, 
+            .mobile-tabel-responsive tr { 
+                display: block !important; 
+            }
+            
+            .mobile-tabel-responsive thead tr { 
+                position: absolute !important;
+                top: -9999px !important;
+                left: -9999px !important;
+            }
+            
+            .mobile-tabel-responsive tr { 
+                border: 1px solid #dee2e6 !important; 
+                margin-bottom: 15px !important;
+                border-radius: 10px !important;
+                padding: 10px !important;
+                background-color: #ffffff !important;
+            }
+            
+            .mobile-tabel-responsive td { 
+                border: none !important;
+                border-bottom: 1px dashed #eee !important; 
+                position: relative !important;
+                padding-left: 45% !important; 
+                text-align: right !important;
+                font-size: 0.85rem !important;
+                padding-top: 8px !important;
+                padding-bottom: 8px !important;
+                white-space: normal !important;
+                word-break: break-word !important;
+            }
+            
+            .mobile-tabel-responsive td:last-child {
+                border-bottom: none !important;
+            }
+            
+            .mobile-tabel-responsive td:before { 
+                position: absolute !important;
+                top: 8px !important;
+                left: 10px !important;
+                width: 40% !important; 
+                padding-right: 10px !important; 
+                white-space: nowrap !important;
+                text-align: left !important;
+                font-weight: bold !important;
+                color: #6c757d !important;
+                content: attr(data-label) !important;
+            }
+
+            .mobile-tabel-responsive td div.d-flex {
+                justify-content: flex-end !important;
+            }
+        }
+
+        @media print {
+            #navUserArea, .btn-block-privasi, .footer-copyright, .btn-pdf, .btn-outline-danger, .btn-aksi-tabel, .btn-kembali-kasir {
+                display: none !important;
+            }
+            body { background-color: #ffffff !important; }
+            .print-header { display: block !important; text-align: center; margin-bottom: 25px; }
+        }
+
+        .print-header {
+            display: none;
         }
     </style>
 </head>
@@ -65,154 +123,251 @@
 <body>
 
     <script src="firebase-config.js"></script>
-    <script src="script.js"></script>
-
-    <div class="container py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-            <h2 class="fw-bold text-dark m-0">📊 Omset & Riwayat</h2>
-            <a href="index.html" class="btn btn-outline-secondary fw-bold shadow-sm">🔙 Kembali ke Kasir</a>
-        </div>
-
-        <div class="row g-3 mb-4">
-            <div class="col-12 col-sm-4">
-                <div class="card card-summary bg-omset-cash p-3">
-                    <small class="fw-bold text-uppercase">Omset Cash Tunai</small>
-                    <h3 class="fw-bold m-0" id="textOmsetCash">Rp 0</h3>
-                </div>
-            </div>
-            <div class="col-12 col-sm-4">
-                <div class="card card-summary bg-omset-tf p-3">
-                    <small class="fw-bold text-uppercase">Omset Non-Tunai TF</small>
-                    <h3 class="fw-bold m-0" id="textOmsetTF">Rp 0</h3>
-                </div>
-            </div>
-            <div class="col-12 col-sm-4">
-                <div class="card card-summary bg-omset-total p-3">
-                    <small class="fw-bold text-uppercase">Total Omset Gabungan</small>
-                    <h3 class="fw-bold m-0" id="textOmsetTotal">Rp 0</h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="row g-3 mb-4">
-            <div class="col-12 col-md-7">
-                <div class="card p-3 bg-white">
-                    <h6 class="fw-bold text-secondary mb-2">💵 Cocokkan Uang Fisik Laci (Cash Only)</h6>
-                    <div class="d-flex align-items-center flex-wrap gap-2">
-                        <div class="input-group input-group-sm style-input-lebar" style="max-width: 230px;">
-                            <span class="input-group-text input-group-text-kustom">Rp</span>
-                            <input type="text" id="uangFisikTampilan" inputmode="numeric" class="form-control" placeholder="Input uang di laci...">
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <span id="badgeInfoSelisih" class="status-badge bg-secondary text-white me-2">Belum Diinput</span>
-                            <p class="m-0 fw-bold" id="textSelisih">Rp 0</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-5 d-flex align-items-center justify-content-md-end gap-2">
-                <button class="btn btn-danger fw-bold shadow-sm btn-sm py-2 px-3" onclick="downloadPDFDataOnly()">📄 Cetak Laporan PDF</button>
-                <button class="btn btn-outline-danger fw-bold shadow-sm btn-sm py-2 px-3" onclick="resetSeluruhRiwayatLokalCloud()">🗑️ Reset Semua</button>
-            </div>
-        </div>
-
-        <div class="card p-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="fw-bold text-dark m-0">📋 Log Transaksi Terkini</h4>
-                <small class="text-muted" id="infoTotalBaris">Total: 0 Data</small>
-            </div>
-
-            <div class="table-responsive border rounded shadow-sm" style="max-height: 400px; overflow-y: auto;">
-                <table class="table table-hover table-striped align-middle m-0 text-center table-riwayat" id="tabelRiwayatPenjualan">
-                    <thead class="table-dark small sticky-top">
-                        <tr>
-                            <th>No</th>
-                            <th class="text-start">Nama Barang</th>
-                            <th>Harga</th>
-                            <th>Qty</th>
-                            <th>Metode Pembayaran</th>
-                            <th>Waktu Transaksi</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="7" class="text-center text-muted py-4">Memuat log data riwayat Cloud...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="wadah-footer-global"></div>
-
-    </div>
 
     <script>
-        let currentUser = null;
-        let dataPenjualanLokal = [];
-        let masterProdukLokal = {};
-
-        let omsetCashSistem = 0;
-        let omsetTfSistem = 0;
-        let totalOmsetSistem = 0;
-        let uangFisikAsli = 0;
-
-        const inputUangFisikTampilan = document.getElementById('uangFisikTampilan');
-
-        inputUangFisikTampilan.addEventListener('input', function(e) {
-            let nilaiBersih = e.target.value.replace(/\D/g, "");
-            uangFisikAsli = Number(nilaiBersih) || 0;
-            e.target.value = formatRupiah(nilaiBersih);
-            hitungSinkronisasiFisikSeketika();
-        });
-
-        firebase.auth().onAuthStateChanged((user) => {
+        auth.onAuthStateChanged((user) => {
             if (!user) {
                 window.location.href = 'login.html';
             } else {
                 currentUser = user;
-                hubungkanKeFirebaseRiwayat();
+                document.getElementById('appContainer').classList.remove('d-none');
+                hubungkanKeRealtimeDatabase();
             }
         });
+    </script>
 
-        function hubungkanKeFirebaseRiwayat() {
-            database.ref(`kasir_users/${currentUser.uid}/riwayat_penjualan`).on('value', (snapshot) => {
+    <div id="appContainer" class="container-fluid py-5 px-4 d-none">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm border" id="navUserArea">
+            <h4 class="fw-bold m-0 text-secondary">📊 Data & Omset Penjualan</h4>
+            <a href="index.html" class="btn btn-primary fw-bold btn-kembali-kasir">🛒 Kembali ke Kasir</a>
+        </div>
+
+        <div class="print-header">
+            <h2 class="fw-bold m-0 text-uppercase">Laporan Data Penjualan Toko</h2>
+            <p class="text-muted mt-1 mb-2" id="printTanggal"></p>
+            <hr style="border: 1px solid #222; opacity: 1; margin: 10px 0;">
+        </div>
+
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="mb-3 btn-block-privasi">
+                    <button class="btn btn-outline-secondary w-100 fw-bold shadow-sm py-2" type="button" id="btnToggleOmset" onclick="togglePrivasiOmset()">👁️ Sembunyikan Semua Nominal Omset Toko</button>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-sm-4">
+                        <div class="card card-summary p-3 bg-white border-success h-100">
+                            <small class="text-success fw-bold text-uppercase">💰 Omset Sistem (CASH)</small>
+                            <h4 class="text-dark fw-bold m-0 mt-1" id="totalCashToko">Rp 0</h4>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="card card-summary p-3 bg-white border-info h-100">
+                            <small class="text-info fw-bold text-uppercase">📱 Omset Sistem (TF)</small>
+                            <h4 class="text-dark fw-bold m-0 mt-1" id="totalTfToko">Rp 0</h4>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="card card-summary p-3 bg-white border-primary h-100">
+                            <small class="text-primary fw-bold text-uppercase">📊 Total Semua Omset</small>
+                            <h4 class="text-dark fw-bold m-0 mt-1" id="totalSemuaToko">Rp 0</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-4 mb-4 border-start border-warning border-5">
+                    <h5 class="fw-bold text-warning mb-3">🔍 Validasi & Cek Uang Fisik Laci (Cash)</h5>
+                    <div class="row align-items-center g-3">
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label small fw-bold text-secondary">Masukkan Total Uang Cash Nyata di Laci:</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning text-dark">Rp</span>
+                                <input type="text" id="uangFisikTampilan" inputmode="numeric" class="form-control form-control-lg border-warning" placeholder="Masukkan uang di laci...">
+                                <button class="btn btn-outline-warning text-danger fw-bold" type="button" onclick="document.getElementById('uangFisikTampilan').value = ''; uangFisikAsli = 0; hitungSelisihLaci();" title="Kosongkan Uang Fisik">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 text-sm-start">
+                            <div class="p-2 rounded bg-light border">
+                                <div class="small fw-semibold text-muted">Selisih / Status Laci:</div>
+                                <div class="d-flex align-items-center mt-1">
+                                    <span id="statusLaciBadge" class="status-badge bg-secondary text-white me-2">Belum Diinput</span>
+                                    <h4 class="m-0 fw-bold text-dark" id="textSelisih">Rp 0</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                        <h3 class="fw-bold text-secondary m-0">📊 Riwayat Penjualan</h3>
+                        <div class="d-flex gap-2 align-items-center">
+                            <button class="btn btn-danger btn-pdf fw-bold shadow-sm" onclick="downloadPDFDataOnly()">📄 Download PDF Data</button>
+                            <button class="btn btn-outline-danger btn-sm" onclick="bersihkanSemuaData()" title="Hapus Data">🗑️</button>
+                        </div>
+                    </div>
+
+                    <div class="mobile-tabel-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="width: 5%;">No.</th>
+                                    <th>Tanggal</th>
+                                    <th>Nama Barang</th>
+                                    <th>Harga</th>
+                                    <th>Jumlah</th>
+                                    <th>Pembayaran</th>
+                                    <th>Total</th>
+                                    <th class="text-center" style="white-space: nowrap;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelBody">
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted py-4">Belum ada data penjualan.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="footer-copyright">
+                    <p class="text-update-info">Terakhir Diperbarui: 6 Juli 2026</p>
+                    <p class="m-0">© 2026 Web Cashier. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+    <script>
+        let dataPenjualanLokal = [];
+        let omsetCashSistem = 0;
+        let uangFisikAsli = 0;
+        let isOmsetTersembunyi = false;
+        let nilaiCashAsliSimpanan = 0;
+        let nilaiTfAsliSimpanan = 0;
+
+        function hubungkanKeRealtimeDatabase() {
+            const uid = currentUser.uid;
+            database.ref(`kasir_users/${uid}/riwayat_penjualan`).on('value', (snapshot) => {
                 dataPenjualanLokal = snapshot.val() || [];
-                hitungUlangMasingMasingOmset();
-                renderTabelRiwayatPenjualan();
-            });
-
-            database.ref(`kasir_users/${currentUser.uid}/master_produk`).on('value', (snapshot) => {
-                masterProdukLokal = snapshot.val() || {};
+                muatDataLokal();
             });
         }
 
-        function hitungUlangMasingMasingOmset() {
-            omsetCashSistem = 0; omsetTfSistem = 0; totalOmsetSistem = 0;
-            dataPenjualanLokal.forEach(item => {
-                let cashItem = Number(item.dibayarCash) || 0;
-                let tfItem = Number(item.dibayarTF) || 0;
-                
-                if (cashItem === 0 && tfItem === 0) {
-                    let totalItemLama = (Number(item.hargaBarang) || 0) * (Number(item.jumlahPembelian) || 0);
-                    if (item.jenisPembayaran === "Cash") omsetCashSistem += totalItemLama;
-                    else if (item.jenisPembayaran === "TF") omsetTfSistem += totalItemLama;
-                } else {
-                    omsetCashSistem += cashItem;
-                    omsetTfSistem += tfItem;
+        function simpanRiwayatKeFirebase(dataBaru) {
+            if (currentUser) database.ref(`kasir_users/${currentUser.uid}/riwayat_penjualan`).set(dataBaru);
+        }
+
+        const inputUangFisikTampilan = document.getElementById('uangFisikTampilan');
+
+        inputUangFisikTampilan.addEventListener('input', function (e) {
+            let nilaiBersih = e.target.value.replace(/\D/g, "");
+            uangFisikAsli = Number(nilaiBersih) || 0;
+            e.target.value = nilaiBersih === "" ? "" : formatRupiah(nilaiBersih);
+            hitungSelisihLaci();
+        });
+
+        function muatDataLokal() {
+            const tbody = document.getElementById('tabelBody');
+            tbody.innerHTML = '';
+            let r_cash = 0; let r_tf = 0;
+
+            if (dataPenjualanLokal.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4">Belum ada data penjualan di perangkat ini.</td></tr>';
+                nilaiCashAsliSimpanan = 0; nilaiTfAsliSimpanan = 0;
+                perbaruiTampilanOmsetDOM(0, 0); omsetCashSistem = 0;
+                hitungSelisihLaci();
+                return;
+            }
+
+            let nomorUrut = 1;
+            dataPenjualanLokal.forEach((item, index) => {
+                let cashRiil = item.hasOwnProperty('dibayarCash') ? item.dibayarCash : (item.jenisPembayaran === "Cash" ? item.hargaBarang * item.jumlahPembelian : 0);
+                let tfRiil = item.hasOwnProperty('dibayarTF') ? item.dibayarTF : (item.jenisPembayaran === "TF" ? item.hargaBarang * item.jumlahPembelian : 0);
+                r_cash += cashRiil; r_tf += tfRiil;
+
+                let totalHargaItem = item.hargaBarang * item.jumlahPembelian;
+                let tampilMetode = item.jenisPembayaran === "Cash" ? "💵 Cash" : (item.jenisPembayaran === "TF" ? "📱 TF" : item.jenisPembayaran);
+                let tglTampil = item.waktuTransaksi ? item.waktuTransaksi : "-";
+
+                // REVISI: Menyaring data teks tanggal agar string pukul dan jam kompak dipotong turun bersamaan ke baris bawah memakai <br>
+                let teksWaktuFinal = tglTampil;
+                if (tglTampil.includes(" pukul ")) {
+                    let partisi = tglTampil.split(" pukul ");
+                    teksWaktuFinal = `${partisi[0]}<br>pukul ${partisi[1]}`;
+                } else if (tglTampil.includes(" ")) {
+                    // Antisipasi jika format bawaan tidak menggunakan kata "pukul" melainkan langsung angka jam
+                    let posisiSpasiTerakhir = tglTampil.lastIndexOf(" ");
+                    let tanggalSaja = tglTampil.substring(0, posisiSpasiTerakhir);
+                    let jamSaja = tglTampil.substring(posisiSpasiTerakhir + 1);
+                    teksWaktuFinal = `${tanggalSaja}<br>pukul ${jamSaja}`;
+                }
+
+                tbody.innerHTML += `<tr>
+                    <td data-label="No." class="text-muted fw-semibold">${nomorUrut++}</td>
+                    <td data-label="Tanggal" class="small text-secondary" style="font-size:0.8rem;">${teksWaktuFinal}</td>
+                    <td data-label="Nama Barang" class="fw-bold">${item.namaBarang}</td>
+                    <td data-label="Harga">Rp ${formatRupiah(item.hargaBarang)}</td>
+                    <td data-label="Jumlah">${item.jumlahPembelian} Pcs</td>
+                    <td data-label="Pembayaran" class="fw-semibold">${tampilMetode}</td>
+                    <td data-label="Total" class="text-success fw-bold">Rp ${formatRupiah(totalHargaItem)}</td>
+                    <td data-label="Aksi" class="text-center btn-aksi-tabel">
+                        <button class="btn btn-danger btn-sm rounded shadow-sm px-2" onclick="hapusDataLokal(${index})" title="Hapus Data">🗑️</button>
+                    </td>
+                </tr>`;
+            });
+
+            omsetCashSistem = r_cash;
+            nilaiCashAsliSimpanan = r_cash;
+            nilaiTfAsliSimpanan = r_tf;
+            perbaruiTampilanOmsetDOM(r_cash, r_tf);
+            hitungSelisihLaci();
+        }
+
+        function perbaruiTampilanOmsetDOM(cash, tf) {
+            if (isOmsetTersembunyi) {
+                document.getElementById('totalCashToko').innerText = "******";
+                document.getElementById('totalTfToko').innerText = "******";
+                document.getElementById('totalSemuaToko').innerText = "******";
+            } else {
+                document.getElementById('totalCashToko').innerText = "Rp " + formatRupiah(cash);
+                document.getElementById('totalTfToko').innerText = "Rp " + formatRupiah(tf);
+                document.getElementById('totalSemuaToko').innerText = "Rp " + formatRupiah(cash + tf);
+            }
+        }
+
+        function togglePrivasiOmset() {
+            isOmsetTersembunyi = !isOmsetTersembunyi;
+            const btn = document.getElementById('btnToggleOmset');
+            btn.innerText = isOmsetTersembunyi ? "👁️ Tampilkan Semua Nominal Omset Toko" : "👁️ Sembunyikan Semua Nominal Omset Toko";
+            btn.className = isOmsetTersembunyi ? "btn btn-secondary w-100 fw-bold shadow-sm py-2" : "btn btn-outline-secondary w-100 fw-bold shadow-sm py-2";
+            perbaruiTampilanOmsetDOM(nilaiCashAsliSimpanan, nilaiTfAsliSimpanan);
+        }
+
+        function hapusDataLokal(index) {
+            Swal.fire({ title: "Hapus?", text: "Data dihapus dari Cloud!", icon: "warning", showCancelButton: true, confirmButtonColor: "#d33", confirmButtonText: "Ya, Hapus!" }).then((result) => {
+                if (result.isConfirmed) {
+                    dataPenjualanLokal.splice(index, 1);
+                    simpanRiwayatKeFirebase(dataPenjualanLokal);
                 }
             });
-            totalOmsetSistem = omsetCashSistem + omsetTfSistem;
-
-            document.getElementById('textOmsetCash').innerText = "Rp " + formatRupiah(omsetCashSistem);
-            document.getElementById('textOmsetTF').innerText = "Rp " + formatRupiah(omsetTfSistem);
-            document.getElementById('textOmsetTotal').innerText = "Rp " + formatRupiah(totalOmsetSistem);
-            hitungSinkronisasiFisikSeketika();
         }
 
-        function hitungSinkronisasiFisikSeketika() {
-            const infoBadge = document.getElementById('badgeInfoSelisih');
+        function bersihkanSemuaData() {
+            Swal.fire({ title: "Kosongkan Semua?", text: "Tindakan ini menghapus seluruh riwayat di Firebase!", icon: "error", showCancelButton: true, confirmButtonColor: "#dc3545", confirmButtonText: "Ya, Kosongkan!" }).then((result) => {
+                if (result.isConfirmed) simpanRiwayatKeFirebase([]);
+            });
+        }
+
+        function hitungSelisihLaci() {
+            const infoBadge = document.getElementById('statusLaciBadge');
             const textSelisih = document.getElementById('textSelisih');
             if (inputUangFisikTampilan.value === "") {
                 infoBadge.innerText = "Belum Diinput"; infoBadge.className = "status-badge bg-secondary text-white me-2";
@@ -227,167 +382,10 @@
 
         function downloadPDFDataOnly() {
             if (dataPenjualanLokal.length === 0) { alert("Tidak ada data transaksi."); return; }
-            const opsiFormat = { year: 'numeric', month: 'long', day: 'numeric' };
-            const tglHariIni = new Date().toLocaleDateString('id-ID', opsiFormat);
-
-            let barisHTML = '';
-            let n = 1;
-            dataPenjualanLokal.forEach(item => {
-                let ttr = (Number(item.hargaBarang) || 0) * (Number(item.jumlahPembelian) || 0);
-                barisHTML += '<tr>' +
-                    '<td>' + n++ + '</td>' +
-                    '<td style="text-align:left;">' + item.namaBarang + '</td>' +
-                    '<td>Rp ' + formatRupiah(item.hargaBarang) + '</td>' +
-                    '<td>' + item.jumlahPembelian + '</td>' +
-                    '<td>Rp ' + formatRupiah(ttr) + '</td>' +
-                    '<td>' + item.jenisPembayaran + '</td>' +
-                    '<td>' + (item.waktuTransaksi || '-') + '</td>' +
-                '</tr>';
-            });
-
-            const htmlKonten = [
-                '<html>',
-                '<head>',
-                '    <title>Laporan Penjualan - ' + tglHariIni + '</title>',
-                '    <style>',
-                '        body { font-family: sans-serif; padding: 20px; color: #333; }',
-                '        h2, h4 { margin: 2px 0; text-align: center; }',
-                '        .header-line { border-bottom: 2px solid #333; margin-bottom: 2px; margin-top: 5px; }',
-                '        .summary-box { border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; background-color: #f9f9f9; display: flex; justify-content: space-between; }',
-                '        .summary-item { font-size: 14px; }',
-                '        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }',
-                '        th, td { border: 1px solid #333; padding: 6px; text-align: center; }',
-                '        th { background-color: #f2f2f2; }',
-                '    </style>',
-                '</head>',
-                '<body>',
-                '    <h2>LAPORAN OMSET & RIWAYAT PENJUALAN</h2>',
-                '    <h4>Web Cashier Cloud System</h4>',
-                '    <div class="header-line"></div>',
-                '    <p style="font-size:12px; margin-bottom:15px;"><b>Tanggal Cetak:</b> ' + tglHariIni + '</p>',
-                '    ',
-                '    <div class="summary-box">',
-                '        <div class="summary-item"><b>Omset Cash:</b> Rp ' + formatRupiah(omsetCashSistem) + '</div>',
-                '        <div class="summary-item"><b>Omset TF:</b> Rp ' + formatRupiah(omsetTfSistem) + '</div>',
-                '        <div class="summary-item"><b>Total Pendapatan:</b> Rp ' + formatRupiah(totalOmsetSistem) + '</div>',
-                '    </div>',
-                '    <table>',
-                '        <thead>',
-                '            <tr>',
-                '                <th>No</th>',
-                '                <th>Nama Barang</th>',
-                '                <th>Harga Satuan</th>',
-                '                <th>Qty</th>',
-                '                <th>Total Harga</th>',
-                '                <th>Metode</th>',
-                '                <th>Waktu Transaksi</th>',
-                '            </tr>',
-                '        </thead>',
-                '        <tbody>',
-                '            ' + barisHTML,
-                '        </tbody>',
-                '    </table>',
-                '    <script>',
-                '        window.onload = function() { window.print(); window.close(); }',
-                '    <\/script>',
-                '</body>',
-                '</html>'
-            ].join('\n');
-
-            const jendelaCetak = window.open('', '_blank');
-            jendelaCetak.document.write(htmlKonten);
-            jendelaCetak.document.close();
+            const opsiFormat = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('printTanggal').innerText = new Date().toLocaleDateString('id-ID', opsiFormat);
+            window.print();
         }
-
-        function renderTabelRiwayatPenjualan() {
-            const tbody = document.querySelector('#tabelRiwayatPenjualan tbody');
-            tbody.innerHTML = '';
-            document.getElementById('infoTotalBaris').innerText = `Total: ${dataPenjualanLokal.length} Data`;
-
-            if (dataPenjualanLokal.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">Belum ada transaksi tersimpan untuk hari ini.</td></tr>`;
-                return;
-            }
-
-            for (let i = dataPenjualanLokal.length - 1; i >= 0; i--) {
-                const item = dataPenjualanLokal[i];
-                const totalItem = (Number(item.hargaBarang) || 0) * (Number(item.jumlahPembelian) || 0);
-
-                let badgeMetodeWarna = "bg-secondary text-white";
-                if (item.jenisPembayaran === "Cash") badgeMetodeWarna = "bg-success text-white";
-                else if (item.jenisPembayaran === "TF") badgeMetodeWarna = "bg-info text-dark";
-                else badgeMetodeWarna = "bg-primary text-white";
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="text-muted fw-semibold">${i + 1}</td>
-                    <td class="text-start fw-bold text-dark">${item.namaBarang}</td>
-                    <td class="fw-semibold text-secondary">Rp ${formatRupiah(item.hargaBarang)}</td>
-                    <td class="fw-bold">${item.jumlahPembelian}x</td>
-                    <td><span class="status-badge ${badgeMetodeWarna}">${item.jenisPembayaran}</span></td>
-                    <td class="text-muted small">${item.waktuTransaksi || '-'}</td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 fw-bold" onclick="hapusSatuItemRiwayatTransaksi(${i})" title="Hapus Item Transaksi Ini">🗑️</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            }
-        }
-
-        function hapusSatuItemRiwayatTransaksi(indexTarget) {
-            Swal.fire({
-                title: "Hapus Transaksi?",
-                text: "Tindakan ini akan membatalkan satu item penjualan terpilih dan mengembalikan stok barangnya!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#dc3545",
-                confirmButtonText: "Ya, Hapus!",
-                cancelButtonText: "Batal",
-                customClass: { popup: 'rounded-4' }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const itemTerhapus = dataPenjualanLokal[indexTarget];
-                    
-                    if (masterProdukLokal.hasOwnProperty(itemTerhapus.namaBarang)) {
-                        masterProdukLokal[itemTerhapus.namaBarang].stok += Number(itemTerhapus.jumlahPembelian) || 0;
-                        database.ref(`kasir_users/${currentUser.uid}/master_produk`).set(masterProdukLokal);
-                    }
-
-                    dataPenjualanLokal.splice(indexTarget, 1);
-                    database.ref(`kasir_users/${currentUser.uid}/riwayat_penjualan`).set(dataPenjualanLokal);
-                    
-                    Swal.fire({ title: "Terhapus!", text: "Satu item transaksi berhasil dibatalkan.", icon: "success", timer: 1500, showConfirmButton: false });
-                }
-            });
-        }
-
-        function resetSeluruhRiwayatLokalCloud() {
-            Swal.fire({
-                title: "Reset Seluruh Riwayat?",
-                text: "Semua log riwayat pendapatan hari ini akan dikosongkan total dari cloud! (Stok Master Tidak Berubah)",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#dc3545",
-                confirmButtonText: "Ya, Kosongkan!",
-                cancelButtonText: "Batal",
-                customClass: { popup: 'rounded-4' }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    database.ref(`kasir_users/${currentUser.uid}/riwayat_penjualan`).set([]);
-                    inputUangFisikTampilan.value = "";
-                    uangFisikAsli = 0;
-                    Swal.fire({ title: "Dibersihkan!", text: "Seluruh log riwayat penjualan sukses dikosongkan.", icon: "success", timer: 1500, showConfirmButton: false });
-                }
-            });
-        }
-
-        // PANGGIL COMPONENT FOOTER GLOBAL
-        fetch('footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('wadah-footer-global').innerHTML = data;
-            })
-            .catch(error => console.error('Gagal memuat footer:', error));
     </script>
 </body>
 
