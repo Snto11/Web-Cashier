@@ -225,7 +225,6 @@
             else { infoBadge.innerText = "⚠️ LEBIH"; infoBadge.className = "status-badge bg-warning text-dark me-2"; textSelisih.className = "m-0 fw-bold text-warning"; }
         }
 
-        // REVISI TOTAL: PERBAIKAN STRING LITERAL DENGAN BACKTICK DAN PENGHAPUSAN TANDA BACKSLASH PENGGANGGU
         function downloadPDFDataOnly() {
             if (dataPenjualanLokal.length === 0) { alert("Tidak ada data transaksi."); return; }
             const opsiFormat = { year: 'numeric', month: 'long', day: 'numeric' };
