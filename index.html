@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="icon" type="image/png" href="Logo Web Cashier.png" sizes="32x32">
+    <link class="content-sourced" icon" type="image/png" href="Logo Web Cashier.png" sizes="32x32">
     <link rel="shortcut icon" type="image/png" href="Logo Web Cashier.png">
     
     <title>Web-Cashier - Kasir</title>
@@ -112,7 +112,6 @@
             display: none !important;
         }
 
-        /* REVISI CSS: MENGATUR TAMPILAN DROPDOWN REKOMENDASI KUSTOM AGAR MENGGANTUNG RAPI DI BAWAH KOTAK INPUT */
         .wrapper-rekomendasi-kasir {
             position: relative;
             width: 100%;
@@ -346,14 +345,7 @@
                 </div>
             </div>
 
-            <div class="row mt-5">
-                <div class="col-12">
-                    <div class="footer-copyright">
-                        <p class="text-update-info">Terakhir Diperbarui: 11 Juli 2026</p>
-                        <p class="m-0">© 2026 Web Cashier. All Rights Reserved.</p>
-                    </div>
-                </div>
-            </div>
+            <div id="footer-container"></div>
         </div>
     </div>
 
@@ -771,7 +763,6 @@
             }
         }
 
-        // REVISI LOGIKA UTAMA: MENGGUNAKAN DROPDOWN LIST GRUP BOOTSTRAP UNTUK MENGAKOMODASI PENCARIAN SAMAR YANG SEBELUMNYA DIKUNCI OLEH DATALIST BROWSER
         window.aturPenyaringanRekomendasiSeketika = function(kataKunci) {
             if (document.getElementById('checkTanpaNama').checked) return;
             
@@ -838,7 +829,6 @@
             document.getElementById('dropdownRekomendasi').style.display = 'none';
         }
 
-        // Sembunyikan dropdown kustom saat pengguna mengklik area luar form
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.wrapper-rekomendasi-kasir')) {
                 sembunyikanDropdownKustom();
@@ -871,6 +861,17 @@
                 sembunyikanDropdownKustom();
             }
         }
+
+        // SCRIPT TAMBAHAN UNTUK PENGAMBILAN FOOTER SECARA OTOMATIS
+        fetch('footer.html')
+            .then(response => {
+                if (!response.ok) throw new Error('Gagal memuat file footer.');
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById('footer-container').innerHTML = data;
+            })
+            .catch(error => console.error('Error saat load footer:', error));
     </script>
 </body>
 
