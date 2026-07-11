@@ -143,6 +143,9 @@
                 </div>
             </div>
         </div>
+
+        <div id="wadah-footer-global"></div>
+
     </div>
 
     <script>
@@ -270,6 +273,14 @@
                 }
             });
         };
+
+        // FUNGSI UTAMA UNTUK MEMANGGIL FILE FOOTER.HTML SECARA OTOMATIS DAN MENAMPILKANNYA DI WADAH
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('wadah-footer-global').innerHTML = data;
+            })
+            .catch(error => console.error('Gagal memuat footer:', error));
     </script>
 </body>
 </html>
