@@ -233,14 +233,7 @@
             </div>
         </div>
 
-        <div class="row mt-5">
-            <div class="col-12">
-                <div class="footer-copyright">
-                    <p class="text-update-info">Terakhir Diperbarui: 6 Juli 2026</p>
-                    <p class="m-0">© 2026 Web Cashier. All Rights Reserved.</p>
-                </div>
-            </div>
-        </div>
+        <div id="footer-container"></div>
     </div>
 
     <script src="script.js"></script>
@@ -386,6 +379,13 @@
             document.getElementById('printTanggal').innerText = new Date().toLocaleDateString('id-ID', opsiFormat);
             window.print();
         }
+
+        fetch('footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('footer-container').innerHTML = data;
+        })
+        .catch(error => console.error('Gagal memuat footer:', error));
     </script>
 </body>
 
