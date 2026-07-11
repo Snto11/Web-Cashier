@@ -132,6 +132,7 @@
                 currentUser = user;
                 document.getElementById('appContainer').classList.remove('d-none');
                 hubungkanKeRealtimeDatabase();
+                muatFooterOtomatis(); // Memanggil fungsi untuk load footer
             }
         });
     </script>
@@ -233,7 +234,8 @@
             </div>
         </div>
 
-        <div id="footer-container"></div>
+        <div id="global-footer-container"></div>
+        
     </div>
 
     <script src="script.js"></script>
@@ -245,6 +247,19 @@
         let isOmsetTersembunyi = false;
         let nilaiCashAsliSimpanan = 0;
         let nilaiTfAsliSimpanan = 0;
+
+        // FUNGSI LOAD FOOTER DARI FILE EXTERNAL
+        function muatFooterOtomatis() {
+            fetch('footer.html')
+                .then(response => {
+                    if (!response.ok) throw new Error("Gagal mengambil file footer.");
+                    return response.text();
+                })
+                .then(htmlContent => {
+                    document.getElementById('global-footer-container').innerHTML = htmlContent;
+                })
+                .catch(err => console.warn("Info Footer:", err.message));
+        }
 
         function hubungkanKeRealtimeDatabase() {
             const uid = currentUser.uid;
@@ -290,13 +305,11 @@
                 let tampilMetode = item.jenisPembayaran === "Cash" ? "💵 Cash" : (item.jenisPembayaran === "TF" ? "📱 TF" : item.jenisPembayaran);
                 let tglTampil = item.waktuTransaksi ? item.waktuTransaksi : "-";
 
-                // REVISI: Menyaring data teks tanggal agar string pukul dan jam kompak dipotong turun bersamaan ke baris bawah memakai <br>
                 let teksWaktuFinal = tglTampil;
                 if (tglTampil.includes(" pukul ")) {
                     let partisi = tglTampil.split(" pukul ");
                     teksWaktuFinal = `${partisi[0]}<br>pukul ${partisi[1]}`;
                 } else if (tglTampil.includes(" ")) {
-                    // Antisipasi jika format bawaan tidak menggunakan kata "pukul" melainkan langsung angka jam
                     let posisiSpasiTerakhir = tglTampil.lastIndexOf(" ");
                     let tanggalSaja = tglTampil.substring(0, posisiSpasiTerakhir);
                     let jamSaja = tglTampil.substring(posisiSpasiTerakhir + 1);
@@ -379,13 +392,6 @@
             document.getElementById('printTanggal').innerText = new Date().toLocaleDateString('id-ID', opsiFormat);
             window.print();
         }
-
-        fetch('footer.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('footer-container').innerHTML = data;
-        })
-        .catch(error => console.error('Gagal memuat footer:', error));
     </script>
 </body>
 
