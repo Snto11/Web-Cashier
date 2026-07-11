@@ -225,6 +225,7 @@
             else { infoBadge.innerText = "⚠️ LEBIH"; infoBadge.className = "status-badge bg-warning text-dark me-2"; textSelisih.className = "m-0 fw-bold text-warning"; }
         }
 
+        // PERBAIKAN STRUKTUR TEKS: MENGGUNAKAN GABUNGAN ARRAY UNTUK MEMASTIKAN FUNGSI AMAN DARI ERROR PADA INTERPRETER BROWSER
         function downloadPDFDataOnly() {
             if (dataPenjualanLokal.length === 0) { alert("Tidak ada data transaksi."); return; }
             const opsiFormat = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -234,68 +235,68 @@
             let n = 1;
             dataPenjualanLokal.forEach(item => {
                 let ttr = (Number(item.hargaBarang) || 0) * (Number(item.jumlahPembelian) || 0);
-                barisHTML += `<tr>
-                    <td>${n++}</td>
-                    <td style="text-align:left;">${item.namaBarang}</td>
-                    <td>Rp ${formatRupiah(item.hargaBarang)}</td>
-                    <td>${item.jumlahPembelian}</td>
-                    <td>Rp ${formatRupiah(ttr)}</td>
-                    <td>${item.jenisPembayaran}</td>
-                    <td>${item.waktuTransaksi || '-'}</td>
-                </tr>`;
+                barisHTML += '<tr>' +
+                    '<td>' + n++ + '</td>' +
+                    '<td style="text-align:left;">' + item.namaBarang + '</td>' +
+                    '<td>Rp ' + formatRupiah(item.hargaBarang) + '</td>' +
+                    '<td>' + item.jumlahPembelian + '</td>' +
+                    '<td>Rp ' + formatRupiah(ttr) + '</td>' +
+                    '<td>' + item.jenisPembayaran + '</td>' +
+                    '<td>' + (item.waktuTransaksi || '-') + '</td>' +
+                '</tr>';
             });
 
+            const htmlKonten = [
+                '<html>',
+                '<head>',
+                '    <title>Laporan Penjualan - ' + tglHariIni + '</title>',
+                '    <style>',
+                '        body { font-family: sans-serif; padding: 20px; color: #333; }',
+                '        h2, h4 { margin: 2px 0; text-align: center; }',
+                '        .header-line { border-bottom: 2px solid #333; margin-bottom: 2px; margin-top: 5px; }',
+                '        .summary-box { border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; background-color: #f9f9f9; display: flex; justify-content: space-between; }',
+                '        .summary-item { font-size: 14px; }',
+                '        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }',
+                '        th, td { border: 1px solid #333; padding: 6px; text-align: center; }',
+                '        th { background-color: #f2f2f2; }',
+                '    </style>',
+                '</head>',
+                '<body>',
+                '    <h2>LAPORAN OMSET & RIWAYAT PENJUALAN</h2>',
+                '    <h4>Web Cashier Cloud System</h4>',
+                '    <div class="header-line"></div>',
+                '    <p style="font-size:12px; margin-bottom:15px;"><b>Tanggal Cetak:</b> ' + tglHariIni + '</p>',
+                '    ',
+                '    <div class="summary-box">',
+                '        <div class="summary-item"><b>Omset Cash:</b> Rp ' + formatRupiah(omsetCashSistem) + '</div>',
+                '        <div class="summary-item"><b>Omset TF:</b> Rp ' + formatRupiah(omsetTfSistem) + '</div>',
+                '        <div class="summary-item"><b>Total Pendapatan:</b> Rp ' + formatRupiah(totalOmsetSistem) + '</div>',
+                '    </div>',
+                '    <table>',
+                '        <thead>',
+                '            <tr>',
+                '                <th>No</th>',
+                '                <th>Nama Barang</th>',
+                '                <th>Harga Satuan</th>',
+                '                <th>Qty</th>',
+                '                <th>Total Harga</th>',
+                '                <th>Metode</th>',
+                '                <th>Waktu Transaksi</th>',
+                '            </tr>',
+                '        </thead>',
+                '        <tbody>',
+                '            ' + barisHTML,
+                '        </tbody>',
+                '    </table>',
+                '    <script>',
+                '        window.onload = function() { window.print(); window.close(); }',
+                '    <\/script>',
+                '</body>',
+                '</html>'
+            ].join('\n');
+
             const jendelaCetak = window.open('', '_blank');
-            jendelaCetak.document.write(`
-                <html>
-                <head>
-                    <title>Laporan Penjualan - ${tglHariIni}</title>
-                    <style>
-                        body { font-family: sans-serif; padding: 20px; color: #333; }
-                        h2, h4 { margin: 2px 0; text-align: center; }
-                        .header-line { border-bottom: 2px solid #333; margin-bottom: 2px; margin-top: 5px; }
-                        .summary-box { border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; background-color: #f9f9f9; display: flex; justify-content: space-between; }
-                        .summary-item { font-size: 14px; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
-                        th, td { border: 1px solid #333; padding: 6px; text-align: center; }
-                        th { background-color: #f2f2f2; }
-                    </style>
-                </head>
-                <body>
-                    <h2>LAPORAN OMSET & RIWAYAT PENJUALAN</h2>
-                    <h4>Web Cashier Cloud System</h4>
-                    <div class="header-line"></div>
-                    <p style="font-size:12px; margin-bottom:15px;"><b>Tanggal Cetak:</b> ${tglHariIni}</p>
-                    
-                    <div class="summary-box">
-                        <div class="summary-item"><b>Omset Cash:</b> Rp ${formatRupiah(omsetCashSistem)}</div>
-                        <div class="summary-item"><b>Omset TF:</b> Rp ${formatRupiah(omsetTfSistem)}</div>
-                        <div class="summary-item"><b>Total Pendapatan:</b> Rp ${formatRupiah(totalOmsetSistem)}</div>
-                    </div>
-
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nama Barang</th>
-                                <th>Harga Satuan</th>
-                                <th>Qty</th>
-                                <th>Total Harga</th>
-                                <th>Metode</th>
-                                <th>Waktu Transaksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${barisHTML}
-                        </tbody>
-                    </table>
-
-                    <script>
-                        window.onload = function() { window.print(); window.close(); }
-                    <\/script>
-                </body>
-                </html>
-            `);
+            jendelaCetak.document.write(htmlKonten);
             jendelaCetak.document.close();
         }
 
