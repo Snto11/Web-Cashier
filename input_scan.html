@@ -24,112 +24,116 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #333;
+            color: #374151;
         }
         .container-scanner {
-            max-width: 500px;
-            width: 100%;
             background: white;
             padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
         }
-        h1 {
-            font-size: 22px;
-            margin-bottom: 5px;
-            color: #1e3a8a;
-            font-weight: bold;
-        }
-        p.subtitle {
-            color: #6b7280;
-            font-size: 14px;
+        .header-title {
+            color: #1e40af;
+            font-weight: 700;
+            border-bottom: 3px solid #3b82f6;
+            padding-bottom: 8px;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         #reader {
             width: 100%;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
-            border: none !important;
-            background: #fafafa;
+            border: 2px solid #e5e7eb !important;
+            background-color: #f9fafb;
         }
         #reader__dashboard_section_csr button {
-            background-color: #1e3a8a !important;
+            background-color: #3b82f6 !important;
             color: white !important;
-            border-radius: 6px !important;
-            padding: 6px 12px !important;
             border: none !important;
-            font-size: 14px !important;
+            padding: 8px 16px !important;
+            border-radius: 6px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+        }
+        #reader__dashboard_section_csr button:hover {
+            background-color: #2563eb !important;
+        }
+        .result-box {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .btn-custom {
+            border-radius: 8px;
+            font-weight: 600;
+            width: 100%;
+            padding: 10px;
         }
     </style>
 </head>
 <body>
 
     <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+
+    <div class="container-scanner">
+        <div class="header-title">
+            <span>📷 Scan Barcode Belanjaan</span>
+            <a href="index.html" class="btn btn-outline-secondary btn-sm fw-bold">🔙 Batal</a>
+        </div>
+
+        <div id="reader"></div>
+
+        <div class="result-box">
+            <label class="form-label fw-bold text-secondary mb-1" style="font-size: 0.85rem;">Hasil Pindai Barcode:</label>
+            <input type="text" id="scanBarcodeResult" class="form-control form-control-sm fw-bold text-primary bg-white mb-2" placeholder="Menunggu deteksi kamera..." readonly>
+            
+            <label class="form-label fw-bold text-secondary mb-1" style="font-size: 0.85rem;">Nama Barang Terdeteksi:</label>
+            <input type="text" id="resultNamaBarang" class="form-control form-control-sm fw-bold mb-3 bg-light text-muted" placeholder="Nama barang otomatis..." readonly>
+            
+            <button id="btnLanjutkan" class="btn btn-success btn-custom shadow-sm" onclick="lanjutKePenjualan()" disabled>🚀 Lanjutkan Ke Antrean Kasir</button>
+        </div>
+
+        <div id="wadah-footer-global"></div>
+    </div>
 
     <script>
         let currentUser = null;
         let masterProdukLokal = {};
 
-        auth.onAuthStateChanged((user) => {
+        firebase.auth().onAuthStateChanged((user) => {
             if (!user) {
                 window.location.href = 'login.html';
             } else {
                 currentUser = user;
+                // Dengarkan snapshot master produk untuk mencocokkan barcode seketika
                 database.ref(`kasir_users/${user.uid}/master_produk`).on('value', (snapshot) => {
                     masterProdukLokal = snapshot.val() || {};
                 });
             }
         });
-    </script>
 
-    <div class="container-scanner">
-        <div class="text-center">
-            <h1>📷 Scan Barcode Belanjaan</h1>
-            <p class="subtitle">Arahkan kamera ke barcode barang untuk memproses penjualan</p>
-        </div>
-
-        <div id="reader" class="mb-4"></div>
-
-        <div class="card p-3 bg-light border text-start shadow-sm" style="font-size: 0.9rem;">
-            <label class="fw-bold text-secondary mb-2">📋 Informasi Hasil Scan:</label>
-            
-            <div class="mb-2">
-                <label class="form-label small fw-semibold mb-1">Kode Barcode</label>
-                <input type="text" id="resultBarcode" class="form-control form-control-sm fw-mono bg-white text-dark" placeholder="Menunggu scan..." readonly>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label small fw-semibold mb-1">Nama Barang Ditemukan</label>
-                <input type="text" id="resultNamaBarang" class="form-control form-control-sm bg-white fw-bold text-success" placeholder="Produk tidak diketahui" readonly>
-            </div>
-
-            <div class="row g-2">
-                <div class="col-12 mb-2">
-                    <button id="btnLanjutkan" class="btn btn-success btn-sm w-100 fw-bold shadow-sm py-2" onclick="lanjutKePenjualan()" disabled>🚀 Lanjutkan ke Penjualan</button>
-                </div>
-                <div class="col-12">
-                    <a href="index.html" class="btn btn-secondary btn-sm w-100 fw-bold shadow-sm">🔙 Batal</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
         function onScanSuccess(decodedText, decodedResult) {
-            document.getElementById('resultBarcode').value = decodedText;
-            let ditemukan = false;
+            document.getElementById('scanBarcodeResult').value = decodedText;
+            
             let namaProdukTerpilih = "";
-
-            // Cari nama produk berdasarkan barcode di data master
             for (let nama in masterProdukLokal) {
                 if (masterProdukLokal[nama].barcode && masterProdukLokal[nama].barcode === decodedText) {
                     namaProdukTerpilih = nama;
-                    ditemukan = true;
                     break;
                 }
             }
 
-            if (ditemukan) {
+            if (namaProdukTerpilih !== "") {
                 document.getElementById('resultNamaBarang').value = namaProdukTerpilih;
                 document.getElementById('btnLanjutkan').disabled = false;
                 Swal.fire({ title: "Barang Ditemukan! 🎉", text: namaProdukTerpilih, icon: "success", timer: 1500, showConfirmButton: false, customClass: { popup: 'rounded-4' } });
@@ -154,13 +158,20 @@
         );
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 
-        // REVISI FITUR: SEKARANG YANG DIKIRIM KE URL ADALAH NAMA BARANGNYA LANGSUNG (MISAL: Matcha bubuk A)
         function lanjutKePenjualan() {
             const namaBarang = document.getElementById('resultNamaBarang').value;
             if (namaBarang && namaBarang !== "Barcode Belum Terdaftar di Atur Produk!") {
                 window.location.href = `index.html?nama=${encodeURIComponent(namaBarang)}`;
             }
         }
+
+        // PANGGIL COMPONENT FOOTER GLOBAL
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('wadah-footer-global').innerHTML = data;
+            })
+            .catch(error => console.error('Gagal memuat footer:', error));
     </script>
 </body>
 </html>

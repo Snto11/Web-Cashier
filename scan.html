@@ -24,60 +24,98 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #333;
+            color: #374151;
         }
         .container-scanner {
-            max-width: 500px;
-            width: 100%;
             background: white;
             padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
         }
-        h1 {
-            font-size: 22px;
-            margin-bottom: 5px;
-            color: #1e3a8a;
-            font-weight: bold;
-        }
-        p.subtitle {
-            color: #6b7280;
-            font-size: 14px;
+        .header-title {
+            color: #1e40af;
+            font-weight: 700;
+            border-bottom: 3px solid #3b82f6;
+            padding-bottom: 8px;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         #reader {
             width: 100%;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
-            border: none !important;
-            background: #fafafa;
+            border: 2px solid #e5e7eb !important;
+            background-color: #f9fafb;
         }
         #reader__dashboard_section_csr button {
-            background-color: #1e3a8a !important;
+            background-color: #3b82f6 !important;
             color: white !important;
-            border-radius: 6px !important;
-            padding: 6px 12px !important;
             border: none !important;
-            font-size: 14px !important;
+            padding: 8px 16px !important;
+            border-radius: 6px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
         }
-        /* Style input saat read-only nama barang ditemukan */
-        #resultNamaBarang:read-only {
-            background-color: #e0f2fe !important;
-            color: #0369a1;
-            font-weight: bold;
-            border-color: #bae6fd;
+        #reader__dashboard_section_csr button:hover {
+            background-color: #2563eb !important;
+        }
+        .result-box {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .btn-custom {
+            border-radius: 8px;
+            font-weight: 600;
+            width: 100%;
+            padding: 10px;
         }
     </style>
 </head>
 <body>
 
     <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+
+    <div class="container-scanner">
+        <div class="header-title">
+            <span>📷 Pindai Barcode Master</span>
+            <a href="db_produk.html" class="btn btn-outline-secondary btn-sm fw-bold">🔙 Batal</a>
+        </div>
+
+        <div id="reader"></div>
+
+        <div class="result-box">
+            <label class="form-label fw-bold text-secondary mb-1" style="font-size: 0.85rem;">Nomor Kode Barcode Terbaca:</label>
+            <input type="text" id="scanBarcodeBarang" class="form-control font-semibold text-primary bg-white mb-3" placeholder="Arahkan kamera ke barcode produk..." readonly>
+            
+            <div id="boxTombolSimpan">
+                <button class="btn btn-success btn-custom shadow-sm" onclick="kirimBarcodeKeMaster()">🚀 Gunakan Kode & Atur Produk</button>
+            </div>
+            
+            <div id="boxNamaBarang" class="d-none mt-2">
+                <label class="form-label fw-bold text-success mb-1" style="font-size: 0.85rem;">Tercatat Milik Barang:</label>
+                <input type="text" id="resultNamaBarang" class="form-control form-control-sm fw-bold bg-white text-dark mb-1" readonly>
+                <small class="text-warning d-block lh-sm fw-semibold" style="font-size: 0.75rem;">⚠️ Barcode ini sudah terdaftar. Melanjutkan akan otomatis membuka mode edit produk tersebut!</small>
+            </div>
+        </div>
+
+        <div id="wadah-footer-global"></div>
+    </div>
 
     <script>
         let currentUser = null;
         let masterProdukLokal = {};
 
-        auth.onAuthStateChanged((user) => {
+        firebase.auth().onAuthStateChanged((user) => {
             if (!user) {
                 window.location.href = 'login.html';
             } else {
@@ -87,81 +125,25 @@
                 });
             }
         });
-    </script>
 
-    <div class="container-scanner">
-        <div class="text-center">
-            <h1>📷 Pemindai Barcode Produk</h1>
-            <p class="subtitle">Arahkan kamera ke barcode untuk mendapatkan nomor kode barang</p>
-        </div>
-
-        <div id="reader" class="mb-4"></div>
-
-        <div class="card p-3 bg-light border text-start shadow-sm" style="font-size: 0.9rem;">
-            <div class="mb-3">
-                <label class="form-label small fw-semibold mb-1">Kode Barcode Terpindai</label>
-                <div class="input-group input-group-sm">
-                    <input type="text" id="scanBarcodeBarang" class="form-control fw-mono bg-white text-primary fw-bold" placeholder="Menunggu hasil scan kamera..." readonly>
-                    <button class="btn btn-outline-secondary text-danger" type="button" onclick="resetFormScanner()" title="Kosongkan Barcode">🗑️</button>
-                </div>
-            </div>
-
-            <div class="mb-3 d-none" id="boxNamaBarang">
-                <label class="form-label small fw-semibold mb-1">Nama Barang</label>
-                <input type="text" id="resultNamaBarang" class="form-control form-control-sm text-uppercase" readonly>
-            </div>
-
-            <div class="row g-2">
-                <div class="col" id="boxTombolSimpan">
-                    <button id="btnSimpanBarcode" class="btn btn-primary btn-sm w-100 fw-bold shadow-sm" onclick="kirimBarcodeKeMaster()">💾 Simpan</button>
-                </div>
-                <div class="col">
-                    <a href="db_produk.html" class="btn btn-secondary btn-sm w-100 fw-bold shadow-sm">🔙 Kembali</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
         function onScanSuccess(decodedText, decodedResult) {
             document.getElementById('scanBarcodeBarang').value = decodedText;
             
-            const boxTombolSimpan = document.getElementById('boxTombolSimpan');
-            const boxNamaBarang = document.getElementById('boxNamaBarang');
-            const resultNamaBarang = document.getElementById('resultNamaBarang');
-            
-            let sudahAda = false;
-            let namaProdukTerdaftar = "";
-
-            // Cari nama produk berdasarkan kecocokan nomor barcode di Firebase
+            let namaProdukTerpilih = "";
             for (let nama in masterProdukLokal) {
                 if (masterProdukLokal[nama].barcode && masterProdukLokal[nama].barcode === decodedText) {
-                    sudahAda = true;
-                    namaProdukTerdaftar = nama;
+                    namaProdukTerpilih = nama;
                     break;
                 }
             }
 
-            if (sudahAda) {
-                // Sembunyikan tombol simpan untuk mencegah duplikasi
-                boxTombolSimpan.classList.add('d-none');
-                
-                // Isi dan tampilkan kolom Nama Barang
-                resultNamaBarang.value = namaProdukTerdaftar;
-                boxNamaBarang.classList.remove('d-none');
-
-                Swal.fire({ 
-                    title: "Sudah Terdaftar! ⚠️", 
-                    text: `Barcode terdaftar sebagai "${namaProdukTerdaftar}".`, 
-                    icon: "info", 
-                    customClass: { popup: 'rounded-4' } 
-                });
+            if (namaProdukTerpilih !== "") {
+                document.getElementById('boxNamaBarang').classList.remove('d-none');
+                document.getElementById('resultNamaBarang').value = namaProdukTerpilih;
+                Swal.fire({ title: "Barcode Terdaftar! ✏️", text: `Milik produk: ${namaProdukTerpilih}`, icon: "info", customClass: { popup: 'rounded-4' } });
             } else {
-                // Jika barcode baru, tampilkan tombol simpan dan sembunyikan kolom nama barang
-                boxTombolSimpan.classList.remove('d-none');
-                boxNamaBarang.classList.add('d-none');
-                resultNamaBarang.value = "";
-
+                document.getElementById('boxNamaBarang').classList.add('d-none');
+                document.getElementById('resultNamaBarang').value = "";
                 Swal.fire({ title: "Terbaca! 🎉", text: `Kode: ${decodedText}`, icon: "success", timer: 1000, showConfirmButton: false, customClass: { popup: 'rounded-4' } });
             }
         }
@@ -195,6 +177,14 @@
             }
             window.location.href = `db_produk.html?scan_barcode=${encodeURIComponent(barcode)}`;
         }
+
+        // PANGGIL COMPONENT FOOTER GLOBAL
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('wadah-footer-global').innerHTML = data;
+            })
+            .catch(error => console.error('Gagal memuat footer:', error));
     </script>
 </body>
 </html>
