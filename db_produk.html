@@ -62,12 +62,10 @@
                 window.location.href = 'login.html';
             } else {
                 currentUser = user;
-                // Ambil data produk real-time dari cloud Firebase
                 database.ref(`kasir_users/${user.uid}/master_produk`).on('value', (snapshot) => {
                     masterProdukLokal = snapshot.val() || {};
                     muatTabelMasterProduk();
                     
-                    // Cek parameter URL apabila datang dari scan.html membawa barcode baru
                     const urlParams = new URLSearchParams(window.location.search);
                     const barcodeBaruDariScan = urlParams.get('scan_barcode');
                     if (barcodeBaruDariScan) {
@@ -149,7 +147,6 @@
             e.target.value = formatRupiah(e.target.value.replace(/\D/g, "")); 
         });
 
-        // REVISI LIVE SEARCH: MENGGUNAKAN PENCARIAN SAMAR (FUZZY MATCH KARAKTER ACAK) DENGAN STRUKTUR ELEMENT UI TETAP UTUH ASLI 100%
         document.getElementById('swalCariProduk').addEventListener('input', function (e) {
             const kataKunci = e.target.value.trim();
             
@@ -160,7 +157,6 @@
                 return;
             }
 
-            // Memecah setiap huruf ketikan menjadi pola RegExp berurutan fleksibel (Misal: "idmlk" -> /i.*d.*m.*l.*k/)
             const hurufKataKunci = kataKunci.toLowerCase().split("");
             const polaRegExFuzzy = new RegExp(hurufKataKunci.join(".*"));
 
@@ -168,7 +164,6 @@
                 const namaAtribut = row.getAttribute('data-nama') || "";
                 const barcodeAtribut = row.getAttribute('data-barcode') || "";
 
-                // Lakukan pencocokan pola karakter berurutan pada atribut nama maupun barcode produk
                 if (polaRegExFuzzy.test(namaAtribut) || polaRegExFuzzy.test(barcodeAtribut)) {
                     row.style.setProperty('display', '', 'important');
                 } else {
@@ -185,10 +180,12 @@
 
             for (let nama in masterProdukLokal) {
                 let barcodeTampil = masterProdukLokal[nama].barcode ? `<br><small class="text-muted fw-mono" style="font-size: 0.75rem;">📋 ${masterProdukLokal[nama].barcode}</small>` : '';
+                
+                // REVISI FITUR: MENAMBAHKAN KELAS 'text-nowrap' PADA KOLOM HARGA AGAR HARGA SELALU 1 BARIS PADA LAPTOP/LAYAR LEBAR
                 barisTabel += `<tr class="produk-row" data-nama="${nama.toLowerCase()}" data-barcode="${(masterProdukLokal[nama].barcode || '').toLowerCase()}">
                     <td class="text-muted fw-semibold small">${nomorUrutMaster++}</td>
                     <td class="text-start small nama-produk-kolom"><span class="fw-bold">${nama}</span>${barcodeTampil}</td>
-                    <td class="text-end small">Rp ${formatRupiah(masterProdukLokal[nama].harga)}</td>
+                    <td class="text-end small text-nowrap">Rp ${formatRupiah(masterProdukLokal[nama].harga)}</td>
                     <td class="text-center small fw-semibold text-primary">${masterProdukLokal[nama].stok} pcs</td>
                     <td>
                         <div class="d-flex flex-row justify-content-center align-items-center">
@@ -201,7 +198,6 @@
 
             tbody.innerHTML = barisTabel || '<tr><td colspan="5" class="text-muted py-3">Belum ada daftar produk di database.</td></tr>';
             
-            // Jalankan ulang fungsi pencarian saat data ter-refresh cloud otomatis
             const inputCari = document.getElementById('swalCariProduk');
             if(inputCari && inputCari.value !== "") {
                 inputCari.dispatchEvent(new Event('input'));
