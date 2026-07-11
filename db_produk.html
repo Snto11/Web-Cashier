@@ -117,7 +117,10 @@
             <div class="col-12 col-md-7">
                 <div class="card p-3 bg-white shadow-sm">
                     <div class="mb-3">
-                        <input type="text" id="swalCariProduk" class="form-control form-control-sm" placeholder="🔍 Cari nama atau barcode...">
+                        <div class="input-group input-group-sm">
+                            <input type="text" id="swalCariProduk" class="form-control" placeholder="🔍 Cari nama atau barcode...">
+                            <button class="btn btn-outline-secondary text-danger" type="button" id="btnHapusCariMaster" onclick="document.getElementById('swalCariProduk').value = ''; document.getElementById('swalCariProduk').dispatchEvent(new Event('input')); document.getElementById('swalCariProduk').focus();" title="Kosongkan Pencarian">🗑️</button>
+                        </div>
                     </div>
                     <div class="table-responsive border rounded" style="max-height: 480px; overflow-y: auto;">
                         <table class="table table-sm table-hover text-center m-0" id="swalTabelMaster">
@@ -181,7 +184,6 @@
             for (let nama in masterProdukLokal) {
                 let barcodeTampil = masterProdukLokal[nama].barcode ? `<br><small class="text-muted fw-mono" style="font-size: 0.75rem;">📋 ${masterProdukLokal[nama].barcode}</small>` : '';
                 
-                // REVISI FITUR: MENAMBAHKAN KELAS 'text-nowrap' PADA KOLOM HARGA AGAR HARGA SELALU 1 BARIS PADA LAPTOP/LAYAR LEBAR
                 barisTabel += `<tr class="produk-row" data-nama="${nama.toLowerCase()}" data-barcode="${(masterProdukLokal[nama].barcode || '').toLowerCase()}">
                     <td class="text-muted fw-semibold small">${nomorUrutMaster++}</td>
                     <td class="text-start small nama-produk-kolom"><span class="fw-bold">${nama}</span>${barcodeTampil}</td>
