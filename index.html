@@ -172,6 +172,17 @@
                 padding: 6px 10px !important;
                 white-space: nowrap !important;
             }
+
+            /* Ketika dibuka di HP / layar di bawah 768px */
+            @media (max-width: 767.98px) {
+                .kartu-penjualan-responsif {
+                    background: transparent !important;
+                    border: none !important;
+                    box-shadow: none !important;
+                    padding: 0px !important;
+                    /* Menghilangkan padding 4 agar mepet pas dengan layar HP */
+                }
+            }
         }
     </style>
 </head>
@@ -246,6 +257,7 @@
                 <div class="col-12 col-md-6 col-lg-5 mx-auto">
 
                     <!-- <div class="card p-4"> -->
+                    <div class="card p-4 kartu-penjualan-responsif">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h3 id="formTitle" class="m-0 fw-bold text-primary judul-input-kasir"
                                 style="font-size: 1.5rem;">🛒 Input Penjualan</h3>
@@ -391,8 +403,8 @@
                                 onclick="selesaikanTransactionsGabungan()">🛒 Selesaikan Transaksi (Simpan
                                 Semua)</button>
                         </form>
-                    <!-- </div> -->
-                    
+                    </div>
+
                 </div>
             </div>
 
