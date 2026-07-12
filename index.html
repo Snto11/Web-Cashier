@@ -828,6 +828,63 @@
             let adaData = false;
 
             if (apakahBarcode) {
+                // PERBAIKAN: Mencari produk yang barcode-nya mengandung/mirip dengan angka yang sedang diketik
+                for (let nama in masterProdukLokal) {
+                    if (masterProdukLokal[nama].barcode && String(masterProdukLokal[nama].barcode).includes(bersih)) {
+                        const divItem = document.createElement('div');
+                        divItem.className = 'item-rekomendasi-kustom';
+                        // Menampilkan Nama Barang meskipun yang diketik adalah Barcode
+                        divItem.innerText = `${nama} (${masterProdukLokal[nama].barcode})`;
+                        divItem.onclick = function () {
+                            pilihBarangDariDropdownKustom(nama);
+                        };
+                        dropdown.appendChild(divItem);
+                        adaData = true;
+                    }
+                }
+            } else {
+                const hurufKataKunci = bersih.toLowerCase().split("");
+                const polaRegExFuzzy = new RegExp(hurufKataKunci.join(".*"));
+
+                for (let nama in masterProdukLokal) {
+                    const namaProdukLower = nama.toLowerCase();
+
+                    if (polaRegExFuzzy.test(namaProdukLower)) {
+                        const divItem = document.createElement('div');
+                        divItem.className = 'item-rekomendasi-kustom';
+                        divItem.innerText = nama;
+                        divItem.onclick = function () {
+                            pilihBarangDariDropdownKustom(nama);
+                        };
+                        dropdown.appendChild(divItem);
+                        adaData = true;
+                    }
+                }
+            }
+
+            if (adaData) {
+                dropdown.style.display = 'block';
+            } else {
+                sembunyikanDropdownKustom();
+            }
+        }
+
+        window.aturPenyaringanRekomendasiSeketika__ = function (kataKunci) {
+            if (document.getElementById('checkTanpaNama').checked) return;
+
+            const dropdown = document.getElementById('dropdownRekomendasi');
+            const bersih = kataKunci.trim();
+
+            if (bersih === "") {
+                sembunyikanDropdownKustom();
+                return;
+            }
+
+            const apakahBarcode = /^\d+$/.test(bersih);
+            dropdown.innerHTML = '';
+            let adaData = false;
+
+            if (apakahBarcode) {
                 for (let nama in masterProdukLokal) {
                     if (masterProdukLokal[nama].barcode && masterProdukLokal[nama].barcode === bersih) {
                         const divItem = document.createElement('div');
@@ -891,17 +948,16 @@
             const inputHarga = document.getElementById('hargaTampilan');
 
             let produkDitemukan = null;
-            let namaAsliBarang = namaInputVal;
 
+            // 1. Cek apakah input COCOK PAS dengan Nama Produk
             if (masterProdukLokal.hasOwnProperty(namaInputVal)) {
                 produkDitemukan = masterProdukLokal[namaInputVal];
             } else {
-                // Mencari berdasarkan barcode
+                // 2. Cek apakah input COCOK PAS dengan Nomor Barcode secara utuh
                 for (let nama in masterProdukLokal) {
-                    if (masterProdukLokal[nama].barcode && masterProdukLokal[nama].barcode === namaInputVal) {
+                    if (masterProdukLokal[nama].barcode && String(masterProdukLokal[nama].barcode) === namaInputVal) {
                         produkDitemukan = masterProdukLokal[nama];
-                        inputNama.value = nama; // Mengubah nomor barcode menjadi nama barang di input
-                        namaAsliBarang = nama;
+                        inputNama.value = nama; // PERBAIKAN: Langsung ubah isi input dari nomor barcode menjadi Nama Barang
                         break;
                     }
                 }
@@ -909,21 +965,17 @@
 
             if (produkDitemukan) {
                 hargaAsli = produkDitemukan.harga;
-                inputHarga.value = formatRupiah(produkDitemukan.harga);
+                inputHarga.value = formatRupiah(String(produkDitemukan.harga));
                 document.getElementById('infoStokTersedia').innerText = `(Tersedia: ${produkDitemukan.stok} Pcs)`;
                 inputNama.readOnly = true;
                 inputHarga.readOnly = true;
                 document.getElementById('jumlahPembelian').value = "1";
-
-                // PERBAIKAN: Picu ulang rekomendasi agar nama barang muncul di dropdown & layar terupdate
-                aturPenyaringanRekomendasiSeketika(namaAsliBarang);
-
                 hitungKalkulatorSeketika();
                 sembunyikanDropdownKustom();
             }
         }
 
-        function autoFillHarga_ASLI() {
+        function autoFillHarga__() {
             if (document.getElementById('checkTanpaNama').checked) return;
             const inputNama = document.getElementById('namaBarang');
             let namaInputVal = inputNama.value.trim();
