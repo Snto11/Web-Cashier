@@ -6,14 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link class="content-sourced" icon" type="image/png" href="Logo Web Cashier.png" sizes="32x32">
     <link rel="shortcut icon" type="image/png" href="Logo Web Cashier.png">
-    
+
     <title>Web-Cashier - Kasir</title>
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=barcode_reader" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=barcode_reader" />
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -199,32 +200,41 @@
             <div class="container-fluid p-0 navbar-kasir-container position-relative">
                 <div class="d-flex align-items-center">
                     <span class="navbar-brand fw-bold text-primary m-0 d-none d-sm-block" style="font-size: 1.25rem;">
-                        <img src="Logo Web Cashier.png" alt="Logo" style="height: 32px; width: auto; margin-right: 8px; vertical-align: middle;">Web-Cashier
+                        <img src="Logo Web Cashier.png" alt="Logo"
+                            style="height: 32px; width: auto; margin-right: 8px; vertical-align: middle;">Web-Cashier
                     </span>
                     <span class="navbar-brand fw-bold text-primary m-0 d-block d-sm-none" style="font-size: 1.25rem;">
-                        <img src="Logo Web Cashier.png" alt="Logo" style="height: 32px; width: auto; vertical-align: middle;">
+                        <img src="Logo Web Cashier.png" alt="Logo"
+                            style="height: 32px; width: auto; vertical-align: middle;">
                     </span>
                 </div>
 
                 <div class="position-absolute start-50 translate-middle-x d-none d-md-block">
-                    <a href="penjualan.html" class="btn btn-outline-secondary fw-bold shadow-sm px-3 text-nowrap">📊 Data & Omset Penjualan</a>
+                    <a href="penjualan.html" class="btn btn-outline-secondary fw-bold shadow-sm px-3 text-nowrap">📊
+                        Data & Omset Penjualan</a>
                 </div>
                 <div class="d-block d-md-none text-center mx-2 flex-grow-1">
-                    <a href="penjualan.html" class="btn btn-outline-secondary fw-bold shadow-sm btn-nav-penjualan-mobile text-nowrap">📊 Data & Omset Penjualan</a>
+                    <a href="penjualan.html"
+                        class="btn btn-outline-secondary fw-bold shadow-sm btn-nav-penjualan-mobile text-nowrap">📊 Data
+                        & Omset Penjualan</a>
                 </div>
 
                 <div class="dropdown">
-                    <a class="dropdown-toggle d-flex align-items-center" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img id="userPhoto" src="" alt="User" class="rounded-circle border border-primary border-2" style="width: 40px; height: 40px; cursor: pointer;">
+                    <a class="dropdown-toggle d-flex align-items-center" href="#" role="button" id="dropdownMenuLink"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <img id="userPhoto" src="" alt="User" class="rounded-circle border border-primary border-2"
+                            style="width: 40px; height: 40px; cursor: pointer;">
                     </a>
 
-                    <ul class="dropdown-menu dropdown-menu-end shadow border p-3 rounded-3" aria-labelledby="dropdownMenuLink" style="min-width: 230px;">
+                    <ul class="dropdown-menu dropdown-menu-end shadow border p-3 rounded-3"
+                        aria-labelledby="dropdownMenuLink" style="min-width: 230px;">
                         <li class="px-2 pb-2 border-bottom mb-2 text-center text-sm-start">
                             <div class="fw-bold text-dark lh-sm" id="userName">Memuat Nama...</div>
                             <small class="text-muted text-break" id="userEmail">Memuat Email...</small>
                         </li>
                         <li>
-                            <button class="dropdown-item btn btn-danger fw-bold text-danger py-2 rounded" onclick="auth.signOut()">👋 Logout</button>
+                            <button class="dropdown-item btn btn-danger fw-bold text-danger py-2 rounded"
+                                onclick="auth.signOut()">👋 Logout</button>
                         </li>
                     </ul>
                 </div>
@@ -236,9 +246,11 @@
                 <div class="col-12 col-md-6 col-lg-5 mx-auto">
                     <div class="card p-4">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h3 id="formTitle" class="m-0 fw-bold text-primary judul-input-kasir" style="font-size: 1.5rem;">🛒 Input Penjualan</h3>
+                            <h3 id="formTitle" class="m-0 fw-bold text-primary judul-input-kasir"
+                                style="font-size: 1.5rem;">🛒 Input Penjualan</h3>
                             <div class="d-flex flex-column align-items-end gap-1">
-                                <a href="db_produk.html" class="btn btn-outline-secondary btn-sm fw-bold shadow-sm">⚙️ Atur Produk</a>
+                                <a href="db_produk.html" class="btn btn-outline-secondary btn-sm fw-bold shadow-sm">⚙️
+                                    Atur Produk</a>
                             </div>
                         </div>
 
@@ -249,15 +261,26 @@
                                 <label class="form-label fw-semibold">Nama Barang / Scan Barcode</label>
                                 <div class="wrapper-rekomendasi-kasir">
                                     <div class="input-group">
-                                        <input type="text" id="namaBarang" class="form-control" placeholder="Ketik nama atau ketik/scan nomor barcode..." oninput="autoFillHarga(); aturPenyaringanRekomendasiSeketika(this.value)" onfocus="aturPenyaringanRekomendasiSeketika(this.value)" required>
-                                        <a href="input_scan.html" class="btn btn-primary fw-bold d-flex align-items-center justify-content-center" title="Buka Kamera Scan Barang" style="width: 45px;"><span class="material-symbols-outlined">barcode_reader</span></a>
-                                        <button class="btn btn-outline-secondary text-danger" type="button" id="btnHapusInput" onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); sembunyikanDropdownKustom(); aturTampilanInputPembayaran(); document.getElementById('namaBarang').focus();" title="Kosongkan Semua Inputan">🗑️</button>
+                                        <input type="text" id="namaBarang" class="form-control"
+                                            placeholder="Ketik nama atau ketik/scan nomor barcode..."
+                                            oninput="autoFillHarga(); aturPenyaringanRekomendasiSeketika(this.value)"
+                                            onfocus="aturPenyaringanRekomendasiSeketika(this.value)" required>
+                                        <a href="input_scan.html"
+                                            class="btn btn-primary fw-bold d-flex align-items-center justify-content-center"
+                                            title="Buka Kamera Scan Barang" style="width: 45px;"><span
+                                                class="material-symbols-outlined">barcode_reader</span></a>
+                                        <button class="btn btn-outline-secondary text-danger" type="button"
+                                            id="btnHapusInput"
+                                            onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); sembunyikanDropdownKustom(); aturTampilanInputPembayaran(); document.getElementById('namaBarang').focus();"
+                                            title="Kosongkan Semua Inputan">🗑️</button>
                                     </div>
                                     <div id="dropdownRekomendasi" class="dropdown-rekomendasi-kustom"></div>
                                 </div>
                                 <div class="form-check mt-1">
-                                    <input class="form-check-input" type="checkbox" id="checkTanpaNama" onchange="toggleTanpaNamaBarang()">
-                                    <label class="form-check-label small fw-bold text-secondary" for="checkTanpaNama">Tanpa Nama Barang</label>
+                                    <input class="form-check-input" type="checkbox" id="checkTanpaNama"
+                                        onchange="toggleTanpaNamaBarang()">
+                                    <label class="form-check-label small fw-bold text-secondary"
+                                        for="checkTanpaNama">Tanpa Nama Barang</label>
                                 </div>
                             </div>
 
@@ -265,32 +288,45 @@
                                 <label class="form-label fw-semibold">Harga Barang</label>
                                 <div class="input-group">
                                     <span class="input-group-text">Rp</span>
-                                    <input type="text" id="hargaTampilan" inputmode="numeric" class="form-control" placeholder="0" required>
+                                    <input type="text" id="hargaTampilan" inputmode="numeric" class="form-control"
+                                        placeholder="0" required>
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label fw-semibold">Jumlah Pembelian <span id="infoStokTersedia" class="text-muted small fw-normal"></span></label>
-                                <input type="number" id="jumlahPembelian" class="form-control" placeholder="0" min="1" required>
+                                <label class="form-label fw-semibold">Jumlah Pembelian <span id="infoStokTersedia"
+                                        class="text-muted small fw-normal"></span></label>
+                                <input type="number" id="jumlahPembelian" class="form-control" placeholder="0" min="1"
+                                    required>
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center mb-3 px-1">
-                                <span class="small fw-bold text-secondary" id="labelSubtotal">Subtotal (Barang Ini):</span>
+                                <span class="small fw-bold text-secondary" id="labelSubtotal">Subtotal (Barang
+                                    Ini):</span>
                                 <span class="fw-bold text-dark fs-5" id="textSubtotalSeketika">Rp 0</span>
                             </div>
 
                             <div class="mb-4">
-                                <button type="submit" id="btnSimpan" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm">🚀 Tambah Barang ke Antrean</button>
-                                <button type="button" id="btnBatal" class="btn btn-secondary w-100 fw-bold mt-2 d-none" onclick="resetForm()">❌ Batal Edit</button>
+                                <button type="submit" id="btnSimpan"
+                                    class="btn btn-primary btn-lg w-100 fw-bold shadow-sm">🚀 Tambah Barang ke
+                                    Antrean</button>
+                                <button type="button" id="btnBatal" class="btn btn-secondary w-100 fw-bold mt-2 d-none"
+                                    onclick="resetForm()">❌ Batal Edit</button>
                             </div>
 
                             <div class="bg-kalkulator mb-4">
-                                <div id="boxRincianMulti" class="d-none mb-3 pt-2 border-top border-secondary border-opacity-25">
+                                <div id="boxRincianMulti"
+                                    class="d-none mb-3 pt-2 border-top border-secondary border-opacity-25">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <span class="small fw-bold text-primary d-block">📋 Rincian Belanjaan:</span>
-                                        <button type="button" class="btn btn-danger btn-xs py-0 px-2 fw-bold text-uppercase" style="font-size: 0.7rem; border-radius: 4px;" onclick="batalSeluruhAntreanKeranjang()" title="Kosongkan Rincian Belanjaan">❌ Batal</button>
+                                        <button type="button"
+                                            class="btn btn-danger btn-xs py-0 px-2 fw-bold text-uppercase"
+                                            style="font-size: 0.7rem; border-radius: 4px;"
+                                            onclick="batalSeluruhAntreanKeranjang()"
+                                            title="Kosongkan Rincian Belanjaan">❌ Batal</button>
                                     </div>
-                                    <div class="d-flex text-muted fw-bold pb-1 mb-1 border-bottom" style="font-size: 0.75rem;">
+                                    <div class="d-flex text-muted fw-bold pb-1 mb-1 border-bottom"
+                                        style="font-size: 0.75rem;">
                                         <span style="width: 35%;">Nama</span>
                                         <span style="width: 25%;">Harga</span>
                                         <span style="width: 15%; text-align: center;">Qty</span>
@@ -299,14 +335,17 @@
                                     <div id="daftarRincianItem" style="max-height: 140px; overflow-y: auto;"></div>
                                 </div>
 
-                                <div class="d-flex justify-content-between align-items-center mb-3 text-primary d-none" id="infoMultiBarang">
+                                <div class="d-flex justify-content-between align-items-center mb-3 text-primary d-none"
+                                    id="infoMultiBarang">
                                     <span class="small fw-bold">Total Gabungan (0 Barang):</span>
                                     <span class="fw-bold" id="textTotalGabungan">Rp 0</span>
                                 </div>
 
                                 <div class="mb-3" id="boxJenisPembayaran" style="display: none;">
-                                    <label class="form-label small fw-bold text-secondary">Jenis Pembayaran (Final):</label>
-                                    <select id="jenisPembayaran" class="form-select form-select-sm" onchange="aturTampilanInputPembayaran()">
+                                    <label class="form-label small fw-bold text-secondary">Jenis Pembayaran
+                                        (Final):</label>
+                                    <select id="jenisPembayaran" class="form-select form-select-sm"
+                                        onchange="aturTampilanInputPembayaran()">
                                         <option value="">-- Pilih Pembayaran --</option>
                                         <option value="Cash">💵 Cash</option>
                                         <option value="TF">📱 TF (Transfer)</option>
@@ -315,31 +354,41 @@
 
                                 <div id="areaInputCash" style="display: none;">
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" id="checkUangPas" onchange="toggleUangPasHandler()">
-                                        <label class="form-check-label small fw-bold text-success" for="checkUangPas">💵 Uang Pas</label>
+                                        <input class="form-check-input" type="checkbox" id="checkUangPas"
+                                            onchange="toggleUangPasHandler()">
+                                        <label class="form-check-label small fw-bold text-success" for="checkUangPas">💵
+                                            Uang Pas</label>
                                     </div>
 
                                     <div class="mb-2">
-                                        <label class="form-label small fw-bold text-secondary">Uang Diterima dari Pembeli:</label>
+                                        <label class="form-label small fw-bold text-secondary">Uang Diterima dari
+                                            Pembeli:</label>
                                         <div class="input-group input-group-sm">
                                             <span class="input-group-text bg-secondary text-white">Rp</span>
-                                            <input type="text" id="uangDiterimaTampilan" inputmode="numeric" class="form-control" placeholder="0">
+                                            <input type="text" id="uangDiterimaTampilan" inputmode="numeric"
+                                                class="form-control" placeholder="0">
                                         </div>
                                     </div>
 
                                     <div class="form-check mb-2 d-none" id="boxSplitPembayaran">
-                                        <input class="form-check-input" type="checkbox" id="checkSplitTF" onchange="hitungKalkulatorSeketika()">
-                                        <label class="form-check-label small fw-semibold text-primary" for="checkSplitTF">📱 Sisa Pembayaran Menggunakan TF</label>
+                                        <input class="form-check-input" type="checkbox" id="checkSplitTF"
+                                            onchange="hitungKalkulatorSeketika()">
+                                        <label class="form-check-label small fw-semibold text-primary"
+                                            for="checkSplitTF">📱 Sisa Pembayaran Menggunakan TF</label>
                                     </div>
 
-                                    <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25 mb-2">
+                                    <div
+                                        class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25 mb-2">
                                         <span class="small fw-bold text-secondary">Uang Kembalian:</span>
                                         <span class="fs-5 fw-bold text-danger" id="textKembalianSeketika">Rp 0</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <button type="button" id="btnSelesaiMulti" class="btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2 d-none" onclick="selesaikanTransactionsGabungan()">🛒 Selesaikan Transaksi (Simpan Semua)</button>
+                            <button type="button" id="btnSelesaiMulti"
+                                class="btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2 d-none"
+                                onclick="selesaikanTransactionsGabungan()">🛒 Selesaikan Transaksi (Simpan
+                                Semua)</button>
                         </form>
                     </div>
                 </div>
@@ -355,7 +404,7 @@
         let masterProdukLokal = {};
         let dataPenjualanLokal = [];
         let antreanKeranjangSeketika = [];
-        
+
         try {
             const cadanganKeranjang = sessionStorage.getItem('cadangan_keranjang_kasir');
             if (cadanganKeranjang) antreanKeranjangSeketika = JSON.parse(cadanganKeranjang);
@@ -367,7 +416,7 @@
             const uid = currentUser.uid;
             database.ref(`kasir_users/${uid}/master_produk`).on('value', (snapshot) => {
                 masterProdukLokal = snapshot.val() || {};
-                
+
                 const urlParams = new URLSearchParams(window.location.search);
                 const namaKirim = urlParams.get('nama');
                 if (namaKirim) {
@@ -405,15 +454,15 @@
         let hargaAsli = 0;
         let uangDiterimaAsli = 0;
 
-        window.toggleTanpaNamaBarang = function() {
+        window.toggleTanpaNamaBarang = function () {
             const checkTanpaNama = document.getElementById('checkTanpaNama');
             const inputNama = document.getElementById('namaBarang');
             const inputHarga = document.getElementById('hargaTampilan');
-            
+
             if (checkTanpaNama.checked) {
-                inputNama.value = ""; 
+                inputNama.value = "";
                 inputNama.disabled = true;
-                inputNama.required = false; 
+                inputNama.required = false;
                 inputNama.readOnly = false;
                 inputHarga.readOnly = false;
                 document.getElementById('infoStokTersedia').innerText = "";
@@ -433,7 +482,7 @@
             let nilaiBersih = e.target.value.replace(/\D/g, "");
             hargaAsli = Number(nilaiBersih) || 0;
             e.target.value = formatRupiah(nilaiBersih);
-            
+
             const inputQty = document.getElementById('jumlahPembelian');
             if (hargaAsli > 0) {
                 if (!inputQty.value || inputQty.value === "0" || inputQty.value === "") {
@@ -442,7 +491,7 @@
             } else {
                 inputQty.value = "";
             }
-            
+
             hitungKalkulatorSeketika();
         });
 
@@ -521,14 +570,14 @@
                     document.getElementById('textKembalianSeketika').className = "fs-5 fw-bold text-success";
                     boxSplit.classList.add('d-none');
                     checkSplitTF.checked = false;
-                    
+
                     btnSelesai.disabled = false;
                     btnSelesai.className = "btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2";
                     btnSelesai.classList.remove('d-none');
                 } else {
                     document.getElementById('textKembalianSeketika').className = "fs-5 fw-bold text-danger";
                     boxSplit.classList.remove('d-none');
-                    
+
                     if (checkSplitTF.checked) {
                         btnSelesai.disabled = false;
                         btnSelesai.className = "btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2";
@@ -543,7 +592,7 @@
                 document.getElementById('textKembalianSeketika').className = "fs-5 fw-bold text-danger";
                 boxSplit.classList.add('d-none');
                 checkSplitTF.checked = false;
-                
+
                 btnSelesai.disabled = true;
                 btnSelesai.classList.add('d-none');
             }
@@ -563,7 +612,7 @@
             });
         }
 
-        window.batalSeluruhAntreanKeranjang = function() {
+        window.batalSeluruhAntreanKeranjang = function () {
             Swal.fire({
                 title: "Batalkan Belanjaan?",
                 text: "Seluruh antrean rincian barang sementara ini akan dikosongkan!",
@@ -602,7 +651,7 @@
                 dataPenjualanLokal[idData] = { namaBarang: namaInput, hargaBarang: hargaAsli, jumlahPembelian: jumlahInput, jenisPembayaran: jenisBayarEdit, waktuTransaksi: tglLama };
                 simpanRiwayatKeFirebase(dataPenjualanLokal);
                 Swal.fire({ title: "Diperbarui!", text: "Transaksi berhasil diubah.", icon: "success", timer: 1500, showConfirmButton: false });
-                resetForm(true); return; 
+                resetForm(true); return;
             }
 
             antreanKeranjangSeketika.push({ namaBarang: namaInput, hargaBarang: hargaAsli, jumlahPembelian: jumlahInput });
@@ -667,13 +716,13 @@
                     teksMetodeKolom = jenisBayar;
                 }
 
-                dataPenjualanLokal.push({ 
-                    namaBarang: item.namaBarang, 
-                    hargaBarang: item.hargaBarang, 
-                    Platform: "Web", 
-                    jumlahPembelian: item.jumlahPembelian, 
-                    dibayarCash: nominalCashPencatatan, 
-                    dibayarTF: nominalTfPencatatan, 
+                dataPenjualanLokal.push({
+                    namaBarang: item.namaBarang,
+                    hargaBarang: item.hargaBarang,
+                    Platform: "Web",
+                    jumlahPembelian: item.jumlahPembelian,
+                    dibayarCash: nominalCashPencatatan,
+                    dibayarTF: nominalTfPencatatan,
                     jenisPembayaran: teksMetodeKolom,
                     waktuTransaksi: stringWaktuSekarang
                 });
@@ -682,8 +731,8 @@
             simpanMasterKeFirebase(masterProdukLokal);
             simpanRiwayatKeFirebase(dataPenjualanLokal);
             Swal.fire({ title: "Transaksi Sukses! 🎉", text: "Data disinkronkan ke Firebase.", icon: "success", timer: 2000, showConfirmButton: false });
-            
-            antreanKeranjangSeketika = []; 
+
+            antreanKeranjangSeketika = [];
             sessionStorage.removeItem('cadangan_keranjang_kasir');
             resetForm(true);
         }
@@ -707,11 +756,11 @@
             const checkTanpaNama = document.getElementById('checkTanpaNama');
             const statusCentangSaatIni = checkTanpaNama.checked;
 
-            document.getElementById('formPenjualan').reset(); 
+            document.getElementById('formPenjualan').reset();
             document.getElementById('rowId').value = "";
-            document.getElementById('formTitle').innerText = "🛒 Input Penjualan"; 
+            document.getElementById('formTitle').innerText = "🛒 Input Penjualan";
             document.getElementById('formTitle').className = "m-0 fw-bold text-primary";
-            document.getElementById('btnBatal').classList.add('d-none'); 
+            document.getElementById('btnBatal').classList.add('d-none');
             document.getElementById('infoStokTersedia').innerText = "";
             hargaAsli = 0; uangDiterimaAsli = 0; antreanKeranjangSeketika = [];
             sessionStorage.removeItem('cadangan_keranjang_kasir');
@@ -726,11 +775,11 @@
                 document.getElementById('namaBarang').disabled = false;
                 document.getElementById('namaBarang').required = true;
             }
-            
-            document.getElementById('namaBarang').readOnly = false; 
+
+            document.getElementById('namaBarang').readOnly = false;
             inputHargaTampilan.readOnly = false;
             document.getElementById('infoMultiBarang').classList.add('d-none');
-            
+
             perbaruiTampilanRincian(); document.getElementById('textSubtotalSeketika').innerText = "Rp 0"; document.getElementById('textKembalianSeketika').innerText = "Rp 0";
             normalisaiTombolSimpan(); aturTampilanInputPembayaran(); sembunyikanDropdownKustom();
         }
@@ -742,38 +791,38 @@
             const boxJenisPembayaran = document.getElementById('boxJenisPembayaran');
 
             boxJenisPembayaran.style.display = antreanKeranjangSeketika.length === 0 ? 'none' : 'block';
-            
+
             if (antreanKeranjangSeketika.length === 0 || jenisBayar === "") {
-                areaInputCash.style.display = 'none'; 
+                areaInputCash.style.display = 'none';
                 btnSelesai.classList.add('d-none');
                 return;
             }
-            
+
             areaInputCash.style.display = jenisBayar === "Cash" ? 'block' : 'none';
             if (jenisBayar === "Cash") {
                 hitungKalkulatorSeketika();
-            } else if (jenisBayar === "TF") { 
-                btnSelesai.disabled = false; 
+            } else if (jenisBayar === "TF") {
+                btnSelesai.disabled = false;
                 btnSelesai.className = "btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2";
                 btnSelesai.classList.remove('d-none');
-            } else { 
-                btnSelesai.disabled = true; 
+            } else {
+                btnSelesai.disabled = true;
                 btnSelesai.className = "btn btn-secondary btn-lg w-100 fw-bold shadow-sm mt-2 opacity-50";
                 btnSelesai.classList.remove('d-none');
             }
         }
 
-        window.aturPenyaringanRekomendasiSeketika = function(kataKunci) {
+        window.aturPenyaringanRekomendasiSeketika = function (kataKunci) {
             if (document.getElementById('checkTanpaNama').checked) return;
-            
+
             const dropdown = document.getElementById('dropdownRekomendasi');
             const bersih = kataKunci.trim();
-            
+
             if (bersih === "") {
                 sembunyikanDropdownKustom();
                 return;
             }
-            
+
             const apakahBarcode = /^\d+$/.test(bersih);
             dropdown.innerHTML = '';
             let adaData = false;
@@ -784,7 +833,7 @@
                         const divItem = document.createElement('div');
                         divItem.className = 'item-rekomendasi-kustom';
                         divItem.innerText = `[Barcode] ${nama}`;
-                        divItem.onclick = function() {
+                        divItem.onclick = function () {
                             pilihBarangDariDropdownKustom(nama);
                         };
                         dropdown.appendChild(divItem);
@@ -797,12 +846,12 @@
 
                 for (let nama in masterProdukLokal) {
                     const namaProdukLower = nama.toLowerCase();
-                    
+
                     if (polaRegExFuzzy.test(namaProdukLower)) {
                         const divItem = document.createElement('div');
                         divItem.className = 'item-rekomendasi-kustom';
                         divItem.innerText = nama;
-                        divItem.onclick = function() {
+                        divItem.onclick = function () {
                             pilihBarangDariDropdownKustom(nama);
                         };
                         dropdown.appendChild(divItem);
@@ -829,14 +878,48 @@
             document.getElementById('dropdownRekomendasi').style.display = 'none';
         }
 
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (!e.target.closest('.wrapper-rekomendasi-kasir')) {
                 sembunyikanDropdownKustom();
             }
         });
 
         function autoFillHarga() {
-            if(document.getElementById('checkTanpaNama').checked) return;
+            if (document.getElementById('checkTanpaNama').checked) return;
+            const inputNama = document.getElementById('namaBarang');
+            let namaInputVal = inputNama.value.trim();
+            const inputHarga = document.getElementById('hargaTampilan');
+
+            let produkDitemukan = null;
+
+            // 1. Cek apakah yang diketik adalah Nama Barang langsung
+            if (masterProdukLokal.hasOwnProperty(namaInputVal)) {
+                produkDitemukan = masterProdukLokal[namaInputVal];
+            } else {
+                // 2. Jika bukan nama, cek apakah ada barcode yang cocok dengan yang diketik
+                for (let nama in masterProdukLokal) {
+                    if (masterProdukLokal[nama].barcode && String(masterProdukLokal[nama].barcode) === namaInputVal) {
+                        produkDitemukan = masterProdukLokal[nama];
+                        inputNama.value = nama; // Ubah inputan barcode menjadi nama barang di teks
+                        break;
+                    }
+                }
+            }
+
+            if (produkDitemukan) {
+                hargaAsli = produkDitemukan.harga;
+                inputHarga.value = formatRupiah(produkDitemukan.harga);
+                document.getElementById('infoStokTersedia').innerText = `(Tersedia: ${produkDitemukan.stok} Pcs)`;
+                inputNama.readOnly = true;
+                inputHarga.readOnly = true;
+                document.getElementById('jumlahPembelian').value = "1";
+                hitungKalkulatorSeketika();
+                sembunyikanDropdownKustom();
+            }
+        }
+
+        function __autoFillHarga() {
+            if (document.getElementById('checkTanpaNama').checked) return;
             const inputNama = document.getElementById('namaBarang');
             let namaInputVal = inputNama.value.trim();
             const inputHarga = document.getElementById('hargaTampilan');
@@ -855,7 +938,7 @@
             if (produkDitemukan) {
                 hargaAsli = produkDitemukan.harga; inputHarga.value = formatRupiah(produkDitemukan.harga);
                 document.getElementById('infoStokTersedia').innerText = `(Tersedia: ${produkDitemukan.stok} Pcs)`;
-                inputNama.readOnly = true; inputHarga.readOnly = true; 
+                inputNama.readOnly = true; inputHarga.readOnly = true;
                 document.getElementById('jumlahPembelian').value = "1";
                 hitungKalkulatorSeketika();
                 sembunyikanDropdownKustom();
