@@ -154,7 +154,7 @@
                     <div class="table-responsive border rounded" style="max-height: 480px; overflow-y: auto;">
                         <table class="table table-sm table-hover text-center m-0" id="swalTabelMaster">
                             <thead class="table-secondary small sticky-thead">
-                                <tr>
+                                <!-- <tr>
                                     <th>No</th>
                                     <th class="text-start">Nama Barang</th>
                                     <th class="text-end">Harga</th>
@@ -166,7 +166,21 @@
                                     </th>
 
                                     <th>Aksi</th>
+                                </tr> -->
+
+                                <tr class="align-middle">
+                                    <th>No</th>
+                                    <th class="text-start">Nama Barang</th>
+                                    <th class="text-end">Harga</th>
+                                    <th style="cursor: pointer; user-select: none;" onclick="urutkanBerdasarkanStok()"
+                                        title="Klik untuk mengurutkan sisa stok">
+                                        Stok <span id="iconSortirStok" class="text-muted"
+                                            style="font-size: 0.8rem;">⇅</span>
+                                    </th>
+                                    <th>Aksi</th>
                                 </tr>
+
+
                             </thead>
                             <tbody>
                                 <tr>
