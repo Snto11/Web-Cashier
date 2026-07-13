@@ -110,7 +110,7 @@
             }
         }
 
-        @media print {
+        /* @media print {
 
             #navUserArea,
             .btn-block-privasi,
@@ -130,6 +130,62 @@
                 display: block !important;
                 text-align: center;
                 margin-bottom: 25px;
+            }
+        } */
+
+        @media print {
+
+            /* Sembunyikan semua elemen navigasi, tombol, ringkasan omset, dan form cek fisik */
+            #navUserArea,
+            .btn-block-privasi,
+            .row.g-3.mb-4,
+            /* Ringkasan Omset Cash, TF, Total */
+            .card.p-4.mb-4.border-start.border-warning.border-5,
+            /* Form Cek Uang Fisik */
+            .footer-copyright,
+            .btn-pdf,
+            .btn-outline-danger,
+            .btn-aksi-tabel,
+            .btn-kembali-kasir,
+            #global-footer-container {
+                display: none !important;
+            }
+
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .card {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+            }
+
+            .print-header {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 25px;
+            }
+
+            /* Optimasi struktur tabel saat dicetak */
+            .table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+
+            .table th,
+            .table td {
+                border: 1px solid #000000 !important;
+                padding: 8px !important;
+                color: #000000 !important;
+            }
+
+            .table thead {
+                background-color: #eeeeee !important;
+                color: #000000 !important;
             }
         }
 
