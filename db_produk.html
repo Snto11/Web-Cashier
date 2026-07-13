@@ -158,7 +158,13 @@
                                     <th>No</th>
                                     <th class="text-start">Nama Barang</th>
                                     <th class="text-end">Harga</th>
+
                                     <th>Stok</th>
+                                    <th style="cursor: pointer; user-select: none;" onclick="urutkanBerdasarkanStok()"
+                                        title="Urutkan berdasarkan sisa stok">
+                                        Stok <span id="iconSortirStok">⇅</span>
+                                    </th>
+
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -206,6 +212,52 @@
                 }
             });
         });
+
+        // Variabel untuk menyimpan status arah urutan (asc = terkecil ke terbesar, desc = terbesar ke terkecil)
+        let arahSortirStok = 'asc';
+
+        window.urutkanBerdasarkanStok = function () {
+            // 1. Ubah objek masterProdukLokal menjadi array agar bisa disortir/diurutkan
+            let arrayProduk = Object.keys(masterProdukLokal).map(nama => {
+                return { nama: nama, ...masterProdukLokal[nama] };
+            });
+
+            // 2. Lakukan pengurutan berdasarkan properti stok
+            arrayProduk.sort((a, b) => {
+                let stokA = Number(a.stok) || 0;
+                let stokB = Number(b.stok) || 0;
+
+                if (arahSortirStok === 'asc') {
+                    return stokA - stokB; // Dari terkecil ke terbesar
+                } else {
+                    return stokB - stokA; // Dari terbesar ke terkecil
+                }
+            });
+
+            // 3. Bangun ulang objek masterProdukLokal sesuai urutan yang baru
+            let objekTerurut = {};
+            arrayProduk.forEach(item => {
+                objekTerurut[item.nama] = {
+                    harga: item.harga,
+                    stok: item.stok,
+                    barcode: item.barcode
+                };
+            });
+
+            // 4. Masukkan kembali ke objek lokal dan perbarui tampilan tabel
+            masterProdukLokal = objekTerurut;
+            muatTabelMasterProduk();
+
+            // 5. Balik arah sortir untuk klik berikutnya & update icon indikator
+            const iconIndikator = document.getElementById('iconSortirStok');
+            if (arahSortirStok === 'asc') {
+                arahSortirStok = 'desc';
+                if (iconIndikator) iconIndikator.innerText = ' ⬇️ (Kecil → Besar)';
+            } else {
+                arahSortirStok = 'asc';
+                if (iconIndikator) iconIndikator.innerText = ' ⬆️ (Besar → Kecil)';
+            }
+        };
 
         function muatTabelMasterProduk() {
             const tbody = document.querySelector('#swalTabelMaster tbody');
