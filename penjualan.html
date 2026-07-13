@@ -15,128 +15,128 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
-<style>
-    body {
-        background-color: #f8f9fa;
-    }
-
-    .card {
-        border-radius: 15px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    .card-summary {
-        border-left: 5px solid;
-    }
-
-    .status-badge {
-        font-size: 0.9rem;
-        font-weight: bold;
-        padding: 5px 10px;
-        border-radius: 20px;
-    }
-
-    .footer-copyright {
-        text-align: center;
-        color: #6c757d;
-        font-size: 0.85rem;
-        font-weight: 500;
-    }
-
-    .text-update-info {
-        font-size: 0.8rem;
-        color: #adb5bd;
-        margin-bottom: 2px;
-    }
-
-    /* STRUKTUR RESPONSIVE PADA MOBILE TANPA SCROLL KIRI KANAN */
-    @media (max-width: 575.98px) {
-
-        .mobile-tabel-responsive table,
-        .mobile-tabel-responsive thead,
-        .mobile-tabel-responsive tbody,
-        .mobile-tabel-responsive th,
-        .mobile-tabel-responsive td,
-        .mobile-tabel-responsive tr {
-            display: block !important;
-        }
-
-        .mobile-tabel-responsive thead tr {
-            position: absolute !important;
-            top: -9999px !important;
-            left: -9999px !important;
-        }
-
-        .mobile-tabel-responsive tr {
-            border: 1px solid #dee2e6 !important;
-            margin-bottom: 15px !important;
-            border-radius: 10px !important;
-            padding: 10px !important;
-            background-color: #ffffff !important;
-        }
-
-        .mobile-tabel-responsive td {
-            border: none !important;
-            border-bottom: 1px dashed #eee !important;
-            position: relative !important;
-            padding-left: 45% !important;
-            text-align: right !important;
-            font-size: 0.85rem !important;
-            padding-top: 8px !important;
-            padding-bottom: 8px !important;
-            white-space: normal !important;
-            word-break: break-word !important;
-        }
-
-        .mobile-tabel-responsive td:last-child {
-            border-bottom: none !important;
-        }
-
-        .mobile-tabel-responsive td:before {
-            position: absolute !important;
-            top: 8px !important;
-            left: 10px !important;
-            width: 40% !important;
-            padding-right: 10px !important;
-            white-space: nowrap !important;
-            text-align: left !important;
-            font-weight: bold !important;
-            color: #6c757d !important;
-            content: attr(data-label) !important;
-        }
-
-        .mobile-tabel-responsive td div.d-flex {
-            justify-content: flex-end !important;
-        }
-    }
-
-    @media print {
-
-        #navUserArea,
-        .btn-block-privasi,
-        .footer-copyright,
-        .btn-pdf,
-        .btn-outline-danger,
-        .btn-aksi-tabel,
-        .btn-kembali-kasir {
-            display: none !important;
-        }
-
+    <style>
         body {
-            background-color: #ffffff !important;
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-summary {
+            border-left: 5px solid;
+        }
+
+        .status-badge {
+            font-size: 0.9rem;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        .footer-copyright {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .text-update-info {
+            font-size: 0.8rem;
+            color: #adb5bd;
+            margin-bottom: 2px;
+        }
+
+        /* STRUKTUR RESPONSIVE PADA MOBILE TANPA SCROLL KIRI KANAN */
+        @media (max-width: 575.98px) {
+
+            .mobile-tabel-responsive table,
+            .mobile-tabel-responsive thead,
+            .mobile-tabel-responsive tbody,
+            .mobile-tabel-responsive th,
+            .mobile-tabel-responsive td,
+            .mobile-tabel-responsive tr {
+                display: block !important;
+            }
+
+            .mobile-tabel-responsive thead tr {
+                position: absolute !important;
+                top: -9999px !important;
+                left: -9999px !important;
+            }
+
+            .mobile-tabel-responsive tr {
+                border: 1px solid #dee2e6 !important;
+                margin-bottom: 15px !important;
+                border-radius: 10px !important;
+                padding: 10px !important;
+                background-color: #ffffff !important;
+            }
+
+            .mobile-tabel-responsive td {
+                border: none !important;
+                border-bottom: 1px dashed #eee !important;
+                position: relative !important;
+                padding-left: 45% !important;
+                text-align: right !important;
+                font-size: 0.85rem !important;
+                padding-top: 8px !important;
+                padding-bottom: 8px !important;
+                white-space: normal !important;
+                word-break: break-word !important;
+            }
+
+            .mobile-tabel-responsive td:last-child {
+                border-bottom: none !important;
+            }
+
+            .mobile-tabel-responsive td:before {
+                position: absolute !important;
+                top: 8px !important;
+                left: 10px !important;
+                width: 40% !important;
+                padding-right: 10px !important;
+                white-space: nowrap !important;
+                text-align: left !important;
+                font-weight: bold !important;
+                color: #6c757d !important;
+                content: attr(data-label) !important;
+            }
+
+            .mobile-tabel-responsive td div.d-flex {
+                justify-content: flex-end !important;
+            }
+        }
+
+        @media print {
+
+            #navUserArea,
+            .btn-block-privasi,
+            .footer-copyright,
+            .btn-pdf,
+            .btn-outline-danger,
+            .btn-aksi-tabel,
+            .btn-kembali-kasir {
+                display: none !important;
+            }
+
+            body {
+                background-color: #ffffff !important;
+            }
+
+            .print-header {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 25px;
+            }
         }
 
         .print-header {
-            display: block !important;
-            text-align: center;
-            margin-bottom: 25px;
+            display: none;
         }
-    }
-
-    .print-header {
-        display: none;
-    }
-</style>
+    </style>
 </head>
 
 <body>
@@ -235,16 +235,16 @@
 
                             <button
                                 class="btn btn-danger btn-pdf fw-bold shadow-sm d-inline-flex align-items-center gap-1"
-                                onclick="downloadPDFDataOnly()">
+                                onclick="downloadPDFDataOnly()" title="Download PDF">
                                 <span class="material-symbols-outlined" style="font-size: 20px;">download</span> PDF
                             </button>
 
                             <button
                                 class="btn btn-outline-danger btn-sm d-inline-flex align-items-center justify-content-center"
-                                onclick="bersihkanSemuaData()" title="Hapus Data">
+                                onclick="bersihkanSemuaData()" title="Hapus Semua Data Tabel">
                                 <span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
                             </button>
-                        
+
                         </div>
                     </div>
 
@@ -364,7 +364,12 @@
                     <td data-label="Pembayaran" class="fw-semibold">${tampilMetode}</td>
                     <td data-label="Total" class="text-success fw-bold">Rp ${formatRupiah(totalHargaItem)}</td>
                     <td data-label="Aksi" class="text-center btn-aksi-tabel">
-                        <button class="btn btn-danger btn-sm rounded shadow-sm px-2" onclick="hapusDataLokal(${index})" title="Hapus Data">🗑️</button>
+
+                        // <button class="btn btn-danger btn-sm rounded shadow-sm px-2" onclick="hapusDataLokal(${index})" title="Hapus Data">🗑️</button>
+                        <button class="btn btn-danger btn-sm rounded shadow-sm px-2" onclick="hapusDataLokal(${index})" title="Hapus Data">
+                           <span class="material-symbols-outlined" style="font-size: 20px;">delete</span> 
+                        </button>
+                        
                     </td>
                 </tr>`;
             });
