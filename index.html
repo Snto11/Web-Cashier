@@ -313,17 +313,29 @@
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center mb-3 px-1">
-                                <span class="small fw-bold text-secondary" id="labelSubtotal">Subtotal (Barang
-                                    Ini):</span>
-                                <span class="fw-bold text-dark fs-5" id="textSubtotalSeketika">Rp 0</span>
+                                <span class="small fw-bold text-secondary" id="labelSubtotal">
+                                    Subtotal (Barang Ini):
+                                </span>
+                                <span class="fw-bold text-dark fs-5" id="textSubtotalSeketika">
+                                    Rp 0
+                                </span>
                             </div>
 
                             <div class="mb-4">
+                                <!-- <button type="submit" id="btnSimpan"
+                                    class="btn btn-primary btn-lg w-100 fw-bold shadow-sm">
+                                    🚀 Tambah Barang ke Antrean
+                                </button> -->
+
                                 <button type="submit" id="btnSimpan"
-                                    class="btn btn-primary btn-lg w-100 fw-bold shadow-sm">🚀 Tambah Barang ke
-                                    Antrean</button>
+                                    class="btn btn-primary btn-lg w-100 fw-bold shadow-sm">
+                                    <span class="material-symbols-outlined me-1">save</span> Simpan ke Antrean
+                                </button>
+
                                 <button type="button" id="btnBatal" class="btn btn-secondary w-100 fw-bold mt-2 d-none"
-                                    onclick="resetForm()">❌ Batal Edit</button>
+                                    onclick="resetForm()">
+                                    ❌ Batal Edit
+                                </button>
                             </div>
 
                             <div class="bg-kalkulator mb-4">
@@ -335,7 +347,9 @@
                                             class="btn btn-danger btn-xs py-0 px-2 fw-bold text-uppercase"
                                             style="font-size: 0.7rem; border-radius: 4px;"
                                             onclick="batalSeluruhAntreanKeranjang()"
-                                            title="Kosongkan Rincian Belanjaan">❌ Batal</button>
+                                            title="Kosongkan Rincian Belanjaan">
+                                            ❌ Batal
+                                        </button>
                                     </div>
                                     <div class="d-flex text-muted fw-bold pb-1 mb-1 border-bottom"
                                         style="font-size: 0.75rem;">
@@ -521,7 +535,8 @@
                 const btnSimpan = document.getElementById('btnSimpan');
                 if (totalDipesan > masterProdukLokal[namaInput].stok) {
                     btnSimpan.disabled = true;
-                    btnSimpan.innerText = "⚠️ Barang Tidak Cukup";
+                    // btnSimpan.innerText = "⚠️ Barang Tidak Cukup";
+                    btnSimpan.innerHTML = '<span class="material-symbols-outlined me-1">warning</span> Barang Tidak Cukup';
                     btnSimpan.className = "btn btn-danger btn-lg w-100 fw-bold shadow-sm";
                 } else {
                     normalisaiTombolSimpan();
@@ -530,7 +545,7 @@
             hitungKalkulatorSeketika();
         });
 
-        function normalisaiTombolSimpan() {
+        function normalisaiTombolSimpan__() {
             const btnSimpan = document.getElementById('btnSimpan');
             const idData = document.getElementById('rowId').value;
 
@@ -542,6 +557,23 @@
                 btnSimpan.className = "btn btn-outline-primary btn-lg w-100 fw-bold shadow-sm";
             } else {
                 btnSimpan.innerText = "🚀 Tambah Barang ke Antrean";
+                btnSimpan.className = "btn btn-primary btn-lg w-100 fw-bold shadow-sm";
+            }
+            btnSimpan.disabled = false;
+        }
+
+        function normalisaiTombolSimpan() {
+            const btnSimpan = document.getElementById('btnSimpan');
+            const idData = document.getElementById('rowId').value;
+
+            if (idData !== "") {
+                btnSimpan.innerHTML = '<span class="material-symbols-outlined me-1">save</span> Simpan Perubahan';
+                btnSimpan.className = "btn btn-warning btn-lg w-100 fw-bold shadow-sm";
+            } else if (antreanKeranjangSeketika.length > 0) {
+                btnSimpan.innerHTML = '<span class="material-symbols-outlined me-1">add</span> Tambah Barang Lagi';
+                btnSimpan.className = "btn btn-outline-primary btn-lg w-100 fw-bold shadow-sm";
+            } else {
+                btnSimpan.innerHTML = '<span class="material-symbols-outlined me-1">save</span> Simpan ke Antrean';
                 btnSimpan.className = "btn btn-primary btn-lg w-100 fw-bold shadow-sm";
             }
             btnSimpan.disabled = false;
