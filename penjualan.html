@@ -134,20 +134,23 @@
         } */
 
         @media print {
-
             /* Sembunyikan semua elemen navigasi, tombol, ringkasan omset, dan form cek fisik */
             #navUserArea,
             .btn-block-privasi,
-            .row.g-3.mb-4,
-            /* Ringkasan Omset Cash, TF, Total */
-            .card.p-4.mb-4.border-start.border-warning.border-5,
-            /* Form Cek Uang Fisik */
+            .row.g-3.mb-4, /* Ringkasan Omset Cash, TF, Total */
+            .card.p-4.mb-4.border-start.border-warning.border-5, /* Form Cek Uang Fisik */
             .footer-copyright,
             .btn-pdf,
             .btn-outline-danger,
-            .btn-aksi-tabel,
             .btn-kembali-kasir,
             #global-footer-container {
+                display: none !important;
+            }
+
+            /* SEMBUNYIKAN KOLOM AKSI (Header dan Isi Tabel) */
+            .table th:last-child, 
+            .table td:last-child,
+            .btn-aksi-tabel {
                 display: none !important;
             }
 
@@ -170,14 +173,13 @@
                 margin-bottom: 25px;
             }
 
-            /* Optimasi struktur tabel saat dicetak */
+            /* Optimasi struktur tabel saat dicetak agar rapi */
             .table {
                 width: 100% !important;
                 border-collapse: collapse !important;
             }
-
-            .table th,
-            .table td {
+            
+            .table th, .table td {
                 border: 1px solid #000000 !important;
                 padding: 8px !important;
                 color: #000000 !important;
