@@ -8,8 +8,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=barcode_reader" /> -->
-
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -86,8 +84,15 @@
                     if (barcodeBaruDariScan) {
                         window.history.replaceState({}, document.title, window.location.pathname);
                         document.getElementById('swalBarcodeBarang').value = barcodeBaruDariScan;
+                        aturTombolHapusBarcode(); // <-- Tambahkan baris ini
                         document.getElementById('swalNamaBarang').focus();
                     }
+
+                    // if (barcodeBaruDariScan) {
+                    //     window.history.replaceState({}, document.title, window.location.pathname);
+                    //     document.getElementById('swalBarcodeBarang').value = barcodeBaruDariScan;
+                    //     document.getElementById('swalNamaBarang').focus();
+                    // }
                 });
             }
         });
@@ -113,11 +118,28 @@
                     <input type="text" id="swalNamaBarang" class="form-control form-control-sm mb-2"
                         placeholder="Nama Barang">
 
-                    <div class="d-flex gap-2 mb-2">
+                    <!-- <div class="d-flex gap-2 mb-2">
                         <input type="text" id="swalBarcodeBarang" inputmode="numeric" pattern="[0-9]*"
                             class="form-control form-control-sm fw-mono w-75" placeholder="Kode Barcode (Opsional)">
                         <a href="scan.html"
                             class="btn btn-primary btn-sm fw-bold d-flex align-items-center justify-content-center"
+                            title="Buka Kamera Scan Master" style="width: 45px;">
+                            <span class="material-symbols-outlined" style="color: white;">barcode_reader</span>
+                        </a>
+                    </div> -->
+
+                    <div class="input-group input-group-sm mb-2">
+                        <input type="text" id="swalBarcodeBarang" inputmode="numeric" pattern="[0-9]*"
+                            class="form-control fw-mono" placeholder="Kode Barcode (Opsional)">
+
+                        <!-- Tombol Hapus Barcode (Disembunyikan secara default dengan d-none) -->
+                        <button class="btn btn-outline-secondary text-danger d-none" type="button" id="btnHapusBarcode"
+                            onclick="hapusInputBarcode()" title="Kosongkan Barcode">
+                            🗑️
+                        </button>
+
+                        <a href="scan.html"
+                            class="btn btn-primary fw-bold d-flex align-items-center justify-content-center"
                             title="Buka Kamera Scan Master" style="width: 45px;">
                             <span class="material-symbols-outlined" style="color: white;">barcode_reader</span>
                         </a>
@@ -150,30 +172,15 @@
                         <div class="input-group input-group-sm">
                             <input type="text" id="swalCariProduk" class="form-control"
                                 placeholder="🔍 Cari nama atau barcode...">
-                            <!-- <button class="btn btn-outline-secondary text-danger" type="button" id="btnHapusCariMaster"
-                                onclick="document.getElementById('swalCariProduk').value = ''; document.getElementById('swalCariProduk').dispatchEvent(new Event('input')); document.getElementById('swalCariProduk').focus();"
-                                title="Kosongkan Pencarian">🗑️</button> -->
 
                             <button class="btn btn-outline-secondary text-danger" type="button" id="btnHapusCariMaster"
-                                onclick="document.getElementById('swalCariProduk').value = ''; document.getElementById('swalCariProduk').dispatchEvent(new Event('input')); document.getElementById('swalCariProduk').focus();" title="Kosongkan Pencarian">🗑️</button>
+                                onclick="document.getElementById('swalCariProduk').value = ''; document.getElementById('swalCariProduk').dispatchEvent(new Event('input')); document.getElementById('swalCariProduk').focus();"
+                                title="Kosongkan Pencarian">🗑️</button>
                         </div>
                     </div>
                     <div class="table-responsive border rounded" style="max-height: 480px; overflow-y: auto;">
                         <table class="table table-sm table-hover text-center m-0" id="swalTabelMaster">
                             <thead class="table-secondary small sticky-thead">
-                                <!-- <tr>
-                                    <th>No</th>
-                                    <th class="text-start">Nama Barang</th>
-                                    <th class="text-end">Harga</th>
-
-                                    <th>Stok</th>
-                                    <th style="cursor: pointer; user-select: none;" onclick="urutkanBerdasarkanStok()"
-                                        title="Urutkan berdasarkan sisa stok">
-                                        Stok <span id="iconSortirStok">⇅</span>
-                                    </th>
-
-                                    <th>Aksi</th>
-                                </tr> -->
 
                                 <tr class="align-middle">
                                     <th>No</th>
@@ -208,31 +215,6 @@
         document.getElementById('swalHargaBarangTampilan').addEventListener('input', function (e) {
             e.target.value = formatRupiah(e.target.value.replace(/\D/g, ""));
         });
-
-        // document.getElementById('swalCariProduk').addEventListener('input', function (e) {
-        //     const kataKunci = e.target.value.trim();
-
-        //     if (kataKunci === "") {
-        //         document.querySelectorAll('#swalTabelMaster tbody .produk-row').forEach(row => {
-        //             row.style.setProperty('display', '', 'important');
-        //         });
-        //         return;
-        //     }
-
-        //     const hurufKataKunci = kataKunci.toLowerCase().split("");
-        //     const polaRegExFuzzy = new RegExp(hurufKataKunci.join(".*"));
-
-        //     document.querySelectorAll('#swalTabelMaster tbody .produk-row').forEach(row => {
-        //         const namaAtribut = row.getAttribute('data-nama') || "";
-        //         const barcodeAtribut = row.getAttribute('data-barcode') || "";
-
-        //         if (polaRegExFuzzy.test(namaAtribut) || polaRegExFuzzy.test(barcodeAtribut)) {
-        //             row.style.setProperty('display', '', 'important');
-        //         } else {
-        //             row.style.setProperty('display', 'none', 'important');
-        //         }
-        //     });
-        // });
 
         document.getElementById('swalCariProduk').addEventListener('input', function (e) {
             const kataKunci = e.target.value.trim();
@@ -313,6 +295,27 @@
             }
         };
 
+        function aturTombolHapusBarcode() {
+            const inputBarcode = document.getElementById('swalBarcodeBarang');
+            const btnHapus = document.getElementById('btnHapusBarcode');
+
+            if (inputBarcode.value.trim() !== "") {
+                btnHapus.classList.remove('d-none'); // Tampilkan tombol
+            } else {
+                btnHapus.classList.add('d-none');    // Sembunyikan tombol
+            }
+        }
+
+        document.getElementById('swalBarcodeBarang').addEventListener('input', aturTombolHapusBarcode);
+
+        // Function yang dipanggil saat tombol hapus barcode diklik
+        function hapusInputBarcode() {
+            const inputBarcode = document.getElementById('swalBarcodeBarang');
+            inputBarcode.value = '';
+            aturTombolHapusBarcode(); // Sembunyikan tombol setelah dihapus
+            inputBarcode.focus();     // Fokuskan kembali ke input
+        }
+
         function muatTabelMasterProduk() {
             const tbody = document.querySelector('#swalTabelMaster tbody');
             tbody.innerHTML = '';
@@ -348,6 +351,7 @@
         window.isiFormMasterProduk = function (nama, harga, stok, barcode) {
             document.getElementById('swalNamaBarang').value = nama;
             document.getElementById('swalBarcodeBarang').value = barcode;
+            aturTombolHapusBarcode();
             document.getElementById('swalHargaBarangTampilan').value = formatRupiah(harga);
             document.getElementById('swalStokBarang').value = stok;
             namaProdukLamaYangSedangDiedit = nama;
@@ -362,6 +366,7 @@
             namaProdukLamaYangSedangDiedit = "";
             document.getElementById('swalNamaBarang').value = "";
             document.getElementById('swalBarcodeBarang').value = "";
+            aturTombolHapusBarcode();
             document.getElementById('swalHargaBarangTampilan').value = "";
             document.getElementById('swalStokBarang').value = "";
             document.getElementById('swalLabelInput').innerText = "➕ Tambah / Update Produk:";
