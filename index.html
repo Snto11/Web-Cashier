@@ -578,11 +578,18 @@
             const namaValid = checkTanpaNama.checked ? true : (namaVal !== "");
 
             // Tombol disembunyikan HANYA jika ketiga/semua inputan kosong
-            if (!namaValid && hargaVal === "" && jumlahVal === "") {
-                btnSimpan.classList.add('d-none');
-            } else {
+            if (namaValid && hargaVal !== "" && jumlahVal !== "") {
                 btnSimpan.classList.remove('d-none');
             }
+            else {
+                btnSimpan.classList.add('d-none');
+            }
+
+            // if (!namaValid && hargaVal === "" && jumlahVal === "") {
+            //     btnSimpan.classList.add('d-none');
+            // } else {
+            //     btnSimpan.classList.remove('d-none');
+            // }
         }
 
         function normalisaiTombolSimpan__() {
