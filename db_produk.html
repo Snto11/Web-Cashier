@@ -56,6 +56,10 @@
             background-color: #f8f9fa;
             z-index: 2;
         }
+
+        #btnHapusCariMaster {
+            display: none;
+        }
     </style>
 </head>
 
@@ -146,9 +150,12 @@
                         <div class="input-group input-group-sm">
                             <input type="text" id="swalCariProduk" class="form-control"
                                 placeholder="🔍 Cari nama atau barcode...">
-                            <button class="btn btn-outline-secondary text-danger" type="button" id="btnHapusCariMaster"
+                            <!-- <button class="btn btn-outline-secondary text-danger" type="button" id="btnHapusCariMaster"
                                 onclick="document.getElementById('swalCariProduk').value = ''; document.getElementById('swalCariProduk').dispatchEvent(new Event('input')); document.getElementById('swalCariProduk').focus();"
-                                title="Kosongkan Pencarian">🗑️</button>
+                                title="Kosongkan Pencarian">🗑️</button> -->
+
+                            <button class="btn btn-outline-secondary text-danger" type="button" id="btnHapusCariMaster"
+                                onclick="document.getElementById('swalCariProduk').value = ''; document.getElementById('swalCariProduk').dispatchEvent(new Event('input')); document.getElementById('swalCariProduk').focus();" title="Kosongkan Pencarian">🗑️</button>
                         </div>
                     </div>
                     <div class="table-responsive border rounded" style="max-height: 480px; overflow-y: auto;">
@@ -202,8 +209,41 @@
             e.target.value = formatRupiah(e.target.value.replace(/\D/g, ""));
         });
 
+        // document.getElementById('swalCariProduk').addEventListener('input', function (e) {
+        //     const kataKunci = e.target.value.trim();
+
+        //     if (kataKunci === "") {
+        //         document.querySelectorAll('#swalTabelMaster tbody .produk-row').forEach(row => {
+        //             row.style.setProperty('display', '', 'important');
+        //         });
+        //         return;
+        //     }
+
+        //     const hurufKataKunci = kataKunci.toLowerCase().split("");
+        //     const polaRegExFuzzy = new RegExp(hurufKataKunci.join(".*"));
+
+        //     document.querySelectorAll('#swalTabelMaster tbody .produk-row').forEach(row => {
+        //         const namaAtribut = row.getAttribute('data-nama') || "";
+        //         const barcodeAtribut = row.getAttribute('data-barcode') || "";
+
+        //         if (polaRegExFuzzy.test(namaAtribut) || polaRegExFuzzy.test(barcodeAtribut)) {
+        //             row.style.setProperty('display', '', 'important');
+        //         } else {
+        //             row.style.setProperty('display', 'none', 'important');
+        //         }
+        //     });
+        // });
+
         document.getElementById('swalCariProduk').addEventListener('input', function (e) {
             const kataKunci = e.target.value.trim();
+            const btnHapus = document.getElementById('btnHapusCariMaster');
+
+            // MENGATUR VISIBILITAS TOMBOL HAPUS
+            if (kataKunci !== "") {
+                btnHapus.style.display = 'block'; // Tampilkan jika ada teks
+            } else {
+                btnHapus.style.display = 'none';  // Sembunyikan jika kosong
+            }
 
             if (kataKunci === "") {
                 document.querySelectorAll('#swalTabelMaster tbody .produk-row').forEach(row => {
