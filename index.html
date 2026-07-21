@@ -14,9 +14,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- ICON - GOOGLE FONTS -->
-    <!-- <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=barcode_reader" /> -->
-
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
@@ -285,9 +282,14 @@
                                             class="btn btn-primary fw-bold d-flex align-items-center justify-content-center"
                                             title="Buka Kamera Scan Barang" style="width: 45px;"><span
                                                 class="material-symbols-outlined">barcode_reader</span></a>
-                                        <button class="btn btn-outline-secondary text-danger" type="button"
+                                        <!-- <button class="btn btn-outline-secondary text-danger" type="button"
                                             id="btnHapusInput"
                                             onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); sembunyikanDropdownKustom(); aturTampilanInputPembayaran(); document.getElementById('namaBarang').focus();"
+                                            title="Kosongkan Semua Inputan">🗑️</button> -->
+
+                                        <button class="btn btn-outline-secondary text-danger d-none" type="button"
+                                            id="btnHapusInput"
+                                            onclick="document.getElementById('namaBarang').value = ''; document.getElementById('namaBarang').readOnly = false; document.getElementById('hargaTampilan').value = ''; document.getElementById('hargaTampilan').readOnly = false; document.getElementById('jumlahPembelian').value = ''; document.getElementById('jumlahPembelian').type = 'number'; document.getElementById('jumlahPembelian').disabled = false; document.getElementById('jumlahPembelian').placeholder = '0'; document.getElementById('infoStokTersedia').innerText = ''; hargaAsli = 0; hitungKalkulatorSeketika(); normalisaiTombolSimpan(); sembunyikanDropdownKustom(); aturTampilanInputPembayaran(); document.getElementById('namaBarang').focus(); aturVisibilitasTombolHapus();"
                                             title="Kosongkan Semua Inputan">🗑️</button>
                                     </div>
                                     <div id="dropdownRekomendasi" class="dropdown-rekomendasi-kustom"></div>
@@ -831,6 +833,7 @@
 
             perbaruiTampilanRincian(); document.getElementById('textSubtotalSeketika').innerText = "Rp 0"; document.getElementById('textKembalianSeketika').innerText = "Rp 0";
             normalisaiTombolSimpan(); aturTampilanInputPembayaran(); sembunyikanDropdownKustom();
+            aturVisibilitasTombolHapus();
         }
 
         function aturTampilanInputPembayaran() {
@@ -1021,8 +1024,29 @@
                 document.getElementById('jumlahPembelian').value = "1";
                 hitungKalkulatorSeketika();
                 sembunyikanDropdownKustom();
+                aturVisibilitasTombolHapus();
             }
         }
+
+        // Fungsi untuk mengecek kondisi inputan dan menampilkan/menyembunyikan tombol 🗑️
+        function aturVisibilitasTombolHapus() {
+            const namaVal = document.getElementById('namaBarang').value.trim();
+            const hargaVal = document.getElementById('hargaTampilan').value.trim();
+            const jumlahVal = document.getElementById('jumlahPembelian').value.trim();
+            const btnHapus = document.getElementById('btnHapusInput');
+
+            // Jika setidaknya ada salah satu input yang terisi
+            if (namaVal !== "" || hargaVal !== "" || jumlahVal !== "") {
+                btnHapus.classList.remove('d-none');
+            } else {
+                btnHapus.classList.add('d-none');
+            }
+        }
+
+        // Pasang Event Listener ke ketiga input agar fungsi berjalan setiap kali ada pengetikan/perubahan
+        document.getElementById('namaBarang').addEventListener('input', aturVisibilitasTombolHapus);
+        document.getElementById('hargaTampilan').addEventListener('input', aturVisibilitasTombolHapus);
+        document.getElementById('jumlahPembelian').addEventListener('input', aturVisibilitasTombolHapus);
 
         function autoFillHarga__() {
             if (document.getElementById('checkTanpaNama').checked) return;
@@ -1061,6 +1085,7 @@
                 document.getElementById('footer-container').innerHTML = data;
             })
             .catch(error => console.error('Error saat load footer:', error));
+
     </script>
 </body>
 
