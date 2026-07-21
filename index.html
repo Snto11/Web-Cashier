@@ -334,7 +334,7 @@
                                 </button> -->
 
                                 <button type="submit" id="btnSimpan"
-                                    class="btn btn-primary btn-lg w-100 fw-bold shadow-sm">
+                                    class="btn btn-primary btn-lg w-100 fw-bold shadow-sm d-none">
                                     <span class="material-symbols-outlined me-1">save</span> Simpan ke Antrean
                                 </button>
 
@@ -567,6 +567,31 @@
             hitungKalkulatorSeketika();
         });
 
+        // function aturVisibilitasTombolSimpan() {
+        //     const namaVal = document.getElementById('namaBarang').value.trim();
+        //     const hargaVal = document.getElementById('hargaTampilan').value.trim();
+        //     const jumlahVal = document.getElementById('jumlahPembelian').value.trim();
+        //     const btnSimpan = document.getElementById('btnSimpan');
+        //     const checkTanpaNama = document.getElementById('checkTanpaNama');
+
+        //     // Jika opsi "Tanpa Nama Barang" dicentang, kita abaikan pengecekan Nama Barang
+        //     const namaValid = checkTanpaNama.checked ? true : (namaVal !== "");
+
+        //     // Tombol disembunyikan HANYA jika ketiga/semua inputan kosong
+        //     if (namaValid && hargaVal !== "" && jumlahVal !== "") {
+        //         btnSimpan.classList.remove('d-none');
+        //     }
+        //     else {
+        //         btnSimpan.classList.add('d-none');
+        //     }
+
+        //     // if (!namaValid && hargaVal === "" && jumlahVal === "") {
+        //     //     btnSimpan.classList.add('d-none');
+        //     // } else {
+        //     //     btnSimpan.classList.remove('d-none');
+        //     // }
+        // }
+
         function aturVisibilitasTombolSimpan() {
             const namaVal = document.getElementById('namaBarang').value.trim();
             const hargaVal = document.getElementById('hargaTampilan').value.trim();
@@ -574,22 +599,18 @@
             const btnSimpan = document.getElementById('btnSimpan');
             const checkTanpaNama = document.getElementById('checkTanpaNama');
 
-            // Jika opsi "Tanpa Nama Barang" dicentang, kita abaikan pengecekan Nama Barang
-            const namaValid = checkTanpaNama.checked ? true : (namaVal !== "");
+            // Cek apakah ada inputan yang terisi (Nama, Harga, atau Jumlah)
+            const adaInputTerisi = (namaVal !== "" || hargaVal !== "" || jumlahVal !== "");
 
-            // Tombol disembunyikan HANYA jika ketiga/semua inputan kosong
-            if (namaValid && hargaVal !== "" && jumlahVal !== "") {
+            // Tombol MUNCUL jika:
+            // 1. Opsi "Tanpa Nama Barang" dicentang, ATAU
+            // 2. Setidaknya salah satu inputan terisi
+            if (checkTanpaNama.checked || adaInputTerisi) {
                 btnSimpan.classList.remove('d-none');
-            }
-            else {
+            } else {
+                // Tombol SEMBUNYI jika ketiga inputan kosong dan "Tanpa Nama Barang" tidak dicentang
                 btnSimpan.classList.add('d-none');
             }
-
-            // if (!namaValid && hargaVal === "" && jumlahVal === "") {
-            //     btnSimpan.classList.add('d-none');
-            // } else {
-            //     btnSimpan.classList.remove('d-none');
-            // }
         }
 
         function normalisaiTombolSimpan__() {
@@ -1168,6 +1189,8 @@
                 aturVisibilitasTombolSimpan();
             });
         });
+
+        aturVisibilitasTombolSimpan();
 
         // SCRIPT TAMBAHAN UNTUK PENGAMBILAN FOOTER SECARA OTOMATIS
         fetch('footer.html')
