@@ -87,12 +87,6 @@
                         aturTombolHapusBarcode(); // <-- Tambahkan baris ini
                         document.getElementById('swalNamaBarang').focus();
                     }
-
-                    // if (barcodeBaruDariScan) {
-                    //     window.history.replaceState({}, document.title, window.location.pathname);
-                    //     document.getElementById('swalBarcodeBarang').value = barcodeBaruDariScan;
-                    //     document.getElementById('swalNamaBarang').focus();
-                    // }
                 });
             }
         });
@@ -306,7 +300,15 @@
             }
         }
 
-        document.getElementById('swalBarcodeBarang').addEventListener('input', aturTombolHapusBarcode);
+        // document.getElementById('swalBarcodeBarang').addEventListener('input', aturTombolHapusBarcode);
+
+        document.getElementById('swalBarcodeBarang').addEventListener('input', function (e) {
+            // Menghapus semua karakter selain angka (0-9)
+            this.value = this.value.replace(/\D/g, '');
+
+            // Tetap menjalankan fungsi bawaan Anda untuk menampilkan/menyembunyikan tombol hapus
+            aturTombolHapusBarcode();
+        });
 
         // Function yang dipanggil saat tombol hapus barcode diklik
         function hapusInputBarcode() {
