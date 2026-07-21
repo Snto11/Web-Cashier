@@ -134,11 +134,14 @@
         } */
 
         @media print {
+
             /* Sembunyikan semua elemen navigasi, tombol, ringkasan omset, dan form cek fisik */
             #navUserArea,
             .btn-block-privasi,
-            .row.g-3.mb-4, /* Ringkasan Omset Cash, TF, Total */
-            .card.p-4.mb-4.border-start.border-warning.border-5, /* Form Cek Uang Fisik */
+            .row.g-3.mb-4,
+            /* Ringkasan Omset Cash, TF, Total */
+            .card.p-4.mb-4.border-start.border-warning.border-5,
+            /* Form Cek Uang Fisik */
             .footer-copyright,
             .btn-pdf,
             .btn-outline-danger,
@@ -148,7 +151,7 @@
             }
 
             /* SEMBUNYIKAN KOLOM AKSI (Header dan Isi Tabel) */
-            .table th:last-child, 
+            .table th:last-child,
             .table td:last-child,
             .btn-aksi-tabel {
                 display: none !important;
@@ -178,8 +181,9 @@
                 width: 100% !important;
                 border-collapse: collapse !important;
             }
-            
-            .table th, .table td {
+
+            .table th,
+            .table td {
                 border: 1px solid #000000 !important;
                 padding: 8px !important;
                 color: #000000 !important;
@@ -219,8 +223,6 @@
         <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm border"
             id="navUserArea">
             <h4 class="fw-bold m-0 text-secondary">📊 Data & Omset Penjualan</h4>
-
-            <!-- <a href="index.html" class="btn btn-primary fw-bold btn-kembali-kasir">🛒 Kembali ke Kasir</a> -->
 
             <a href="index.html"
                 class="btn btn-primary fw-bold btn-kembali-kasir d-inline-flex align-items-center gap-1">
@@ -276,9 +278,14 @@
                                     class="form-control form-control-lg border-warning"
                                     placeholder="Masukkan uang di laci...">
 
-                                <button class="btn btn-outline-warning text-black fw-bold" type="button"
+                                <!-- <button class="btn btn-outline-warning text-black fw-bold" type="button"
                                     onclick="document.getElementById('uangFisikTampilan').value = ''; uangFisikAsli = 0; hitungSelisihLaci();"
                                     title="Kosongkan Uang Fisik">
+                                    <span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
+                                </button> -->
+
+                                <button class="btn btn-outline-warning text-black fw-bold d-none" type="button"
+                                    id="btnDeleteUangFisik" onclick="kosongkanUangFisik()" title="Kosongkan Uang Fisik">
                                     <span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
                                 </button>
 
@@ -383,10 +390,26 @@
 
         const inputUangFisikTampilan = document.getElementById('uangFisikTampilan');
 
+        // inputUangFisikTampilan.addEventListener('input', function (e) {
+        //     let nilaiBersih = e.target.value.replace(/\D/g, "");
+        //     uangFisikAsli = Number(nilaiBersih) || 0;
+        //     e.target.value = nilaiBersih === "" ? "" : formatRupiah(nilaiBersih);
+        //     hitungSelisihLaci();
+        // });
+
         inputUangFisikTampilan.addEventListener('input', function (e) {
             let nilaiBersih = e.target.value.replace(/\D/g, "");
             uangFisikAsli = Number(nilaiBersih) || 0;
             e.target.value = nilaiBersih === "" ? "" : formatRupiah(nilaiBersih);
+
+            // Tampilkan tombol jika ada isi, sembunyikan jika kosong
+            const btnDelete = document.getElementById('btnDeleteUangFisik');
+            if (e.target.value.trim() !== "") {
+                btnDelete.classList.remove('d-none');
+            } else {
+                btnDelete.classList.add('d-none');
+            }
+
             hitungSelisihLaci();
         });
 
@@ -501,6 +524,13 @@
             const opsiFormat = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long', hour: '2-digit', minute: '2-digit' };
             document.getElementById('printTanggal').innerText = new Date().toLocaleDateString('id-ID', opsiFormat);
             window.print();
+        }
+
+        function kosongkanUangFisik() {
+            inputUangFisikTampilan.value = '';
+            uangFisikAsli = 0;
+            document.getElementById('btnDeleteUangFisik').classList.add('d-none');
+            hitungSelisihLaci();
         }
     </script>
 </body>
