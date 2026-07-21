@@ -630,10 +630,34 @@
             btnSimpan.disabled = false;
         }
 
+        // function normalisaiTombolSimpan() {
+        //     const btnSimpan = document.getElementById('btnSimpan');
+        //     const idData = document.getElementById('rowId').value;
+
+        //     if (idData !== "") {
+        //         btnSimpan.innerHTML = '<span class="material-symbols-outlined me-1">save</span> Simpan Perubahan';
+        //         btnSimpan.className = "btn btn-warning btn-lg w-100 fw-bold shadow-sm";
+        //     } else if (antreanKeranjangSeketika.length > 0) {
+        //         btnSimpan.innerHTML = '<span class="material-symbols-outlined me-1">add</span> Tambah ke Antrean';
+        //         btnSimpan.className = "btn btn-outline-primary btn-lg w-100 fw-bold shadow-sm";
+        //     } else {
+        //         btnSimpan.innerHTML = '<span class="material-symbols-outlined me-1">save</span> Simpan ke Antrean';
+        //         btnSimpan.className = "btn btn-primary btn-lg w-100 fw-bold shadow-sm";
+        //     }
+        //     btnSimpan.disabled = false;
+        // }
+
         function normalisaiTombolSimpan() {
             const btnSimpan = document.getElementById('btnSimpan');
             const idData = document.getElementById('rowId').value;
+            const checkTanpaNama = document.getElementById('checkTanpaNama');
 
+            // Ambil nilai dari ketiga inputan
+            const namaVal = document.getElementById('namaBarang').value.trim();
+            const hargaVal = document.getElementById('hargaTampilan').value.trim();
+            const jumlahVal = document.getElementById('jumlahPembelian').value.trim();
+
+            // Ubah teks & gaya tombol sesuai kondisi Edit / Antrean
             if (idData !== "") {
                 btnSimpan.innerHTML = '<span class="material-symbols-outlined me-1">save</span> Simpan Perubahan';
                 btnSimpan.className = "btn btn-warning btn-lg w-100 fw-bold shadow-sm";
@@ -644,6 +668,18 @@
                 btnSimpan.innerHTML = '<span class="material-symbols-outlined me-1">save</span> Simpan ke Antrean';
                 btnSimpan.className = "btn btn-primary btn-lg w-100 fw-bold shadow-sm";
             }
+
+            // LOGIKA PENYEMBUNYIAN TOMBOL:
+            // Pengecekan apakah ada setidaknya satu input yang terisi
+            const namaValid = checkTanpaNama.checked ? true : (namaVal !== "");
+            const adaInputTerisi = (namaVal !== "" || hargaVal !== "" || jumlahVal !== "");
+
+            if (checkTanpaNama.checked || adaInputTerisi) {
+                btnSimpan.classList.remove('d-none'); // Munculkan jika ada isi / opsi tanpa nama aktif
+            } else {
+                btnSimpan.classList.add('d-none');    // Sembunyikan jika ketiga inputan kosong
+            }
+
             btnSimpan.disabled = false;
         }
 
