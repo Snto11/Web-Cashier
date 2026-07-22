@@ -212,17 +212,26 @@
             // Aplikasi tetap ditampilkan baik user sudah login maupun belum
             document.getElementById('appContainer').classList.remove('d-none');
 
+            const btnLogout = document.getElementById('btnLogout');
+
             if (user) {
                 currentUser = user;
                 document.getElementById('userName').innerText = user.displayName;
                 document.getElementById('userEmail').innerText = user.email;
                 document.getElementById('userPhoto').src = user.photoURL || "https://via.placeholder.com/40";
+
+                // TAMPILKAN tombol Logout saat user login
+                if (btnLogout) btnLogout.classList.remove('d-none');
+
                 hubungkanKeRealtimeDatabase();
             } else {
                 currentUser = null;
                 document.getElementById('userName').innerText = "Tamu (Belum Login)";
                 document.getElementById('userEmail').innerText = "Klik untuk login";
                 document.getElementById('userPhoto').src = "https://via.placeholder.com/40";
+
+                // SEMBUNYIKAN tombol Logout saat status Tamu / Belum Login
+                if (btnLogout) btnLogout.classList.add('d-none');
             }
         });
     </script>
@@ -264,10 +273,17 @@
                             <div class="fw-bold text-dark lh-sm" id="userName">Memuat Nama...</div>
                             <small class="text-muted text-break" id="userEmail">Memuat Email...</small>
                         </li>
-                        <li>
+
+                        <!-- <li>
                             <button class="dropdown-item btn btn-danger fw-bold text-danger py-2 rounded"
                                 onclick="auth.signOut()">👋 Logout</button>
+                        </li> -->
+                        <li>
+                            <button id="btnLogout"
+                                class="dropdown-item btn btn-danger fw-bold text-danger py-2 rounded d-none"
+                                onclick="auth.signOut()">👋 Logout</button>
                         </li>
+
                     </ul>
                 </div>
             </div>
