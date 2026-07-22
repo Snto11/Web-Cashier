@@ -366,34 +366,65 @@
         // Fungsi untuk menampilkan/menyembunyikan tombol +000
         function aturTombolRibuan() {
             const inputHarga = document.getElementById('swalHargaBarangTampilan');
-            const wadahBtn = document.getElementById('wadahBtnRibuan');
+            const wadahBtnRibuan = document.getElementById('wadahBtnRibuan');
 
-            if (inputHarga.value.trim() !== "") {
-                wadahBtn.classList.remove('d-none'); // Tampilkan jika ada isinya
-            } else {
-                wadahBtn.classList.add('d-none');    // Sembunyikan jika kosong
-            }
+            // 1. Format rupiah saat mengetik (fungsi bawaan kamu)
+            inputHarga.addEventListener('input', function (e) {
+                e.target.value = formatRupiah(e.target.value.replace(/\D/g, ""));
+            });
+
+            // 2. Tampilkan tombol ketika input DIKLIK / DIFOKUSKAN
+            inputHarga.addEventListener('focus', function () {
+                wadahBtnRibuan.classList.remove('d-none');
+            });
+
+            // 3. Sembunyikan tombol ketika pengguna KLIK DI LUAR input (blur)
+            inputHarga.addEventListener('blur', function () {
+                // Beri sedikit jeda (delay) 200ms agar klik pada tombol "+000" sempat tereksekusi sebelum tombolnya hilang
+                setTimeout(() => {
+                    wadahBtnRibuan.classList.add('d-none');
+                }, 200);
+            });
         }
 
-        // Event listener saat pengguna mengetik di input harga
-        document.getElementById('swalHargaBarangTampilan').addEventListener('input', function (e) {
-            // Format rupiah otomatis bawaan kamu
-            e.target.value = formatRupiah(e.target.value.replace(/\D/g, ""));
+        //     const inputHarga = document.getElementById('swalHargaBarangTampilan');
+        //     const wadahBtn = document.getElementById('wadahBtnRibuan');
 
-            // Cek status visibilitas tombol +000
-            aturTombolRibuan();
-        });
+        //     if (inputHarga.value.trim() !== "") {
+        //         wadahBtn.classList.remove('d-none'); // Tampilkan jika ada isinya
+        //     } else {
+        //         wadahBtn.classList.add('d-none');    // Sembunyikan jika kosong
+        //     }
+        // }
+
+        // // Event listener saat pengguna mengetik di input harga
+        // document.getElementById('swalHargaBarangTampilan').addEventListener('input', function (e) {
+        //     // Format rupiah otomatis bawaan kamu
+        //     e.target.value = formatRupiah(e.target.value.replace(/\D/g, ""));
+
+        //     // Cek status visibilitas tombol +000
+        //     aturTombolRibuan();
+        // });
 
         // Fungsi ketika tombol +000 diklik
         function tambahKoinRibuan() {
-            const inputHarga = document.getElementById('swalHargaBarangTampilan');
-            let nilaiBersih = inputHarga.value.replace(/\D/g, ""); // Ambil angka murninya
+            let nilaiBersih = inputHarga.value.replace(/\D/g, ""); // Ambil angka murni
 
             if (nilaiBersih !== "") {
-                nilaiBersih += "000"; // Tambahkan "000" di belakang angka
-                inputHarga.value = formatRupiah(nilaiBersih); // Format kembali ke Rupiah
-                inputHarga.focus(); // Kembalikan fokus ke input
+                nilaiBersih += "000"; // Tambahkan "000"
+                inputHarga.value = formatRupiah(nilaiBersih); // Format ke Rupiah
             }
+
+            inputHarga.focus();
+
+            // const inputHarga = document.getElementById('swalHargaBarangTampilan');
+            // let nilaiBersih = inputHarga.value.replace(/\D/g, ""); // Ambil angka murninya
+
+            // if (nilaiBersih !== "") {
+            //     nilaiBersih += "000"; // Tambahkan "000" di belakang angka
+            //     inputHarga.value = formatRupiah(nilaiBersih); // Format kembali ke Rupiah
+            //     inputHarga.focus(); // Kembalikan fokus ke input
+            // }
         }
 
         let namaProdukLamaYangSedangDiedit = "";
