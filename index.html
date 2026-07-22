@@ -929,25 +929,6 @@
 
         document.getElementById('formPenjualan').addEventListener('submit', function (e) {
             e.preventDefault();
-            // PELEPASAN / PENGECEKAN LOGIN
-            if (!currentUser) {
-                Swal.fire({
-                    title: "Login Diperlukan",
-                    text: "Anda harus login dengan Google terlebih dahulu untuk menyimpan barang ke antrean!",
-                    icon: "info",
-                    showCancelButton: true,
-                    confirmButtonText: "🔑 Login Sekarang",
-                    cancelButtonText: "Batal",
-                    customClass: { popup: 'rounded-4' }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Arahkan pengguna ke halaman login
-                        window.location.href = 'login.html';
-                    }
-                });
-                return; // Hentikan proses simpan antrean
-            }
-
             const idData = document.getElementById('rowId').value;
             let namaInput = document.getElementById('namaBarang').value;
             const jumlahInput = Number(document.getElementById('jumlahPembelian').value);
@@ -997,6 +978,26 @@
 
         function selesaikanTransactionsGabungan() {
             if (antreanKeranjangSeketika.length === 0) return;
+            // PELEPASAN / PENGECEKAN LOGIN SEBELUM MENYIMPAN TRANSAKSI KE FIREBASE
+            if (!currentUser) {
+                Swal.fire({
+                    title: "Login Diperlukan",
+                    text: "Anda harus login dengan Google terlebih dahulu untuk menyelesaikan dan menyimpan transaksi ini!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "🔑 Login Sekarang",
+                    cancelButtonText: "Batal",
+                    customClass: { popup: 'rounded-4' }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Arahkan pengguna ke halaman login.html
+                        // Catatan: Rincian belanjaan aman disimpan di sessionStorage
+                        window.location.href = 'login.html';
+                    }
+                });
+                return; // Hentikan eksekusi transaksi
+            }
+
             let jenisBayar = document.getElementById('jenisPembayaran').value;
             const checkSplitTF = document.getElementById('checkSplitTF');
 
