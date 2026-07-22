@@ -72,7 +72,8 @@
 
         auth.onAuthStateChanged((user) => {
             if (!user) {
-                window.location.href = 'login.html';
+                // window.location.href = 'login.html';
+                window.location.replace('login.html'); // ✅ Menggantikan history
             } else {
                 currentUser = user;
                 database.ref(`kasir_users/${user.uid}/master_produk`).on('value', (snapshot) => {

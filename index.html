@@ -311,10 +311,16 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h3 id="formTitle" class="m-0 fw-bold text-primary judul-input-kasir"
                                 style="font-size: 1.5rem;">🛒 Input Penjualan</h3>
-                            <div class="d-flex flex-column align-items-end gap-1">
+                            <!-- <div class="d-flex flex-column align-items-end gap-1">
                                 <a href="db_produk.html" class="btn btn-outline-secondary btn-sm fw-bold shadow-sm">⚙️
                                     Atur Produk</a>
+                            </div> -->
+                            <div class="d-flex flex-column align-items-end gap-1">
+                                <button type="button" class="btn btn-outline-secondary btn-sm fw-bold shadow-sm"
+                                    onclick="bukaAturProduk()">⚙️
+                                    Atur Produk</button>
                             </div>
+
                         </div>
 
                         <form id="formPenjualan" autocomplete="off">
@@ -1096,6 +1102,27 @@
             }
             hitungKalkulatorSeketika();
             aturVisibilitasHapusUang();
+        }
+
+        function bukaAturProduk() {
+            if (!currentUser) {
+                Swal.fire({
+                    title: "Login Diperlukan",
+                    text: "Anda harus login terlebih dahulu untuk membuka halaman Atur Produk!",
+                    icon: "info",
+                    showCancelButton: true,
+                    confirmButtonText: "🔑 Login Sekarang",
+                    cancelButtonText: "Batal",
+                    customClass: { popup: 'rounded-4' }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Menggunakan replace agar history db_produk.html tidak tersimpan
+                        window.location.replace('login.html');
+                    }
+                });
+            } else {
+                window.location.href = 'db_produk.html';
+            }
         }
 
         function resetForm(forceUncheckMaster = false) {
