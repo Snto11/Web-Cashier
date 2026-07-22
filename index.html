@@ -699,22 +699,50 @@
         const inputHargaTampilanElement = document.getElementById('hargaTampilan');
         const btnTambahRibuanHargaElement = document.getElementById('btnTambahRibuanHarga');
 
-        // Event saat input Harga Barang di-KLIK / FOKUS
+        // 1. Munculkan tombol saat inputan di-klik / fokus
         inputHargaTampilanElement.addEventListener('focus', function () {
-            // Tombol muncul HANYA JIKA input tidak sedang readOnly
             if (!inputHargaTampilanElement.readOnly) {
                 btnTambahRibuanHargaElement.classList.remove('d-none');
             }
         });
 
-        // Event saat pengguna KLIK DI LUAR / PINDAH INPUTAN (BLUR)
+        // 2. Sembunyikan tombol saat fokus pindah ke tempat lain (klik di luar)
         inputHargaTampilanElement.addEventListener('blur', function () {
-            // Berikan sedikit jeda (150ms) agar event 'onclick' pada tombol +000 sempat tereksekusi sebelum tombol hilang
             setTimeout(() => {
-                btnTambahRibuanHargaElement.classList.add('d-none');
+                // Cek jika elemen yang aktif saat ini bukan tombol +000
+                if (document.activeElement !== btnTambahRibuanHargaElement) {
+                    btnTambahRibuanHargaElement.classList.add('d-none');
+                }
             }, 150);
         });
 
+        // 3. Mencegah fokus lepas dari input saat tombol +000 diklik
+        btnTambahRibuanHargaElement.addEventListener('mousedown', function (e) {
+            e.preventDefault(); // Menjaga kursor tetap aktif di dalam inputan Harga Barang
+        });
+
+        // 4. Perbarui fungsi tambahRibuanHargaBarang
+        function tambahRibuanHargaBarang() {
+            const inputHarga = document.getElementById('hargaTampilan');
+            let nilaiBersih = inputHarga.value.replace(/\D/g, "");
+
+            if (nilaiBersih !== "") {
+                nilaiBersih = nilaiBersih + "000";
+                hargaAsli = Number(nilaiBersih) || 0;
+
+                inputHarga.value = formatRupiah(nilaiBersih);
+
+                const inputQty = document.getElementById('jumlahPembelian');
+                if (!inputQty.value || inputQty.value === "0") {
+                    inputQty.value = "1";
+                }
+
+                hitungKalkulatorSeketika();
+
+                // Tetap pertahankan fokus pada input harga agar bisa diklik +000 lagi
+                inputHarga.focus();
+            }
+        }
         // function normalisaiTombolSimpan() {
         //     const btnSimpan = document.getElementById('btnSimpan');
         //     const idData = document.getElementById('rowId').value;
