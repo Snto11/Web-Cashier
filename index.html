@@ -220,15 +220,22 @@
                 document.getElementById('userEmail').innerText = user.email;
                 document.getElementById('userPhoto').src = user.photoURL || "https://via.placeholder.com/40";
 
+                // Matikan klik login jika user sudah berhasil login
+                document.getElementById('userEmail').onclick = null;
+
                 // TAMPILKAN tombol Logout saat user login
                 if (btnLogout) btnLogout.classList.remove('d-none');
-
                 hubungkanKeRealtimeDatabase();
-            } else {
+            }
+            else {
                 currentUser = null;
                 document.getElementById('userName').innerText = "Tamu (Belum Login)";
                 document.getElementById('userEmail').innerText = "Klik untuk login";
                 document.getElementById('userPhoto').src = "https://via.placeholder.com/40";
+
+                document.getElementById('userEmail').onclick = function () {
+                    window.location.href = 'login.html';
+                };
 
                 // SEMBUNYIKAN tombol Logout saat status Tamu / Belum Login
                 if (btnLogout) btnLogout.classList.add('d-none');
@@ -269,9 +276,16 @@
 
                     <ul class="dropdown-menu dropdown-menu-end shadow border p-3 rounded-3"
                         aria-labelledby="dropdownMenuLink" style="min-width: 230px;">
-                        <li class="px-2 pb-2 border-bottom mb-2 text-center text-sm-start">
+
+                        <!-- <li class="px-2 pb-2 border-bottom mb-2 text-center text-sm-start">
                             <div class="fw-bold text-dark lh-sm" id="userName">Memuat Nama...</div>
                             <small class="text-muted text-break" id="userEmail">Memuat Email...</small>
+                        </li> -->
+
+                        <li class="px-2 pb-2 border-bottom mb-2 text-center text-sm-start">
+                            <div class="fw-bold text-dark lh-sm" id="userName">Memuat Nama...</div>
+                            <small class="text-muted text-break" id="userEmail" style="cursor: pointer;">Memuat
+                                Email...</small>
                         </li>
 
                         <!-- <li>
