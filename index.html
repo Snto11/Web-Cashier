@@ -257,7 +257,7 @@
                     </span>
                 </div>
 
-                <div class="position-absolute start-50 translate-middle-x d-none d-md-block">
+                <!-- <div class="position-absolute start-50 translate-middle-x d-none d-md-block">
                     <a href="penjualan.html" class="btn btn-outline-secondary fw-bold shadow-sm px-3 text-nowrap">📊
                         Data & Omset Penjualan</a>
                 </div>
@@ -265,6 +265,18 @@
                     <a href="penjualan.html"
                         class="btn btn-outline-secondary fw-bold shadow-sm btn-nav-penjualan-mobile text-nowrap">📊 Data
                         & Omset Penjualan</a>
+                </div> -->
+
+                <div class="position-absolute start-50 translate-middle-x d-none d-md-block">
+                    <button type="button" class="btn btn-outline-secondary fw-bold shadow-sm px-3 text-nowrap"
+                        onclick="bukaDataPenjualan()">📊
+                        Data & Omset Penjualan</button>
+                </div>
+                <div class="d-block d-md-none text-center mx-2 flex-grow-1">
+                    <button type="button"
+                        class="btn btn-outline-secondary fw-bold shadow-sm btn-nav-penjualan-mobile text-nowrap"
+                        onclick="bukaDataPenjualan()">📊 Data
+                        & Omset Penjualan</button>
                 </div>
 
                 <div class="dropdown">
@@ -1122,6 +1134,27 @@
                 });
             } else {
                 window.location.href = 'db_produk.html';
+            }
+        }
+
+        function bukaDataPenjualan() {
+            if (!currentUser) {
+                Swal.fire({
+                    title: "Login Diperlukan",
+                    text: "Anda harus login terlebih dahulu untuk melihat Data & Omset Penjualan!",
+                    icon: "info",
+                    showCancelButton: true,
+                    confirmButtonText: "🔑 Login Sekarang",
+                    cancelButtonText: "Batal",
+                    customClass: { popup: 'rounded-4' }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Gunakan replace agar riwayat halaman aman
+                        window.location.replace('login.html');
+                    }
+                });
+            } else {
+                window.location.href = 'penjualan.html';
             }
         }
 
