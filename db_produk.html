@@ -139,10 +139,24 @@
                         </a>
                     </div>
 
-                    <div class="input-group input-group-sm mb-2">
+                    <!-- <div class="input-group input-group-sm mb-2">
                         <span class="input-group-text">Rp</span>
                         <input type="text" id="swalHargaBarangTampilan" inputmode="numeric" class="form-control"
                             placeholder="Harga Satuan">
+                    </div> -->
+
+                    <!-- KODE BARU -->
+                    <div class="input-group input-group-sm mb-1">
+                        <span class="input-group-text">Rp</span>
+                        <input type="text" id="swalHargaBarangTampilan" inputmode="numeric" class="form-control"
+                            placeholder="Harga Satuan">
+                    </div>
+                    <!-- Tombol Tambah 000 (Disembunyikan default dengan d-none) -->
+                    <div class="mb-2 d-none" id="wadahBtnRibuan">
+                        <button type="button" class="btn btn-outline-primary btn-sm py-0 px-2 fw-bold"
+                            style="font-size: 0.75rem;" onclick="tambahKoinRibuan()">
+                            +000
+                        </button>
                     </div>
 
                     <input type="number" id="swalStokBarang" class="form-control form-control-sm mb-3"
@@ -349,12 +363,46 @@
             }
         }
 
+        // Fungsi untuk menampilkan/menyembunyikan tombol +000
+        function aturTombolRibuan() {
+            const inputHarga = document.getElementById('swalHargaBarangTampilan');
+            const wadahBtn = document.getElementById('wadahBtnRibuan');
+
+            if (inputHarga.value.trim() !== "") {
+                wadahBtn.classList.remove('d-none'); // Tampilkan jika ada isinya
+            } else {
+                wadahBtn.classList.add('d-none');    // Sembunyikan jika kosong
+            }
+        }
+
+        // Event listener saat pengguna mengetik di input harga
+        document.getElementById('swalHargaBarangTampilan').addEventListener('input', function (e) {
+            // Format rupiah otomatis bawaan kamu
+            e.target.value = formatRupiah(e.target.value.replace(/\D/g, ""));
+
+            // Cek status visibilitas tombol +000
+            aturTombolRibuan();
+        });
+
+        // Fungsi ketika tombol +000 diklik
+        function tambahKoinRibuan() {
+            const inputHarga = document.getElementById('swalHargaBarangTampilan');
+            let nilaiBersih = inputHarga.value.replace(/\D/g, ""); // Ambil angka murninya
+
+            if (nilaiBersih !== "") {
+                nilaiBersih += "000"; // Tambahkan "000" di belakang angka
+                inputHarga.value = formatRupiah(nilaiBersih); // Format kembali ke Rupiah
+                inputHarga.focus(); // Kembalikan fokus ke input
+            }
+        }
+
         let namaProdukLamaYangSedangDiedit = "";
         window.isiFormMasterProduk = function (nama, harga, stok, barcode) {
             document.getElementById('swalNamaBarang').value = nama;
             document.getElementById('swalBarcodeBarang').value = barcode;
             aturTombolHapusBarcode();
             document.getElementById('swalHargaBarangTampilan').value = formatRupiah(harga);
+            aturTombolRibuan();
             document.getElementById('swalStokBarang').value = stok;
             namaProdukLamaYangSedangDiedit = nama;
             document.getElementById('swalLabelInput').innerText = "✏️ Edit Produk Terpilih:";
@@ -370,6 +418,7 @@
             document.getElementById('swalBarcodeBarang').value = "";
             aturTombolHapusBarcode();
             document.getElementById('swalHargaBarangTampilan').value = "";
+            aturTombolRibuan();
             document.getElementById('swalStokBarang').value = "";
             document.getElementById('swalLabelInput').innerText = "➕ Tambah / Update Produk:";
             document.getElementById('swalWadahTombol').innerHTML = `<button class="btn btn-primary btn-sm w-100 fw-bold d-inline-flex align-items-center justify-content-center gap-1" id="swalBtnSimpan" onclick="simpanMasterProduk()">
