@@ -678,22 +678,41 @@
         }
 
         // 2. Fungsi mengatur visibilitas tombol "+000" (Muncul saat user mengetik)
-        function aturVisibilitasTombolHargaRibuan() {
-            const inputHarga = document.getElementById('hargaTampilan');
-            const btnRibuan = document.getElementById('btnTambahRibuanHarga');
-            const nilaiBersih = inputHarga.value.replace(/\D/g, "");
+        // function aturVisibilitasTombolHargaRibuan() {
+        //     const inputHarga = document.getElementById('hargaTampilan');
+        //     const btnRibuan = document.getElementById('btnTambahRibuanHarga');
+        //     const nilaiBersih = inputHarga.value.replace(/\D/g, "");
 
-            // Tombol hanya muncul jika ada input angka & input TIDAK dalam status readOnly
-            if (nilaiBersih !== "" && !inputHarga.readOnly) {
-                btnRibuan.classList.remove('d-none');
-            } else {
-                btnRibuan.classList.add('d-none');
+        //     // Tombol hanya muncul jika ada input angka & input TIDAK dalam status readOnly
+        //     if (nilaiBersih !== "" && !inputHarga.readOnly) {
+        //         btnRibuan.classList.remove('d-none');
+        //     } else {
+        //         btnRibuan.classList.add('d-none');
+        //     }
+        // }
+
+        // // 3. Pasang Event Listener ke input hargaTampilan
+        // document.getElementById('hargaTampilan').addEventListener('input', function () {
+        //     aturVisibilitasTombolHargaRibuan();
+        // });
+
+        const inputHargaTampilanElement = document.getElementById('hargaTampilan');
+        const btnTambahRibuanHargaElement = document.getElementById('btnTambahRibuanHarga');
+
+        // Event saat input Harga Barang di-KLIK / FOKUS
+        inputHargaTampilanElement.addEventListener('focus', function () {
+            // Tombol muncul HANYA JIKA input tidak sedang readOnly
+            if (!inputHargaTampilanElement.readOnly) {
+                btnTambahRibuanHargaElement.classList.remove('d-none');
             }
-        }
+        });
 
-        // 3. Pasang Event Listener ke input hargaTampilan
-        document.getElementById('hargaTampilan').addEventListener('input', function () {
-            aturVisibilitasTombolHargaRibuan();
+        // Event saat pengguna KLIK DI LUAR / PINDAH INPUTAN (BLUR)
+        inputHargaTampilanElement.addEventListener('blur', function () {
+            // Berikan sedikit jeda (150ms) agar event 'onclick' pada tombol +000 sempat tereksekusi sebelum tombol hilang
+            setTimeout(() => {
+                btnTambahRibuanHargaElement.classList.add('d-none');
+            }, 150);
         });
 
         // function normalisaiTombolSimpan() {
