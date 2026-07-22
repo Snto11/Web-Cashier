@@ -193,16 +193,36 @@
     <script src="firebase-config.js"></script>
 
     <script>
+        // auth.onAuthStateChanged((user) => {
+        //     if (!user) {
+        //         window.location.href = 'login.html';
+        //     } else {
+        //         currentUser = user;
+        //         document.getElementById('appContainer').classList.remove('d-none');
+        //         document.getElementById('userName').innerText = user.displayName;
+        //         document.getElementById('userEmail').innerText = user.email;
+        //         document.getElementById('userPhoto').src = user.photoURL || "https://via.placeholder.com/40";
+        //         hubungkanKeRealtimeDatabase();
+        //     }
+        // });
+
+        let currentUser = null;
+
         auth.onAuthStateChanged((user) => {
-            if (!user) {
-                window.location.href = 'login.html';
-            } else {
+            // Aplikasi tetap ditampilkan baik user sudah login maupun belum
+            document.getElementById('appContainer').classList.remove('d-none');
+
+            if (user) {
                 currentUser = user;
-                document.getElementById('appContainer').classList.remove('d-none');
                 document.getElementById('userName').innerText = user.displayName;
                 document.getElementById('userEmail').innerText = user.email;
                 document.getElementById('userPhoto').src = user.photoURL || "https://via.placeholder.com/40";
                 hubungkanKeRealtimeDatabase();
+            } else {
+                currentUser = null;
+                document.getElementById('userName').innerText = "Tamu (Belum Login)";
+                document.getElementById('userEmail').innerText = "Klik untuk login";
+                document.getElementById('userPhoto').src = "https://via.placeholder.com/40";
             }
         });
     </script>
@@ -909,6 +929,25 @@
 
         document.getElementById('formPenjualan').addEventListener('submit', function (e) {
             e.preventDefault();
+            // PELEPASAN / PENGECEKAN LOGIN
+            if (!currentUser) {
+                Swal.fire({
+                    title: "Login Diperlukan",
+                    text: "Anda harus login dengan Google terlebih dahulu untuk menyimpan barang ke antrean!",
+                    icon: "info",
+                    showCancelButton: true,
+                    confirmButtonText: "🔑 Login Sekarang",
+                    cancelButtonText: "Batal",
+                    customClass: { popup: 'rounded-4' }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Arahkan pengguna ke halaman login
+                        window.location.href = 'login.html';
+                    }
+                });
+                return; // Hentikan proses simpan antrean
+            }
+
             const idData = document.getElementById('rowId').value;
             let namaInput = document.getElementById('namaBarang').value;
             const jumlahInput = Number(document.getElementById('jumlahPembelian').value);
