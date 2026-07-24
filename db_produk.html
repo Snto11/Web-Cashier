@@ -154,8 +154,9 @@
                     </div>
                     <!-- Tombol Tambah 000 (Disembunyikan default dengan d-none) -->
                     <div class="mb-2 d-none" id="wadahBtnRibuan">
-                        <button type="button" class="btn btn-outline-primary btn-sm py-0 px-2 fw-bold"
-                            style="font-size: 0.75rem;" onmousedown="event.preventDefault()" onclick="tambahKoinRibuan()">
+                        <button type="button" class="btn btn-outline-primary btn-sm w-100 py-1 fw-bold"
+                            style="font-size: 0.75rem;" onmousedown="event.preventDefault()"
+                            onclick="tambahKoinRibuan()">
                             +000
                         </button>
                     </div>
@@ -386,32 +387,32 @@
         // });
 
         const inputHargaTampilan = document.getElementById('swalHargaBarangTampilan');
-const wadahBtnRibuan = document.getElementById('wadahBtnRibuan');
+        const wadahBtnRibuan = document.getElementById('wadahBtnRibuan');
 
-// 1. Format Rupiah saat mengetik
-inputHargaTampilan.addEventListener('input', function (e) {
-    e.target.value = formatRupiah(e.target.value.replace(/\D/g, ""));
-});
+        // 1. Format Rupiah saat mengetik
+        inputHargaTampilan.addEventListener('input', function (e) {
+            e.target.value = formatRupiah(e.target.value.replace(/\D/g, ""));
+        });
 
-// 2. Tampilkan tombol +000 saat input DIKLIK / DIFOKUSKAN
-inputHargaTampilan.addEventListener('focus', function () {
-    wadahBtnRibuan.classList.remove('d-none');
-});
+        // 2. Tampilkan tombol +000 saat input DIKLIK / DIFOKUSKAN
+        inputHargaTampilan.addEventListener('focus', function () {
+            wadahBtnRibuan.classList.remove('d-none');
+        });
 
-// 3. Sembunyikan tombol saat pengguna benar-benar KLIK DI LUAR input
-inputHargaTampilan.addEventListener('blur', function () {
-    wadahBtnRibuan.classList.add('d-none');
-});
+        // 3. Sembunyikan tombol saat pengguna benar-benar KLIK DI LUAR input
+        inputHargaTampilan.addEventListener('blur', function () {
+            wadahBtnRibuan.classList.add('d-none');
+        });
 
-// 4. Fungsi tombol +000 saat diklik (bisa diklik berkali-kali)
-function tambahKoinRibuan() {
-    let nilaiBersih = inputHargaTampilan.value.replace(/\D/g, ""); // Ambil angka murni
+        // 4. Fungsi tombol +000 saat diklik (bisa diklik berkali-kali)
+        function tambahKoinRibuan() {
+            let nilaiBersih = inputHargaTampilan.value.replace(/\D/g, ""); // Ambil angka murni
 
-    if (nilaiBersih !== "") {
-        nilaiBersih += "000"; // Tambahkan "000"
-        inputHargaTampilan.value = formatRupiah(nilaiBersih); // Format kembali ke Rupiah
-    }
-}
+            if (nilaiBersih !== "") {
+                nilaiBersih += "000"; // Tambahkan "000"
+                inputHargaTampilan.value = formatRupiah(nilaiBersih); // Format kembali ke Rupiah
+            }
+        }
 
         // Fungsi ketika tombol +000 diklik
         // function tambahKoinRibuan() {
