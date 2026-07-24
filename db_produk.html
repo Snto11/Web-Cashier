@@ -110,8 +110,16 @@
             <div class="col-12 col-md-5">
                 <div class="card p-3 bg-white border text-start shadow-sm sticky-top" style="top: 20px;">
                     <label class="fw-bold text-secondary mb-2" id="swalLabelInput">➕ Tambah / Update Produk:</label>
-                    <input type="text" id="swalNamaBarang" class="form-control form-control-sm mb-2"
-                        placeholder="Nama Barang">
+                    <!-- <input type="text" id="swalNamaBarang" class="form-control form-control-sm mb-2"
+                        placeholder="Nama Barang"> -->
+
+                    <div class="input-group input-group-sm mb-2">
+                        <input type="text" id="swalNamaBarang" class="form-control" placeholder="Nama Barang">
+                        <button class="btn btn-outline-secondary text-danger d-none" type="button" id="btnHapusNama"
+                            onclick="hapusInputNama()" title="Kosongkan Nama Barang">
+                            ✕
+                        </button>
+                    </div>
 
                     <!-- <div class="d-flex gap-2 mb-2">
                         <input type="text" id="swalBarcodeBarang" inputmode="numeric" pattern="[0-9]*"
@@ -166,11 +174,18 @@
                         </button>
                     </div>
 
-                    <input type="number" id="swalStokBarang" class="form-control form-control-sm mb-3"
-                        placeholder="Jumlah Sisa Stok">
+                    <!-- <input type="number" id="swalStokBarang" class="form-control form-control-sm mb-3"
+                        placeholder="Jumlah Sisa Stok"> -->
+
+                    <div class="input-group input-group-sm mb-3">
+                        <input type="number" id="swalStokBarang" class="form-control" placeholder="Jumlah Sisa Stok">
+                        <button class="btn btn-outline-secondary text-danger d-none" type="button" id="btnHapusStok"
+                            onclick="hapusInputStok()" title="Kosongkan Stok">
+                            ✕
+                        </button>
+                    </div>
 
                     <div id="swalWadahTombol">
-
                         <button
                             class="btn btn-primary btn-sm w-100 fw-bold d-inline-flex align-items-center justify-content-center gap-1"
                             id="swalBtnSimpan" onclick="simpanMasterProduk()" title="Simpan Data">
@@ -342,6 +357,46 @@
             } else {
                 btnHapus.classList.add('d-none');    // Sembunyikan tombol
             }
+        }
+
+        // ELEMEN & FUNGSI TOMBOL HAPUS NAMA BARANG
+        const inputNamaBarang = document.getElementById('swalNamaBarang');
+        const btnHapusNama = document.getElementById('btnHapusNama');
+
+        function aturTombolHapusNama() {
+            if (inputNamaBarang.value.trim() !== "") {
+                btnHapusNama.classList.remove('d-none');
+            } else {
+                btnHapusNama.classList.add('d-none');
+            }
+        }
+
+        inputNamaBarang.addEventListener('input', aturTombolHapusNama);
+
+        function hapusInputNama() {
+            inputNamaBarang.value = '';
+            aturTombolHapusNama();
+            inputNamaBarang.focus();
+        }
+
+        // ELEMEN & FUNGSI TOMBOL HAPUS STOK BARANG
+        const inputStokBarang = document.getElementById('swalStokBarang');
+        const btnHapusStok = document.getElementById('btnHapusStok');
+
+        function aturTombolHapusStok() {
+            if (inputStokBarang.value.trim() !== "") {
+                btnHapusStok.classList.remove('d-none');
+            } else {
+                btnHapusStok.classList.add('d-none');
+            }
+        }
+
+        inputStokBarang.addEventListener('input', aturTombolHapusStok);
+
+        function hapusInputStok() {
+            inputStokBarang.value = '';
+            aturTombolHapusStok();
+            inputStokBarang.focus();
         }
 
         // document.getElementById('swalBarcodeBarang').addEventListener('input', aturTombolHapusBarcode);
@@ -608,11 +663,13 @@
         let namaProdukLamaYangSedangDiedit = "";
         window.isiFormMasterProduk = function (nama, harga, stok, barcode) {
             document.getElementById('swalNamaBarang').value = nama;
+            aturTombolHapusNama();
             document.getElementById('swalBarcodeBarang').value = barcode;
             aturTombolHapusBarcode();
             document.getElementById('swalHargaBarangTampilan').value = formatRupiah(harga);
             aturTombolHapusHarga();
             document.getElementById('swalStokBarang').value = stok;
+            aturTombolHapusStok();
             namaProdukLamaYangSedangDiedit = nama;
             document.getElementById('swalLabelInput').innerText = "✏️ Edit Produk Terpilih:";
             document.getElementById('swalWadahTombol').innerHTML = `<div class="row g-2">
@@ -624,11 +681,13 @@
         window.batalEditMasterProduk = function () {
             namaProdukLamaYangSedangDiedit = "";
             document.getElementById('swalNamaBarang').value = "";
+            aturTombolHapusNama();
             document.getElementById('swalBarcodeBarang').value = "";
             aturTombolHapusBarcode();
             document.getElementById('swalHargaBarangTampilan').value = "";
             aturTombolHapusHarga();
             document.getElementById('swalStokBarang').value = "";
+            aturTombolHapusStok();
             document.getElementById('swalLabelInput').innerText = "➕ Tambah / Update Produk:";
             document.getElementById('swalWadahTombol').innerHTML = `<button class="btn btn-primary btn-sm w-100 fw-bold d-inline-flex align-items-center justify-content-center gap-1" id="swalBtnSimpan" onclick="simpanMasterProduk()">
                 <span class="material-symbols-outlined">save</span> Simpan </button>`;
