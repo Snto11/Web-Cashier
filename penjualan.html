@@ -284,7 +284,8 @@
                                     <span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
                                 </button>
                             </div>
-                            <button type="button" class="btn btn-outline-secondary btn-sm w-100 mt-2 fw-bold"
+                            <button type="button" id="btnTambahNol"
+                                class="btn btn-outline-secondary btn-sm w-100 mt-2 fw-bold d-none"
                                 onclick="tambahNolTiga()">
                                 +000
                             </button>
@@ -383,6 +384,21 @@
                 .catch(err => console.warn("Info Footer:", err.message));
         }
 
+        const btnTambahNol = document.getElementById('btnTambahNol');
+
+        // Tampilkan tombol +000 saat inputan di-klik / difokuskan
+        inputUangFisikTampilan.addEventListener('focus', function () {
+            btnTambahNol.classList.remove('d-none');
+        });
+
+        // Sembunyikan tombol saat pengguna mengklik area luar
+        document.addEventListener('click', function (e) {
+            // Cek apakah yang diklik BUKAN inputan dan BUKAN tombol +000 itu sendiri
+            if (!inputUangFisikTampilan.contains(e.target) && !btnTambahNol.contains(e.target)) {
+                btnTambahNol.classList.add('d-none');
+            }
+        });
+
         function hubungkanKeRealtimeDatabase() {
             const uid = currentUser.uid;
             database.ref(`kasir_users/${uid}/riwayat_penjualan`).on('value', (snapshot) => {
@@ -396,13 +412,6 @@
         }
 
         const inputUangFisikTampilan = document.getElementById('uangFisikTampilan');
-
-        // inputUangFisikTampilan.addEventListener('input', function (e) {
-        //     let nilaiBersih = e.target.value.replace(/\D/g, "");
-        //     uangFisikAsli = Number(nilaiBersih) || 0;
-        //     e.target.value = nilaiBersih === "" ? "" : formatRupiah(nilaiBersih);
-        //     hitungSelisihLaci();
-        // });
 
         inputUangFisikTampilan.addEventListener('input', function (e) {
             let nilaiBersih = e.target.value.replace(/\D/g, "");
@@ -419,63 +428,6 @@
 
             hitungSelisihLaci();
         });
-
-        // function muatDataLokal() {
-        //     const tbody = document.getElementById('tabelBody');
-        //     tbody.innerHTML = '';
-        //     let r_cash = 0; let r_tf = 0;
-
-        //     if (dataPenjualanLokal.length === 0) {
-        //         tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4">Belum ada data penjualan di perangkat ini.</td></tr>';
-        //         nilaiCashAsliSimpanan = 0; nilaiTfAsliSimpanan = 0;
-        //         perbaruiTampilanOmsetDOM(0, 0); omsetCashSistem = 0;
-        //         hitungSelisihLaci();
-        //         return;
-        //     }
-
-        //     let nomorUrut = 1;
-        //     dataPenjualanLokal.forEach((item, index) => {
-        //         let cashRiil = item.hasOwnProperty('dibayarCash') ? item.dibayarCash : (item.jenisPembayaran === "Cash" ? item.hargaBarang * item.jumlahPembelian : 0);
-        //         let tfRiil = item.hasOwnProperty('dibayarTF') ? item.dibayarTF : (item.jenisPembayaran === "TF" ? item.hargaBarang * item.jumlahPembelian : 0);
-        //         r_cash += cashRiil; r_tf += tfRiil;
-
-        //         let totalHargaItem = item.hargaBarang * item.jumlahPembelian;
-        //         let tampilMetode = item.jenisPembayaran === "Cash" ? "💵 Cash" : (item.jenisPembayaran === "TF" ? "📱 TF" : item.jenisPembayaran);
-        //         let tglTampil = item.waktuTransaksi ? item.waktuTransaksi : "-";
-
-        //         let teksWaktuFinal = tglTampil;
-        //         if (tglTampil.includes(" pukul ")) {
-        //             let partisi = tglTampil.split(" pukul ");
-        //             teksWaktuFinal = `${partisi[0]}<br>pukul ${partisi[1]}`;
-        //         } else if (tglTampil.includes(" ")) {
-        //             let posisiSpasiTerakhir = tglTampil.lastIndexOf(" ");
-        //             let tanggalSaja = tglTampil.substring(0, posisiSpasiTerakhir);
-        //             let jamSaja = tglTampil.substring(posisiSpasiTerakhir + 1);
-        //             teksWaktuFinal = `${tanggalSaja}<br>pukul ${jamSaja}`;
-        //         }
-
-        //         tbody.innerHTML += `<tr>
-        //             <td data-label="No." class="text-muted fw-semibold">${nomorUrut++}</td>
-        //             <td data-label="Tanggal" class="small text-secondary" style="font-size:0.8rem;">${teksWaktuFinal}</td>
-        //             <td data-label="Nama Barang" class="fw-bold">${item.namaBarang}</td>
-        //             <td data-label="Harga">Rp ${formatRupiah(item.hargaBarang)}</td>
-        //             <td data-label="Jumlah">${item.jumlahPembelian} Pcs</td>
-        //             <td data-label="Pembayaran" class="fw-semibold">${tampilMetode}</td>
-        //             <td data-label="Total" class="text-success fw-bold">Rp ${formatRupiah(totalHargaItem)}</td>
-        //             <td data-label="Aksi" class="text-center btn-aksi-tabel">
-        //                 <button class="btn btn-danger btn-sm rounded shadow-sm px-2" onclick="hapusDataLokal(${index})" title="Hapus Data">
-        //                    <span class="material-symbols-outlined" style="font-size: 20px;">delete</span> 
-        //                 </button>
-        //             </td>
-        //         </tr>`;
-        //     });
-
-        //     omsetCashSistem = r_cash;
-        //     nilaiCashAsliSimpanan = r_cash;
-        //     nilaiTfAsliSimpanan = r_tf;
-        //     perbaruiTampilanOmsetDOM(r_cash, r_tf);
-        //     hitungSelisihLaci();
-        // }
 
         // Variable untuk mengontrol Pagination
         let halamanSaatIni = 1;
