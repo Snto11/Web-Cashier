@@ -175,7 +175,8 @@
                     </div>
 
                     <div class="input-group input-group-sm mb-3">
-                        <input type="number" id="swalStokBarang" min="0" class="form-control" placeholder="Jumlah Sisa Stok">
+                        <input type="number" id="swalStokBarang" min="0" class="form-control"
+                            placeholder="Jumlah Sisa Stok">
                         <button class="btn btn-outline-secondary text-danger d-none" type="button" id="btnHapusStok"
                             onclick="hapusInputStok()" title="Kosongkan Stok">
                             ✕
@@ -730,6 +731,19 @@
                 }
             });
         };
+
+        // Fitur Auto Focus & Blur saat Kursor Mouse Masuk/Keluar Input
+        document.querySelectorAll('input').forEach(input => {
+            // Saat kursor mouse masuk ke area input -> langsung Fokus
+            input.addEventListener('mouseenter', function () {
+                this.focus();
+            });
+
+            // Saat kursor mouse keluar dari area input -> Lepas Fokus (Blur)
+            input.addEventListener('mouseleave', function () {
+                this.blur();
+            });
+        });
 
         // FUNGSI UTAMA UNTUK MEMANGGIL FILE FOOTER.HTML SECARA OTOMATIS DAN MENAMPILKANNYA DI WADAH
         fetch('footer.html')
