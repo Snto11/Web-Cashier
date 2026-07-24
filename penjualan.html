@@ -384,21 +384,6 @@
                 .catch(err => console.warn("Info Footer:", err.message));
         }
 
-        const btnTambahNol = document.getElementById('btnTambahNol');
-
-        // Tampilkan tombol +000 saat inputan di-klik / difokuskan
-        inputUangFisikTampilan.addEventListener('focus', function () {
-            btnTambahNol.classList.remove('d-none');
-        });
-
-        // Sembunyikan tombol saat pengguna mengklik area luar
-        document.addEventListener('click', function (e) {
-            // Cek apakah yang diklik BUKAN inputan dan BUKAN tombol +000 itu sendiri
-            if (!inputUangFisikTampilan.contains(e.target) && !btnTambahNol.contains(e.target)) {
-                btnTambahNol.classList.add('d-none');
-            }
-        });
-
         function hubungkanKeRealtimeDatabase() {
             const uid = currentUser.uid;
             database.ref(`kasir_users/${uid}/riwayat_penjualan`).on('value', (snapshot) => {
@@ -634,6 +619,21 @@
                 hitungSelisihLaci();
             }
         }
+
+        const btnTambahNol = document.getElementById('btnTambahNol');
+
+        // Tampilkan tombol +000 saat inputan di-klik / difokuskan
+        inputUangFisikTampilan.addEventListener('focus', function () {
+            btnTambahNol.classList.remove('d-none');
+        });
+
+        // Sembunyikan tombol saat pengguna mengklik area luar
+        document.addEventListener('click', function (e) {
+            // Cek apakah yang diklik BUKAN inputan dan BUKAN tombol +000 itu sendiri
+            if (!inputUangFisikTampilan.contains(e.target) && !btnTambahNol.contains(e.target)) {
+                btnTambahNol.classList.add('d-none');
+            }
+        });
     </script>
 </body>
 
