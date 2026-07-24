@@ -346,6 +346,15 @@
                             </tbody>
                         </table>
                     </div>
+                    <!-- PAGINATION -->
+                    <div
+                        class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2 btn-block-privasi">
+                        <small class="text-muted" id="infoPagination"></small>
+                        <nav>
+                            <ul class="pagination pagination-sm m-0" id="paginationControls"></ul>
+                        </nav>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -414,6 +423,67 @@
             hitungSelisihLaci();
         });
 
+        // function muatDataLokal() {
+        //     const tbody = document.getElementById('tabelBody');
+        //     tbody.innerHTML = '';
+        //     let r_cash = 0; let r_tf = 0;
+
+        //     if (dataPenjualanLokal.length === 0) {
+        //         tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4">Belum ada data penjualan di perangkat ini.</td></tr>';
+        //         nilaiCashAsliSimpanan = 0; nilaiTfAsliSimpanan = 0;
+        //         perbaruiTampilanOmsetDOM(0, 0); omsetCashSistem = 0;
+        //         hitungSelisihLaci();
+        //         return;
+        //     }
+
+        //     let nomorUrut = 1;
+        //     dataPenjualanLokal.forEach((item, index) => {
+        //         let cashRiil = item.hasOwnProperty('dibayarCash') ? item.dibayarCash : (item.jenisPembayaran === "Cash" ? item.hargaBarang * item.jumlahPembelian : 0);
+        //         let tfRiil = item.hasOwnProperty('dibayarTF') ? item.dibayarTF : (item.jenisPembayaran === "TF" ? item.hargaBarang * item.jumlahPembelian : 0);
+        //         r_cash += cashRiil; r_tf += tfRiil;
+
+        //         let totalHargaItem = item.hargaBarang * item.jumlahPembelian;
+        //         let tampilMetode = item.jenisPembayaran === "Cash" ? "💵 Cash" : (item.jenisPembayaran === "TF" ? "📱 TF" : item.jenisPembayaran);
+        //         let tglTampil = item.waktuTransaksi ? item.waktuTransaksi : "-";
+
+        //         let teksWaktuFinal = tglTampil;
+        //         if (tglTampil.includes(" pukul ")) {
+        //             let partisi = tglTampil.split(" pukul ");
+        //             teksWaktuFinal = `${partisi[0]}<br>pukul ${partisi[1]}`;
+        //         } else if (tglTampil.includes(" ")) {
+        //             let posisiSpasiTerakhir = tglTampil.lastIndexOf(" ");
+        //             let tanggalSaja = tglTampil.substring(0, posisiSpasiTerakhir);
+        //             let jamSaja = tglTampil.substring(posisiSpasiTerakhir + 1);
+        //             teksWaktuFinal = `${tanggalSaja}<br>pukul ${jamSaja}`;
+        //         }
+
+        //         tbody.innerHTML += `<tr>
+        //             <td data-label="No." class="text-muted fw-semibold">${nomorUrut++}</td>
+        //             <td data-label="Tanggal" class="small text-secondary" style="font-size:0.8rem;">${teksWaktuFinal}</td>
+        //             <td data-label="Nama Barang" class="fw-bold">${item.namaBarang}</td>
+        //             <td data-label="Harga">Rp ${formatRupiah(item.hargaBarang)}</td>
+        //             <td data-label="Jumlah">${item.jumlahPembelian} Pcs</td>
+        //             <td data-label="Pembayaran" class="fw-semibold">${tampilMetode}</td>
+        //             <td data-label="Total" class="text-success fw-bold">Rp ${formatRupiah(totalHargaItem)}</td>
+        //             <td data-label="Aksi" class="text-center btn-aksi-tabel">
+        //                 <button class="btn btn-danger btn-sm rounded shadow-sm px-2" onclick="hapusDataLokal(${index})" title="Hapus Data">
+        //                    <span class="material-symbols-outlined" style="font-size: 20px;">delete</span> 
+        //                 </button>
+        //             </td>
+        //         </tr>`;
+        //     });
+
+        //     omsetCashSistem = r_cash;
+        //     nilaiCashAsliSimpanan = r_cash;
+        //     nilaiTfAsliSimpanan = r_tf;
+        //     perbaruiTampilanOmsetDOM(r_cash, r_tf);
+        //     hitungSelisihLaci();
+        // }
+
+        // Variable untuk mengontrol Pagination
+        let halamanSaatIni = 1;
+        const itemPerHalaman = 5;
+
         function muatDataLokal() {
             const tbody = document.getElementById('tabelBody');
             tbody.innerHTML = '';
@@ -424,15 +494,25 @@
                 nilaiCashAsliSimpanan = 0; nilaiTfAsliSimpanan = 0;
                 perbaruiTampilanOmsetDOM(0, 0); omsetCashSistem = 0;
                 hitungSelisihLaci();
+                tampilkanPaginationControls(0); // Reset pagination jika data kosong
                 return;
             }
 
-            let nomorUrut = 1;
-            dataPenjualanLokal.forEach((item, index) => {
+            // 1. Hitung total omset dari SELURUH data (bukan hanya yang di-page ini)
+            dataPenjualanLokal.forEach((item) => {
                 let cashRiil = item.hasOwnProperty('dibayarCash') ? item.dibayarCash : (item.jenisPembayaran === "Cash" ? item.hargaBarang * item.jumlahPembelian : 0);
                 let tfRiil = item.hasOwnProperty('dibayarTF') ? item.dibayarTF : (item.jenisPembayaran === "TF" ? item.hargaBarang * item.jumlahPembelian : 0);
                 r_cash += cashRiil; r_tf += tfRiil;
+            });
 
+            // 2. Tentukan Slice Data untuk Halaman Saat Ini (5 data per halaman)
+            const indexAwal = (halamanSaatIni - 1) * itemPerHalaman;
+            const indexAkhir = indexAwal + itemPerHalaman;
+            const dataHalamanIni = dataPenjualanLokal.slice(indexAwal, indexAkhir);
+
+            // 3. Render Data ke Tabel
+            dataHalamanIni.forEach((item, indexDiHalaman) => {
+                const indexAsli = indexAwal + indexDiHalaman; // Index asli pada array dataPenjualanLokal
                 let totalHargaItem = item.hargaBarang * item.jumlahPembelian;
                 let tampilMetode = item.jenisPembayaran === "Cash" ? "💵 Cash" : (item.jenisPembayaran === "TF" ? "📱 TF" : item.jenisPembayaran);
                 let tglTampil = item.waktuTransaksi ? item.waktuTransaksi : "-";
@@ -449,19 +529,19 @@
                 }
 
                 tbody.innerHTML += `<tr>
-                    <td data-label="No." class="text-muted fw-semibold">${nomorUrut++}</td>
-                    <td data-label="Tanggal" class="small text-secondary" style="font-size:0.8rem;">${teksWaktuFinal}</td>
-                    <td data-label="Nama Barang" class="fw-bold">${item.namaBarang}</td>
-                    <td data-label="Harga">Rp ${formatRupiah(item.hargaBarang)}</td>
-                    <td data-label="Jumlah">${item.jumlahPembelian} Pcs</td>
-                    <td data-label="Pembayaran" class="fw-semibold">${tampilMetode}</td>
-                    <td data-label="Total" class="text-success fw-bold">Rp ${formatRupiah(totalHargaItem)}</td>
-                    <td data-label="Aksi" class="text-center btn-aksi-tabel">
-                        <button class="btn btn-danger btn-sm rounded shadow-sm px-2" onclick="hapusDataLokal(${index})" title="Hapus Data">
-                           <span class="material-symbols-outlined" style="font-size: 20px;">delete</span> 
-                        </button>
-                    </td>
-                </tr>`;
+            <td data-label="No." class="text-muted fw-semibold">${indexAsli + 1}</td>
+            <td data-label="Tanggal" class="small text-secondary" style="font-size:0.8rem;">${teksWaktuFinal}</td>
+            <td data-label="Nama Barang" class="fw-bold">${item.namaBarang}</td>
+            <td data-label="Harga">Rp ${formatRupiah(item.hargaBarang)}</td>
+            <td data-label="Jumlah">${item.jumlahPembelian} Pcs</td>
+            <td data-label="Pembayaran" class="fw-semibold">${tampilMetode}</td>
+            <td data-label="Total" class="text-success fw-bold">Rp ${formatRupiah(totalHargaItem)}</td>
+            <td data-label="Aksi" class="text-center btn-aksi-tabel">
+                <button class="btn btn-danger btn-sm rounded shadow-sm px-2" onclick="hapusDataLokal(${indexAsli})" title="Hapus Data">
+                   <span class="material-symbols-outlined" style="font-size: 20px;">delete</span> 
+                </button>
+            </td>
+        </tr>`;
             });
 
             omsetCashSistem = r_cash;
@@ -469,6 +549,61 @@
             nilaiTfAsliSimpanan = r_tf;
             perbaruiTampilanOmsetDOM(r_cash, r_tf);
             hitungSelisihLaci();
+
+            // 4. Render Tombol Pagination
+            tampilkanPaginationControls(dataPenjualanLokal.length);
+        }
+
+        // FUNGSI UNTUK MEMBUAT TOMBOL NAVIGASI PAGINATION
+        function tampilkanPaginationControls(totalData) {
+            const containerControls = document.getElementById('paginationControls');
+            const infoPagination = document.getElementById('infoPagination');
+
+            if (!containerControls || !infoPagination) return;
+
+            containerControls.innerHTML = '';
+
+            const totalHalaman = Math.ceil(totalData / itemPerHalaman);
+
+            // Jika data <= 5, sembunyikan pagination
+            if (totalHalaman <= 1) {
+                infoPagination.innerText = totalData > 0 ? `Menampilkan total ${totalData} data.` : '';
+                return;
+            }
+
+            // Info teks pagination
+            const indexAwal = (halamanSaatIni - 1) * itemPerHalaman + 1;
+            const indexAkhir = Math.min(halamanSaatIni * itemPerHalaman, totalData);
+            infoPagination.innerText = `Menampilkan ${indexAwal}-${indexAkhir} dari ${totalData} data`;
+
+            // Tombol Previous
+            const liPrev = document.createElement('li');
+            liPrev.className = `page-item ${halamanSaatIni === 1 ? 'disabled' : ''}`;
+            liPrev.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="gantiHalaman(${halamanSaatIni - 1})">«</a>`;
+            containerControls.appendChild(liPrev);
+
+            // Tombol Angka Halaman
+            for (let i = 1; i <= totalHalaman; i++) {
+                const liPage = document.createElement('li');
+                liPage.className = `page-item ${i === halamanSaatIni ? 'active' : ''}`;
+                liPage.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="gantiHalaman(${i})">${i}</a>`;
+                containerControls.appendChild(liPage);
+            }
+
+            // Tombol Next
+            const liNext = document.createElement('li');
+            liNext.className = `page-item ${halamanSaatIni === totalHalaman ? 'disabled' : ''}`;
+            liNext.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="gantiHalaman(${halamanSaatIni + 1})">»</a>`;
+            containerControls.appendChild(liNext);
+        }
+
+        // FUNGSI PINDAH HALAMAN
+        function gantiHalaman(halamanBaru) {
+            const totalHalaman = Math.ceil(dataPenjualanLokal.length / itemPerHalaman);
+            if (halamanBaru < 1 || halamanBaru > totalHalaman) return;
+
+            halamanSaatIni = halamanBaru;
+            muatDataLokal();
         }
 
         function perbaruiTampilanOmsetDOM(cash, tf) {
